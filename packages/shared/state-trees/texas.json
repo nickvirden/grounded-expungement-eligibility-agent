@@ -1,0 +1,2223 @@
+{
+  "state": "texas",
+  "version": "1.0.0",
+  "extractedFrom": "questionnaire-api/states/texas.js",
+  "extractedAt": "2026-04-20T17:21:35.265Z",
+  "nodes": {
+    "1": {
+      "question": "Which best describes the outcome of the criminal record we're currently evaluating?",
+      "help": null,
+      "answers": [
+        {
+          "value": "My charges were dismissed at some point after I was arrested",
+          "position": 0
+        },
+        {
+          "value": "I was acquitted, pardoned, or my conviction was overturned on appeal",
+          "position": 1
+        },
+        {
+          "value": "After being arrested, no charges were filed",
+          "position": 2
+        }
+      ],
+      "questionsLeft": 11
+    },
+    "2": {
+      "question": "<p>You've indicated that your charges were dismissed in the case we're evaluating.</p><p>Were you convicted of any other charges from the same arrest or set of events?</p>",
+      "help": "<h5><u>The Same Criminal Episode</u></h5><div><b>If you were convicted of ANY of the offenses in the same \"Criminal Episode,\" answer YES to this question.</b></div><p>If the same case number was used, or the charges resulted from the same set of events or subject matter, they will typically be deemed to be part of the same Criminal Episode.</p><p>When you're arrested, it's frequently for more than one offense, even though some of those charges are dismissed or later dropped. In addition, it is not uncommon for prosecutors to file multiple charges as a tactic in negotiating plea bargains, eventually dismissing many of them.</p><div><b>Here is an example you may find helpful in understanding the concept:</b></div><p>If you were pulled over for driving while intoxicated, and the police found drugs in the car, these would be charges from the same arrest. If the drug charges were dismissed, but you were convicted of the driving while intoxicated charges, you would answer YES to this question. If both the driving while intoxicated charge and the drug charges were both dismissed, you would answer NO to this question.</p>",
+      "answers": [
+        {
+          "value": "I was convicted of other charges from this incident",
+          "position": 0
+        },
+        {
+          "value": "I was not convicted of any other charges from this arrest or sequence of events",
+          "position": 1
+        }
+      ],
+      "questionsLeft": 10
+    },
+    "3": {
+      "question": "Which best describes the charges that were dismissed?",
+      "help": null,
+      "answers": [
+        {
+          "value": "A felony charge was dismissed",
+          "position": 0
+        },
+        {
+          "value": "A misdemeanor was dismissed",
+          "position": 1
+        }
+      ],
+      "questionsLeft": 9
+    },
+    "4": {
+      "question": "<p>Great! Now we need to figure out whether the Statute of Limitations have passed for the charges you had dismissed. </p><p>Please pay attention to the help buttons during the next few questions, unless you're sure you know the statute of limitations for the offense you were arrested for.</p>",
+      "help": "<h5><u>What is a Statute of Limitations?</u></h5>A <b>\"Statute of Limitations\"</b> is the time allowed to file charges against you. The statute of limitations for some cases is as short as one year, while some serious criminal offenses have no limit and can be filed at any time, even decades after the crime occurred (an example would be murder). In Texas, most criminal offenses have statutes of limitation ranging from 2 to 10 years.</p><p>These time periods can vary quite a bit, so you often need to do a little research to find the right statute of limitation for your criminal offense. A good place to start here would be the Texas Code of Criminal Procedure Art. 12.01, et seq. However, here are some general time periods that should be helpful in answering this question: </p><p><b>Felonies With NO Statute of Limitations:</b> Answer NO to this question if you were charged with any of the following crimes: Murder, Manslaughter, Sexual Assault, Human Trafficking, Compelling Prostitution of a Minor, Leaving the Scene of an Accident when a Death has Taken Place</p><p><b>Felonies With 10 Year Statutes of Limitations:</b> Answer NO to this question if it has not yet been 10 years since one of these criminal events occurred. Examples of these types of felonies would be: Compelling Prostitution, Arson, Crimes Involving Injury to the Elderly or Disabled, Forgery, and Theft offenses by government employees. </p><p><b>Felonies with 7 Year Statutes of Limitations:</b> Answer NO to this question if it has not yet been 7 years since one of these criminal events occurred. Examples of these types of felonies include: Identity Theft, Money Laundering, Fraud, Bigamy, and certain financial and tax crimes. </p><p><b>Felonies with 5 Year Statutes of Limitations:</b> Answer NO to this question of it has not yet been 5 years since one of these criminal events occurred. Examples of these types of felonies would be: Insurance Fraud, many Theft offenses, Robbery, Burglary, and Endangering or Abandoning a Child.</p><p><b>All Other Felonies Have a 3 Year Statute of Limitations:</b> Answer NO to this question if it has not yet been 3 years since one of these criminal events has occurred.</p><p><b>Most Misdemeanors have a 2 Year Statute of Limitation:</b> Answer NO to this question if it has not yet been 2 years since one of these criminal events has occurred.</p>",
+      "answers": [
+        {
+          "value": "Let's figure this out!",
+          "position": 0
+        }
+      ],
+      "questionsLeft": 8
+    },
+    "5": {
+      "question": "Has enough time passed for the Statute of Limitations to have expired for the offense you had dismissed? Please refer to the help button if you're not sure.",
+      "help": "<h5><u>What is a Statute of Limitations?</u></h5>A <b>\"Statute of Limitations\"</b> is the time allowed to file charges against you. The statute of limitations for some cases is as short as one year, while some serious criminal offenses have no limit and can be filed at any time, even decades after the crime occurred (an example would be murder). In Texas, most criminal offenses have statutes of limitation ranging from 2 to 10 years.</p><p>These time periods can vary quite a bit, so you often need to do a little research to find the right statute of limitation for your criminal offense. A good place to start here would be the Texas Code of Criminal Procedure Art. 12.01, et seq. However, here are some general time periods that should be helpful in answering this question: </p><p><b>Felonies With NO Statute of Limitations:</b> Answer NO to this question if you were charged with any of the following crimes: Murder, Manslaughter, Sexual Assault, Human Trafficking, Compelling Prostitution of a Minor, Leaving the Scene of an Accident when a Death has Taken Place</p><p><b>Felonies With 10 Year Statutes of Limitations:</b> Answer NO to this question if it has not yet been 10 years since one of these criminal events occurred. Examples of these types of felonies would be: Compelling Prostitution, Arson, Crimes Involving Injury to the Elderly or Disabled, Forgery, and Theft offenses by government employees. </p><p><b>Felonies with 7 Year Statutes of Limitations:</b> Answer NO to this question if it has not yet been 7 years since one of these criminal events occurred. Examples of these types of felonies include: Identity Theft, Money Laundering, Fraud, Bigamy, and certain financial and tax crimes. </p><p><b>Felonies with 5 Year Statutes of Limitations:</b> Answer NO to this question of it has not yet been 5 years since one of these criminal events occurred. Examples of these types of felonies would be: Insurance Fraud, many Theft offenses, Robbery, Burglary, and Endangering or Abandoning a Child.</p><p><b>All Other Felonies Have a 3 Year Statute of Limitations:</b> Answer NO to this question if it has not yet been 3 years since one of these criminal events has occurred.</p><p><b>Most Misdemeanors have a 2 Year Statute of Limitation:</b> Answer NO to this question if it has not yet been 2 years since one of these criminal events has occurred.</p>",
+      "answers": [
+        {
+          "value": "Yes, after reading the information in the help button I know it's been enough time",
+          "position": 0
+        },
+        {
+          "value": "No, I know that it has not been long enough",
+          "position": 1
+        },
+        {
+          "value": "I'm not sure, you better ask me more questions",
+          "position": 2
+        }
+      ],
+      "questionsLeft": 7
+    },
+    "6": {
+      "question": "Were your charges dismissed for \"Lack of Probable Cause\"? If you're not sure, please click the help button.",
+      "help": "<h5><u>What is \"Lack of Probable Cause\"?</u></h5><p><b>Answer YES if your case was dismissed for Lack of Probable Cause.</b></p><p><b>\"Lack of probable cause\":</b> This means that your case was dismissed because the evidence proved that you did not commit the offense.</p><h5>Examples:</h5><ul><li>Your case for sexual assault was dismissed because the alleged victim stated that he/she was lying, or DNA proved it was not you.</li><li>Your case for domestic violence was dismissed because the alleged victim stated that he/she was not actually assaulted and lied to police.</li><li>Lack of Probable Cause is NOT a case being dismissed because the victim failed to testify, or the Officer failed to testify.</li></ul>",
+      "answers": [
+        {
+          "value": "Yes, my charges were dismissed for lack of probable cause",
+          "position": 0
+        },
+        {
+          "value": "My charges were dismissed for another reason",
+          "position": 1
+        }
+      ],
+      "questionsLeft": 1
+    },
+    "7": {
+      "question": "<p>Were the dismissed charges we are evaluating in this case for any of the following crimes: </p><ul><li>* Sexual Assault of a Child</li><li>* Indecency with a Child,</li><li>* Trafficking of Persons, or</li><li>* Compelling Prostitution of a Child</li>",
+      "help": null,
+      "answers": [
+        {
+          "value": "Yes, my charges were for one of the offenses on that list",
+          "position": 0
+        },
+        {
+          "value": "No, the charges I had dismissed are not on that list",
+          "position": 1
+        }
+      ],
+      "questionsLeft": 5
+    },
+    "8": {
+      "question": "What level of charges were the charges you had dismissed?",
+      "help": null,
+      "answers": [
+        {
+          "value": "The arrest record we're evaluating was for a felony",
+          "position": 0
+        },
+        {
+          "value": "The arrest record we're evaluating was for a misdemeanor",
+          "position": 1
+        }
+      ],
+      "questionsLeft": 4
+    },
+    "9": {
+      "question": "Has it been at least 3 years since you the events which led to you getting arrested or charged?",
+      "help": null,
+      "answers": [
+        {
+          "value": "Yes, it's been at least 3 years since the incident occurred",
+          "position": 0
+        },
+        {
+          "value": "No, it hasn't been 3 years yet",
+          "position": 1
+        }
+      ],
+      "questionsLeft": 3
+    },
+    "10": {
+      "question": "<p>The Statute of Limitations of most misdemeanors in Texas is 3 years.</p><p>Has it almost been 3 years since the event that led to your charges or arrest?</p>",
+      "help": null,
+      "answers": [
+        {
+          "value": "Yes, it has almost been 3 years now",
+          "position": 0
+        },
+        {
+          "value": "No, 3 years is a ways away still",
+          "position": 1
+        }
+      ],
+      "questionsLeft": 2
+    },
+    "11": {
+      "question": "Were you convicted of any new offenses since completion of the deferred sentence we're currently evaluating?",
+      "help": null,
+      "answers": [
+        {
+          "value": "Yes, I was convicted or put on another deferred sentence since the one we're evaluating",
+          "position": 0
+        },
+        {
+          "value": "No, I haven't been convicted of any new crimes since completing the deferred misdemeanor we're evaluating",
+          "position": 1
+        }
+      ],
+      "questionsLeft": 3
+    },
+    "12": {
+      "question": "<p>After you successfully complete deferred adjudication for this type of crime, you typically need to wait 2 years to seal your record.</p><p>Has it been almost 2 years?</p>",
+      "help": null,
+      "answers": [
+        {
+          "value": "Yes, it has almost been 2 years",
+          "position": 0
+        },
+        {
+          "value": "No, I have some time to wait still",
+          "position": 1
+        }
+      ],
+      "questionsLeft": 2
+    },
+    "13": {
+      "question": "<p>It can take a while to get your records and legal documents together to seal your record.</p><p>Do you want to start the legal process now to get your record sealed as soon as possible?</p>",
+      "help": null,
+      "answers": [
+        {
+          "value": "Yes, I want to get this off my record as soon as possible!",
+          "position": 0
+        },
+        {
+          "value": "No, I'm just going to wait until its  been a full 2 years",
+          "position": 1
+        }
+      ],
+      "questionsLeft": 1
+    },
+    "14": {
+      "question": "Were you put on deferred for prostitution or any of the crimes listed in the help button?",
+      "help": "<h5><u>Obscenity-Related Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for or convicted of a violation of Texas Penal Code Chapter 43, which covers Prostitution and Obscenity-Related Offenses.</b></p><p>The offenses in this chapter are Prostitution and Obscenity-Related Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 43:</p><ul><li>Prostitution</li><li>Promotion of Prostitution (all types)</li><li>Compelling Prostitution</li><li>Obscene Display or Distribution</li><li>Obscenity</li><li>Sale, Distribution, Display of Harmful Material to a Minor</li><li>Sexual Performance by a Child</li><li>Employment Harmful to Children and</li><li>Child Pornography Crimes</li></ul>",
+      "answers": [
+        {
+          "value": "Yes, I was given a deferred sentence for one of the crimes on that list",
+          "position": 0
+        },
+        {
+          "value": "No, I was given a deferred sentence for a crime that is not on that list",
+          "position": 1
+        }
+      ],
+      "questionsLeft": 5
+    },
+    "15": {
+      "question": "Were you placed on deferred for Kidnapping, Unlawful Restraint or any of the crimes on the list in the help button?",
+      "help": "<h5><u>Kidnapping, Unlawful Restraint, and Smuggling of Persons Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for a violation of Texas Penal Code Chapter 20, which covers Kidnapping, Unlawful Restraint, and Smuggling of Persons Offenses.</b></p><p>The following is a list of criminal offenses listed in Chapter 20:</p><ul><li>Unlawful Restraint</li><li>Kidnapping</li><li>Smuggling of Persons and</li><li>Operation of a Stash House</li></ul>",
+      "answers": [
+        {
+          "value": "Yes, I was given a deferred sentence for one of the crimes on that list",
+          "position": 0
+        },
+        {
+          "value": "No, I was given a deferred sentence for a crime that is not on that list",
+          "position": 1
+        }
+      ],
+      "questionsLeft": 4
+    },
+    "16": {
+      "question": "Finally, were you put on deferred for a crime involving a child or family listed in the help button?",
+      "help": "<h5><u>Offenses Against the Family</u></h5><p><b>Answer YES to this question if you were convicted of a violation of Texas Penal Code Chapter 25, which covers Offenses Against the Family.</b></p><p>The following is a list of criminal offenses listed in Chapter 25:</p><ul><li>Criminal Nonsupport</li><li>Continuous Violence Against the Family</li><li>Interference with Child Custody</li><li>Harboring Runaway Child</li><li>Enticing a Child</li><li>Agreement to Abduct From Custody</li><li>Prohibited Sexual Conduct</li><li>Bigamy</li><li>Violations of Certain Family-Related Court Orders</li><li>Violation of Certain Protective Orders</li><li>Sale or Purchase of a Child</li><li>Unregulated Transfer of Adopted Child</li><li>Advertising for Placement of Child</li><li>Interference with Rights of Guardian of the Person</li></ul>",
+      "answers": [
+        {
+          "value": "Yes, I was given a deferred sentence for one of the crimes on that list",
+          "position": 0
+        },
+        {
+          "value": "No, I was given a deferred sentence for a crime that is not on that list",
+          "position": 1
+        }
+      ],
+      "questionsLeft": 3
+    },
+    "17": {
+      "question": "Did you complete your deferred sentence after September 1, 2017?",
+      "help": null,
+      "answers": [
+        {
+          "value": "Yes, I finished my deferred sentence <b>after</b> September 1, 2017",
+          "position": 0
+        },
+        {
+          "value": "No, I finished my deferred sentence <b>before</b> September 1, 2017",
+          "position": 1
+        }
+      ],
+      "questionsLeft": 2
+    },
+    "18": {
+      "question": "Do you have any convictions on your record for any crime that wasn't just a fine-only traffic offense?",
+      "help": null,
+      "answers": [
+        {
+          "value": "Yeah, I have another conviction or was placed on deferred for another crime",
+          "position": 0
+        },
+        {
+          "value": "No, this was the first time I got in any trouble",
+          "position": 1
+        }
+      ],
+      "questionsLeft": 1
+    }
+  },
+  "results": {
+    "expungement": "Texas Expungement",
+    "juvenileSealing": "Texas Juvenile Record Sealing",
+    "dwiRecordSealing": "Texas DWI Record Sealing",
+    "convictionSetAside": "Texas Conviction Set Aside",
+    "felonyRecordSealing": "Texas Felony Record Sealing",
+    "automaticRecordSealing": "Texas Automatic Record Sealing",
+    "pardonBook": "Texas Pardon eBook",
+    "misdemeanorRecordSealing": "Texas Misdemeanor Record Sealing",
+    "dnq": "Does Not Qualify",
+    "dnqy": "Does Not Qualify Yet",
+    "research": "Research"
+  },
+  "transitions": [
+    {
+      "from": {
+        "questionId": 0,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 1,
+        "question": "Which best describes the outcome of the criminal record we're currently evaluating?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 0,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 1,
+        "question": "Which type of deferred sentencing were you granted?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 0,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 1,
+        "question": "Is the conviction we're evaluating a felony?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 0,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 1,
+        "question": "Do you have any pending matters with any juvenile probation department or juvenile court?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 0,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify"
+      }
+    },
+    {
+      "from": {
+        "questionId": 1,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 2,
+        "question": "<p>You've indicated that your charges were dismissed in the case we're evaluating.</p><p>Were you convicted of any other charges from the same arrest or set of events?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 1,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Expungement"
+      }
+    },
+    {
+      "from": {
+        "questionId": 1,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 2,
+        "question": "Which best describes the offense you were arrested for?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 1,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 2,
+        "question": "Did you successfully complete your deferred adjudication sentence and have your charges dismissed?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 1,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "question",
+        "questionId": 2,
+        "question": "Did you successfully complete Deferred Prosecution without violating its terms?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 1,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 2,
+        "question": "Is the conviction we're currently evaluating a felony Driving While Intoxicated (DWI) offense?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 1,
+        "answerPosition": 6
+      },
+      "to": {
+        "type": "question",
+        "questionId": 2,
+        "question": "<p>Was this conviction for a crime that was violent or sexual in nature?</p><p>Please see the help button to learn what counts. For example, misdemeanor simple assault does not count under these rules.</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 1,
+        "answerPosition": 7
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 1,
+        "answerPosition": 8
+      },
+      "to": {
+        "type": "question",
+        "questionId": 2,
+        "question": "Do you have any pending charges or warrants with an adult criminal justice agency?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "question": "Which best describes the charges that were dismissed?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "question": "Has it been at least 3 years since you were arrested?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "question": "Has it been at least 1 year since you were arrested?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Expungement"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "question": "Were you given deferred adjudication for Driving While Intoxicated?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 6
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 7
+      },
+      "to": {
+        "type": "question",
+        "questionId": 1,
+        "question": "Is the conviction we're evaluating a felony?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 8
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "question": "<p>Based on your answers, it doesn't appear that the record we're currently evaluating will qualify to be sealed, expunged, or set-aside.</p><p>That doesn't mean you're completely out of options though. Although it can be pretty difficult, you probably qualify to seek a Governor's Pardon.</p><p>A Governor's Pardon will get rid of any finding of guilt, and typically restore your firearm rights as well.</p><p>Do you want to learn more about applying for a pardon? </p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 9
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "question": "Did your conviction require you to register as a sex offender?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 10
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "question": "<p>Do you have any other convictions for offenses that didn't just result in a fine? </p><p>When answering this question, count any deferred adjudication sentences as a conviction.</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 11
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "question": "Are you at least 17 years of age?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "question": "<p>Great! Now we need to figure out whether the Statute of Limitations have passed for the charges you had dismissed. </p><p>Please pay attention to the help buttons during the next few questions, unless you're sure you know the statute of limitations for the offense you were arrested for.</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "question": "Has it been at least 2 years since your arrest?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Expungement"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "question": "<p>Texas law requires that you wait three (3) years after being arrested for a felony to expunge your record when you haven't been arrested.</p><p>Has it almost been three (3) years?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "question": "<p>When you've been arrested for a misdemeanor and haven't been charged, you can expunge your arrest record after one year.</p><p>The expungement process can take a while, and one year isn't a long time.</p><p>Do you want to start the legal process now, or are you going to wait until it has been a full year?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 6
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "question": "<p>To seal a DWI, you need to be a first time offender. </p><p>Have you previously been put on deferred adjudication, or convicted of, any crime that wasn't just a fine-only traffic offense? </p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 7
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "question": "Have you ever been convicted of abusing, neglecting, endangering or abandoning a child, elderly person, or disabled person?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 8
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Pardon eBook"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 9
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 10
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "question": "<p>Based on your answers, it doesn't appear that the record we're currently evaluating will qualify to be sealed, expunged, or set-aside.</p><p>That doesn't mean you're completely out of options though. Although it can be pretty difficult, you probably qualify to seek a Governor's Pardon.</p><p>A Governor's Pardon will get rid of any finding of guilt, and typically restore your firearm rights as well.</p><p>Do you want to learn more about applying for a pardon? </p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 11
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "question": "Were you convicted of any of the serious crimes listed in the help button?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 12
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "question": "Did your conviction require you to register as a sex offender?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 13
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "question": "Is the conviction we're currently evaluating for Driving While Intoxicated (DWI)?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 14
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "question": "Was your case transferred from juvenile court to adult criminal court?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 15
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "question": "Has it been at least one year since your juvenile case was discharged?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "question": "Has enough time passed for the Statute of Limitations to have expired for the offense you had dismissed? Please refer to the help button if you're not sure."
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Expungement"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "question": "Were your charges dismissed for \"Lack of Probable Cause\"? If you're not sure, please click the help button."
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "question": "<p>The expungement process can take a while, so if you want to get this incident off your record as soon as possible, you should get things started now.</p><p>Do you want to start the legal process now, or are you going to wait until it's been 3 years?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "question": "<p>Based on your answers, it doesn't appear that the record we're currently evaluating will qualify to be sealed, expunged, or set-aside.</p><p>That doesn't mean you're completely out of options though. Although it can be pretty difficult, you probably qualify to seek a Governor's Pardon.</p><p>A Governor's Pardon will get rid of any finding of guilt, and typically restore your firearm rights as well.</p><p>Do you want to learn more about applying for a pardon? </p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 6
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "question": "Was your blood alcohol concentration (BAC) over 0.15?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 7
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "question": "Have you ever been convicted or put on deferred adjudication for a crime involving Domestic Violence, Violating a Protective Order, or Stalking?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 8
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "question": "Did you receive a prison sentence or jail sentence for the felony conviction we're currently evaluating?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 9
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "question": "Did your conviction require you to register as a sex offender?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 10
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "question": "Was community supervision (probation) part of your sentence?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 11
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "question": "Were you convicted in adult court?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 12
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "question": "Have you been convicted of any felony as an adult?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 13
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "question": "Was your case transferred from juvenile court to adult criminal court?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 14
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "question": "<p>When you're under 17 years old, Texas law requires that you wait one (1) year to seal your case.</p><p>Since one (1) year is such a short amount of time, do you want to begin the process now, so that you can file as soon as possible?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Expungement"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 6,
+        "question": "Were your charges dismissed for \"Lack of Probable Cause\"? If you're not sure, please click the help button."
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 6,
+        "question": "Did you have charges for murder or attempted murder dismissed?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 6,
+        "question": "<p>The expungement process can take a while, so if you want to get this incident off your record as soon as possible, you should get things started now. </p><p>Do you want to start the legal process now, or are you going to wait until the statute of limitations has completely passed?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "question": "<p>Based on your answers, it doesn't appear that the record we're currently evaluating will qualify to be sealed, expunged, or set-aside.</p><p>That doesn't mean you're completely out of options though. Although it can be pretty difficult, you probably qualify to seek a Governor's Pardon.</p><p>A Governor's Pardon will get rid of any finding of guilt, and typically restore your firearm rights as well.</p><p>Do you want to learn more about applying for a pardon? </p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 6
+      },
+      "to": {
+        "type": "question",
+        "questionId": 6,
+        "question": "Did your DWI involve an accident of any type?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 7
+      },
+      "to": {
+        "type": "result",
+        "value": "Research"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 8
+      },
+      "to": {
+        "type": "question",
+        "questionId": 6,
+        "question": "Have you ever been required to register as a sex offender?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 9
+      },
+      "to": {
+        "type": "question",
+        "questionId": 6,
+        "question": "Are you <b>currently</b> on any of the following types of probation?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 10
+      },
+      "to": {
+        "type": "question",
+        "questionId": 6,
+        "question": "Were you convicted of purchasing or consuming alcohol as a minor, or selling or furnishing alcohol to a minor?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 11
+      },
+      "to": {
+        "type": "question",
+        "questionId": 6,
+        "question": "Have you paid all fines, costs, and restitution imposed by the court?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 12
+      },
+      "to": {
+        "type": "question",
+        "questionId": 1,
+        "question": "Is the conviction we're evaluating a felony?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 13
+      },
+      "to": {
+        "type": "question",
+        "questionId": 1,
+        "question": "Which best describes the outcome of the criminal record we're currently evaluating?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 14
+      },
+      "to": {
+        "type": "question",
+        "questionId": 6,
+        "question": "Are you currently required to register as a sex offender?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 15
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "question": "Was your case transferred from juvenile court to adult criminal court?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Expungement"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "question": "<p>Were the dismissed charges we are evaluating in this case for any of the following crimes: </p><ul><li>* Sexual Assault of a Child</li><li>* Indecency with a Child,</li><li>* Trafficking of Persons, or</li><li>* Compelling Prostitution of a Child</li>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "question": "Was anyone in the car with you when you got in the accident?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "question": "Were you given an Interlock device for at least 6 months as part of your probation?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 6
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "question": "<p>Based on your answers, it doesn't appear that the record we're currently evaluating will qualify to be sealed, expunged, or set-aside.</p><p>That doesn't mean you're completely out of options though. Although it can be pretty difficult, you probably qualify to seek a Governor's Pardon.</p><p>A Governor's Pardon will get rid of any finding of guilt, and typically restore your firearm rights as well.</p><p>Do you want to learn more about applying for a pardon? </p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 7
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "question": "Have you ever been convicted or put on deferred adjudication for murder or aggravated kidnapping?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 8
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "question": "Have you completed one-third of your probation or have you been on probation for at least 2 years?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 9
+      },
+      "to": {
+        "type": "question",
+        "questionId": 1,
+        "question": "Which type of deferred sentencing were you granted?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 10
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "question": "Is the conviction we're evaluating one of the counties listed in the help button?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 11
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "question": "Were you a minor when convicted of this offense?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 12
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "question": "Has it been at least two (2) years since you successfully completed your probation?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 13
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "question": "Were you convicted of purchasing or consuming alcohol as a minor, or selling or furnishing alcohol to a minor?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 14
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "question": "Have you been found to have engaged in \"Habitual Felony Conduct\"? Please read the information in the help button to understand what this is."
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "question": "What level of charges were the charges you had dismissed?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "question": "<p>Based on your answers, it doesn't appear that the record we're currently evaluating will qualify to be sealed, expunged, or set-aside.</p><p>That doesn't mean you're completely out of options though. Although it can be pretty difficult, you probably qualify to seek a Governor's Pardon.</p><p>A Governor's Pardon will get rid of any finding of guilt, and typically restore your firearm rights as well.</p><p>Do you want to learn more about applying for a pardon? </p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "question": "Did you get into an accident with another car or person?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "question": "Has it been at least 2 years since you completed the terms of your probation or deferred sentence?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "question": "Has it been at least 5 years since you completed the terms of your probation or deferred sentence?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 6
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "question": "<p>Great! Now let's figure out if enough time has gone by to satisfy the waiting periods.</p><p>What is the level of offense that we're currently evaluating?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 7
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "question": "Have you completed the other terms of your probation and paid all fines?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 8
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 9
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "question": "Has it been more than 30 days since you were discharged from probation?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 10
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Conviction Set Aside"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 11
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "question": "Are you now over 21?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 12
+      },
+      "to": {
+        "type": "question",
+        "questionId": 1,
+        "question": "Is the conviction we're evaluating a felony?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 13
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Misdemeanor Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 14
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "question": "<p>Since it hasn't been two (2) years since you've completed probation, let's see if the offense we are currently evaluating has a shorter waiting period.</p><p>We're going to go through a bunch of different types of offenses to check, so please be patient!</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 15
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "question": "Were you a minor when convicted of this offense?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 16
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "question": "Were you convicted of one of the crimes in the help button related to engaging in organized criminal activity?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 17
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "question": "Have you received a \"Determinate Sentence\" (found guilty) for one of the crimes listed in the help button?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 9,
+        "question": "Has it been at least 3 years since you the events which led to you getting arrested or charged?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 9,
+        "question": "Has it been at least 2 years since you the events which led to you getting arrested or charged?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "question": "<p>Based on your answers, it doesn't appear that the record we're currently evaluating will qualify to be sealed, expunged, or set-aside.</p><p>That doesn't mean you're completely out of options though. Although it can be pretty difficult, you probably qualify to seek a Governor's Pardon.</p><p>A Governor's Pardon will get rid of any finding of guilt, and typically restore your firearm rights as well.</p><p>Do you want to learn more about applying for a pardon? </p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "question": "Were you given an Interlock device for at least 6 months as part of your probation?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas DWI Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 9,
+        "question": "<p>After you successfully complete your DWI sentence, you typically need to wait 2 years to seal your record if you've had an interlock device.</p><p>Has it almost been 2 years since you've finished your deferred sentence?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 6
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 7
+      },
+      "to": {
+        "type": "question",
+        "questionId": 9,
+        "question": "Has it been at least 5 years since you completed all of the terms of your deferred sentence?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 8
+      },
+      "to": {
+        "type": "question",
+        "questionId": 9,
+        "question": "Has it been at least 2 years since you successfully completed your deferred sentence?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 9
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Expungement"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 10
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Conviction Set Aside"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 11
+      },
+      "to": {
+        "type": "question",
+        "questionId": 9,
+        "question": "Were you convicted of a Sexual Offense such as indecent exposure or public lewdness? For a complete list, see the help button."
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 12
+      },
+      "to": {
+        "type": "question",
+        "questionId": 9,
+        "question": "Was the crime you were convicted of punishable by only a fine?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 13
+      },
+      "to": {
+        "type": "question",
+        "questionId": 9,
+        "question": "Were you sent to a correctional facility as part of your sentence?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Expungement"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "question": "<p>The Statute of Limitations of most misdemeanors in Texas is 3 years.</p><p>Has it almost been 3 years since the event that led to your charges or arrest?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "question": "<p>The Statute of Limitations of most misdemeanors in Texas is 2 years.</p><p>Has it almost been 2 years since the event that led to your charges or arrest?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "question": "<p>It can take a while to get your records and legal documents together to seal your record.</p><p>Do you want to start the legal process now to get your record sealed as soon as possible?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "question": "<p>Have you been convicted or put on another deferred sentence for any crime during the 5 year period after completing your deferred sentence?</p><p>Do not count fine-only traffic violations when answering this question. </p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 6
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "question": "Were you convicted of any new offenses during the 2 year period following the completion of your deferred sentence?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 7
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "question": "Were you given deferred adjudication for a Sex Offense listed in the help button?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 8
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "question": "<p>Based on the charge you were convicted of, you probably need to wait 2 years from when you finish your sentence to seal your record.</p><p>That isn't a lot of time. Do you want to start the legal process now to get your record sealed as soon as possible?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 9
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "question": "Were you convicted of one of the weapons-related offenses listed in the help button?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 10
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Misdemeanor Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 11
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "question": "Has it been 2 years since you completed the sentence for the offense we're evaluating?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 12
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "question": "Have you been discharged and released from the correctional facility you were sent to?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 13
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Juvenile Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "question": "<p>The expungement process can take a while, so if you want to get this incident off your record as soon as possible, you should get things started now.</p><p>Do you want to start the legal process now, or are you going to wait until it's been 3 years?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 6,
+        "question": "<p>The expungement process can take a while, so if you want to get this incident off your record as soon as possible, you should get things started now. </p><p>Do you want to start the legal process now, or are you going to wait until the statute of limitations has completely passed?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas DWI Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "question": "<p>Based on your answers, it doesn't appear that the record we're currently evaluating will qualify to be sealed, expunged, or set-aside.</p><p>That doesn't mean you're completely out of options though. Although it can be pretty difficult, you probably qualify to seek a Governor's Pardon.</p><p>A Governor's Pardon will get rid of any finding of guilt, and typically restore your firearm rights as well.</p><p>Do you want to learn more about applying for a pardon? </p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Felony Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 6
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "question": "Were you given deferred adjudication for a Sex Offense listed in the help button?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 7
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Misdemeanor Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 8
+      },
+      "to": {
+        "type": "question",
+        "questionId": 11,
+        "question": "Were you convicted of any new offenses since completion of the deferred sentence we're currently evaluating?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 9
+      },
+      "to": {
+        "type": "question",
+        "questionId": 11,
+        "question": "Were you given a deferred sentence for one of weapons-related offense listed in the help button?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 10
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "question": "<p>Based on the charge you were convicted of, you probably need to wait 2 years from when you finish your sentence to seal your record.</p><p>That isn't a lot of time. Do you want to start the legal process now to get your record sealed as soon as possible?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 11
+      },
+      "to": {
+        "type": "question",
+        "questionId": 11,
+        "question": "Were you convicted of disorderly conduct or one of the related offenses listed in the help button?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 12
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Juvenile Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 11,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify"
+      }
+    },
+    {
+      "from": {
+        "questionId": 11,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 12,
+        "question": "<p>After you successfully complete deferred adjudication for this type of crime, you typically need to wait 2 years to seal your record.</p><p>Has it been almost 2 years?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 11,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 11,
+        "question": "Were you convicted of any new offenses since completion of the deferred sentence we're currently evaluating?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 11,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 12,
+        "question": "Were you placed on deferred adjudication for disorderly conduct offenses listed in the help button?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 11,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "question": "<p>Based on the charge you were convicted of, you probably need to wait 2 years from when you finish your sentence to seal your record.</p><p>That isn't a lot of time. Do you want to start the legal process now to get your record sealed as soon as possible?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 11,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 12,
+        "question": "Were you convicted of a crime involving assault or one of the offenses listed in the help button?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 12,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 13,
+        "question": "<p>It can take a while to get your records and legal documents together to seal your record.</p><p>Do you want to start the legal process now to get your record sealed as soon as possible?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 12,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 12,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 11,
+        "question": "Were you convicted of any new offenses since completion of the deferred sentence we're currently evaluating?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 12,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 13,
+        "question": "Were you put on deferred for a crime involving assault or any of the crimes listed in the help button?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 12,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "question": "<p>Based on the charge you were convicted of, you probably need to wait 2 years from when you finish your sentence to seal your record.</p><p>That isn't a lot of time. Do you want to start the legal process now to get your record sealed as soon as possible?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 12,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 13,
+        "question": "Were you convicted of prostitution, an obscenity offense, or one of the other crimes listed in the help button?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 13,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Misdemeanor Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 13,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 13,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 11,
+        "question": "Were you convicted of any new offenses since completion of the deferred sentence we're currently evaluating?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 13,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 14,
+        "question": "Were you put on deferred for prostitution or any of the crimes listed in the help button?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 13,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "question": "<p>Based on the charge you were convicted of, you probably need to wait 2 years from when you finish your sentence to seal your record.</p><p>That isn't a lot of time. Do you want to start the legal process now to get your record sealed as soon as possible?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 13,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 14,
+        "question": "Were you convicted of kidnapping, unlawful restraint, or one of the crimes listed in the help button?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 14,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 11,
+        "question": "Were you convicted of any new offenses since completion of the deferred sentence we're currently evaluating?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 14,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 15,
+        "question": "Were you placed on deferred for Kidnapping, Unlawful Restraint or any of the crimes on the list in the help button?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 14,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "question": "<p>Based on the charge you were convicted of, you probably need to wait 2 years from when you finish your sentence to seal your record.</p><p>That isn't a lot of time. Do you want to start the legal process now to get your record sealed as soon as possible?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 14,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 15,
+        "question": "Finally, were you convicted of a crime involving your family or a child listed in the help button?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 15,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 11,
+        "question": "Were you convicted of any new offenses since completion of the deferred sentence we're currently evaluating?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 15,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 16,
+        "question": "Finally, were you put on deferred for a crime involving a child or family listed in the help button?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 15,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "question": "<p>Based on the charge you were convicted of, you probably need to wait 2 years from when you finish your sentence to seal your record.</p><p>That isn't a lot of time. Do you want to start the legal process now to get your record sealed as soon as possible?</p>"
+      }
+    },
+    {
+      "from": {
+        "questionId": 15,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Misdemeanor Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 16,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 11,
+        "question": "Were you convicted of any new offenses since completion of the deferred sentence we're currently evaluating?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 16,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 17,
+        "question": "Did you complete your deferred sentence after September 1, 2017?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 17,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 18,
+        "question": "Do you have any convictions on your record for any crime that wasn't just a fine-only traffic offense?"
+      }
+    },
+    {
+      "from": {
+        "questionId": 17,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Misdemeanor Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 18,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Misdemeanor Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 18,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Automatic Record Sealing"
+      }
+    }
+  ]
+}
