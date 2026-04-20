@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+# Gitleaks: reject commits containing secrets
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks protect --staged --config .gitleaks.toml --verbose
+  if [ $? -ne 0 ]; then
+    echo "❌ gitleaks detected secrets in staged files. Commit rejected."
+    exit 1
+  fi
+else
+  echo "⚠️  gitleaks not installed — skipping secret scan. Install: brew install gitleaks"
+fi
