@@ -1,0 +1,8 @@
+{
+  "description": "Texas DWI Record Sealing: deferred adjudication DWI path (question 8, answer 4)",
+  "state": "texas",
+  "question_id": 8,
+  "answer_position": 4,
+  "expected_result": "Texas DWI Record Sealing",
+  "expected_is_terminal": true
+}

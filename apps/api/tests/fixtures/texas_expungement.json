@@ -1,0 +1,8 @@
+{
+  "description": "Texas Expungement: acquitted/pardoned path (question 1, answer 1)",
+  "state": "texas",
+  "question_id": 1,
+  "answer_position": 1,
+  "expected_result": "Texas Expungement",
+  "expected_is_terminal": true
+}

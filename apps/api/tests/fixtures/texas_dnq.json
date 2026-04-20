@@ -1,0 +1,8 @@
+{
+  "description": "Texas Does Not Qualify: federal case path (question 0, answer 4)",
+  "state": "texas",
+  "question_id": 0,
+  "answer_position": 4,
+  "expected_result": "Does Not Qualify",
+  "expected_is_terminal": true
+}

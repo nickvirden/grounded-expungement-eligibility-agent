@@ -1,0 +1,8 @@
+{
+  "description": "Texas Does Not Qualify Yet: pending juvenile matters path (question 1, answer 7)",
+  "state": "texas",
+  "question_id": 1,
+  "answer_position": 7,
+  "expected_result": "Does Not Qualify Yet",
+  "expected_is_terminal": true
+}
