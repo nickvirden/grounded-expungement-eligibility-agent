@@ -92,7 +92,31 @@ This document records every significant architectural and technical decision mad
 
 ---
 
-## 11. What We'd Do With More Time
+## 11. Frontend Routing: Two Entry Points, One Rule Engine
+
+**Decision:** The same deterministic rule engine powers both the Quick Form (pure REST) and Talk-to-Agent (AI + SSE) flows. Users pick the experience that matches their comfort level.
+
+**Quick Form architecture:** Server Component fetches the entry question (SSR for fast TTFB). Client Component drives the stepper with a minimal state machine. On terminal answer, result data travels in URL search params to the result page (no round-trip required).
+
+**Talk-to-Agent architecture:** A Next.js Route Handler at `/api/chat` creates the intake (server-to-server call with matching CSRF token pair — safe because CSRF protects browsers, not server proxies). A second Route Handler at `/api/chat/[id]/stream` transparently proxies FastAPI's SSE stream. The `useChatStream` hook consumes the stream, accumulates text chunks into a single growing agent bubble, and sets the final `EligibilityReport` on the `final` SSE event.
+
+**Why separate hooks over `useChat` from Vercel AI SDK:** The FastAPI SSE format (`{type, text/report/error}`) doesn't map cleanly to AI SDK message format. A bespoke `useChatStream` is 80 lines and fully transparent — preferable over an opaque SDK adapter in a showcase context where reviewers want to see the streaming mechanics.
+
+---
+
+## 12. Server-to-Server CSRF Bypass Pattern
+
+**Decision:** The Next.js Route Handler generates a matching CSRF token pair (`randomBytes(32).toString('base64url')`) and sends both `Cookie: __Host-csrf=TOKEN` and `X-CSRF-Token: TOKEN` headers to FastAPI.
+
+**Why this is safe:** CSRF attacks exploit the browser's automatic cookie inclusion on cross-origin requests. A server-side proxy has no browser context — it explicitly constructs every header. Providing a matching double-submit pair satisfies the middleware contract without adding a special service-auth path.
+
+**Alternative considered:** A `INTERNAL_SERVICE_TOKEN` header bypass in the CSRF middleware. Rejected because it adds a second authentication surface; the matching-pair pattern reuses the existing contract.
+
+---
+
+## 13. What We'd Do With More Time
+
+
 
 - Prompt evaluation harness (systematic evals across edge cases)
 - All 20+ state decision trees extracted and tested
