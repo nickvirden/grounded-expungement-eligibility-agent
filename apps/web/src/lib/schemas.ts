@@ -14,10 +14,17 @@ export const assessRequestSchema = z.object({
 
 export type AssessRequest = z.infer<typeof assessRequestSchema>;
 
-export const answerOptionSchema = z.object({
-  label: z.string(),
-  position: z.number().int(),
-});
+export const answerOptionSchema = z
+  .object({
+    // The API (and Texas JSON tree) uses 'value'; accept both for forward-compat
+    value: z.string().optional(),
+    label: z.string().optional(),
+    position: z.number().int(),
+  })
+  .transform((obj) => ({
+    label: obj.label ?? obj.value ?? '',
+    position: obj.position,
+  }));
 
 export const assessResponseSchema = z.object({
   is_terminal: z.boolean(),

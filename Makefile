@@ -28,7 +28,13 @@ test:
 	pnpm test
 
 e2e:
-	pnpm e2e
+	cd e2e && npx playwright test
+
+e2e-headed:
+	cd e2e && npx playwright test --headed
+
+check-styles:
+	node scripts/check-no-inline-styles.mjs
 
 seed:
 	cd apps/api && uv run python -m app.scripts.seed_services

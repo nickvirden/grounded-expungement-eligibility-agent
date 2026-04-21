@@ -35,7 +35,8 @@ interface EntryQuestion {
   question_id: number;
   question: string;
   help: string | null;
-  answers: Array<{ label: string; position: number }>;
+  // API uses 'value'; AssessResponse (after Zod transform) uses 'label'
+  answers: Array<{ value?: string; label?: string; position: number }>;
   questions_left: number;
 }
 
@@ -153,7 +154,7 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
           ) : (
             <AnswerList role="list">
               {answers.map((answer) => (
-                <li key={answer.position} style={undefined}>
+                <li key={answer.position}>
                   <AnswerButton
                     onClick={() => void handleAnswer(answer.position)}
                     $selected={selectedPosition === answer.position}
@@ -161,7 +162,7 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
                     disabled={isLoading}
                     aria-pressed={selectedPosition === answer.position}
                   >
-                    {answer.label}
+                    {answer.label ?? answer.value}
                     {selectedPosition === answer.position && (
                       <ArrowRightIcon size={16} color="var(--color-blue-600)" aria-hidden="true" />
                     )}

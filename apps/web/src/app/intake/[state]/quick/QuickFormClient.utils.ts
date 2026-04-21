@@ -4,7 +4,7 @@ export interface Step {
   questionId: number;
   questionText: string;
   questionHelp: string | null;
-  answers: Array<{ label: string; position: number }>;
+  answers: Array<{ value?: string; label?: string; position: number }>;
   answerChosen: number | null;
 }
 
@@ -33,7 +33,7 @@ export function responseToStep(res: AssessResponse): Omit<Step, 'answerChosen'> 
     questionId: res.next_question_id ?? 0,
     questionText: res.next_question_text ?? '',
     questionHelp: res.next_question_help ?? null,
-    answers: (res.next_answers ?? []) as Array<{ label: string; position: number }>,
+    answers: (res.next_answers ?? []) as Array<{ value?: string; label?: string; position: number }>,
     questionsLeft: res.questions_left ?? 0,
   };
 }
