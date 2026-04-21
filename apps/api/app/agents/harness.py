@@ -89,7 +89,7 @@ class AgentRunner:
                         run_rec = session.get(AgentRun, run_id)
                         if run_rec:
                             run_rec.status = "completed"
-                            run_rec.ended_at = datetime.datetime.utcnow()
+                            run_rec.ended_at = datetime.datetime.now(datetime.UTC)
                             session.add(run_rec)
 
                         step = AgentStep(
@@ -128,6 +128,6 @@ def _mark_run_failed(run_id: str, error: str) -> None:
         if run:
             run.status = "failed"
             run.error = error
-            run.ended_at = datetime.datetime.utcnow()
+            run.ended_at = datetime.datetime.now(datetime.UTC)
             session.add(run)
             session.commit()

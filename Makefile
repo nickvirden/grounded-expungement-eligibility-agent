@@ -1,10 +1,16 @@
-.PHONY: up down logs lint test e2e seed extract-trees audit format
+.PHONY: up down dev logs lint test e2e seed extract-trees audit format
 
 up:
 	docker compose up -d
 
 down:
 	docker compose down
+
+dev:
+	@echo "Starting API and Web in development mode..."
+	@(cd apps/api && uv run uvicorn app.main:app --reload --port 8000) &
+	@(cd apps/web && NEXT_PUBLIC_API_URL=http://localhost:8000 INTERNAL_API_URL=http://localhost:8000 pnpm dev) &
+	@wait
 
 logs:
 	docker compose logs -f
