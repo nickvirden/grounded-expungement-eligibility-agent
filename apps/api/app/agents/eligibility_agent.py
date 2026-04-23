@@ -77,15 +77,15 @@ def build_agent() -> Agent[AgentDeps, EligibilityReport]:
     )
 
     @agent.tool
-    def lookup_state_tree(ctx: RunContext[AgentDeps], state: str) -> StateTreeMeta:  # noqa: ARG001
-        """Look up the decision tree metadata for a state."""
+    def lookup_state_tree(ctx: RunContext[AgentDeps]) -> StateTreeMeta:
+        """Look up the decision tree metadata for the intake's state."""
+        state = ctx.deps.state
         check_jurisdiction(state)
         return tool_lookup_state_tree(state)
 
     @agent.tool
     def assess_eligibility(
-        ctx: RunContext[AgentDeps],  # noqa: ARG001
-        state: str,
+        ctx: RunContext[AgentDeps],
         question_id: int,
         answer_position: int,
     ) -> EligibilityToolResult:
@@ -94,6 +94,7 @@ def build_agent() -> Agent[AgentDeps, EligibilityReport]:
         MUST be called for every eligibility determination. Never state an outcome
         without calling this tool first.
         """
+        state = ctx.deps.state
         return tool_assess_eligibility(state, question_id, answer_position)
 
     @agent.tool

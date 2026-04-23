@@ -49,11 +49,11 @@ ENV NODE_ENV=production \
     PORT=3000
 
 # The standalone dir already contains apps/web/server.js + root node_modules
-COPY --from=builder /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=65532:65532 /app/apps/web/.next/standalone ./
 
 # Static assets and public must sit where server.js expects them (apps/web/)
-COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=builder /app/apps/web/public/ ./apps/web/public/
+COPY --from=builder --chown=65532:65532 /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=65532:65532 /app/apps/web/public/ ./apps/web/public/
 
 EXPOSE 3000
 

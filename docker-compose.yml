@@ -37,7 +37,9 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
-    read_only: true
+    # Next.js (standalone) uses filesystem caching for prerender/ISR updates.
+    # Keeping the container read-only breaks navigation and agent flows.
+    read_only: false
     tmpfs:
       - /tmp
     cap_drop:
