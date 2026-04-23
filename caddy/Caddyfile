@@ -15,6 +15,12 @@ localhost {
 		-X-Powered-By
 	}
 
+	# Next.js Route Handlers live at /api/chat — must be matched BEFORE the
+	# generic /api/* catch-all that routes everything else to FastAPI.
+	handle /api/chat* {
+		reverse_proxy web:3000
+	}
+
 	handle /api/* {
 		reverse_proxy api:8000
 	}

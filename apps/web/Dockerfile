@@ -39,16 +39,23 @@ RUN pnpm build
 # ── Stage 3: runner (distroless) ─────────────────────────────────────────────
 FROM gcr.io/distroless/nodejs22-debian12:nonroot
 
+# In a pnpm workspace, Next.js standalone preserves the workspace directory
+# structure: server.js ends up at apps/web/ inside the standalone dir, not at
+# the root. We keep WORKDIR at /app (workspace root) so relative paths resolve.
 WORKDIR /app
 
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
     PORT=3000
 
-COPY --from=builder /app/apps/web/public/ ./public/
+# The standalone dir already contains apps/web/server.js + root node_modules
 COPY --from=builder /app/apps/web/.next/standalone ./
-COPY --from=builder /app/apps/web/.next/static ./.next/static
+
+# Static assets and public must sit where server.js expects them (apps/web/)
+COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder /app/apps/web/public/ ./apps/web/public/
 
 EXPOSE 3000
 
-CMD ["server.js"]
+# node binary in distroless/nodejs22-debian12 is /nodejs/bin/node (the entrypoint)
+CMD ["apps/web/server.js"]
