@@ -45,7 +45,7 @@ ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
     PORT=3000
 
-COPY --from=builder /app/apps/web/public ./public
+COPY --from=builder /app/apps/web/public/ ./public/
 COPY --from=builder /app/apps/web/.next/standalone ./
 COPY --from=builder /app/apps/web/.next/static ./.next/static
 
