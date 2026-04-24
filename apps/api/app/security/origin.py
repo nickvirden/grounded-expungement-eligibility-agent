@@ -23,7 +23,7 @@ class StrictOriginMiddleware(BaseHTTPMiddleware):
 
             # When Origin header is present, it must match the allowlist
             if origin and not any(
-                origin.startswith(allowed) for allowed in settings.allowed_origins
+                origin.startswith(allowed) for allowed in settings.allowed_origins_list
             ):
                 return JSONResponse(
                     {"detail": "Origin not allowed"},
