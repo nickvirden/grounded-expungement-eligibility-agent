@@ -1,5 +1,5 @@
-import type { Metadata } from 'next';
 import { formatStateName } from '@/app/LandingClient.utils';
+import type { Metadata } from 'next';
 import TalkClient from './TalkClient';
 
 interface Props {

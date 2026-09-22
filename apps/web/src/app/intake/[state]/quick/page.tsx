@@ -1,6 +1,6 @@
+import { formatStateName } from '@/app/LandingClient.utils';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { formatStateName } from '@/app/LandingClient.utils';
 import QuickFormClient from './QuickFormClient';
 
 interface Props {

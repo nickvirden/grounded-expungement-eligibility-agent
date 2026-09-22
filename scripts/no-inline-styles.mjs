@@ -4,7 +4,7 @@
  * a JSX `style={` attribute or an inline `<style>` tag.
  */
 import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join, extname } from 'node:path';
+import { extname, join } from 'node:path';
 
 const APPS_WEB = join(import.meta.dirname, '..', 'apps', 'web');
 const VIOLATIONS = [];

@@ -15,4 +15,3 @@ export function sanitizeLegacyHtml(dirty: string): string {
     parser: { lowerCaseTags: true },
   });
 }
-

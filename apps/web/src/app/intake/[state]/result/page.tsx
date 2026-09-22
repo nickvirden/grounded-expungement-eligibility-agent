@@ -1,7 +1,7 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
 import { formatStateName } from '@/app/LandingClient.utils';
 import { CheckCircleIcon, XCircleIcon } from '@/components/icons/index';
+import type { Metadata } from 'next';
+import Link from 'next/link';
 import {
   ActionRow,
   Disclaimer,

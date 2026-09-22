@@ -13,10 +13,10 @@
  * Example:
  *   node scripts/extract_state_tree.mjs texas /path/to/questionnaire-api/states/texas.js
  */
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUTPUT_DIR = join(__dirname, '..', 'packages', 'shared', 'state-trees');
@@ -72,7 +72,11 @@ function extractTree(source, stateName) {
   // by evaluating a sandboxed version with mock dependencies
   const mockExpress = {
     Router() {
-      const r = { post(_, fn) { r._handler = fn; } };
+      const r = {
+        post(_, fn) {
+          r._handler = fn;
+        },
+      };
       return r;
     },
   };
@@ -154,12 +158,18 @@ function extractTree(source, stateName) {
     let response = null;
     const req = {
       accepts() {},
-      is() { return true; },
+      is() {
+        return true;
+      },
       body: { question: { id: questionId }, answer: { value: String(answerValue) } },
     };
     const res = {
-      status() { return res; },
-      json(data) { response = data; },
+      status() {
+        return res;
+      },
+      json(data) {
+        response = data;
+      },
     };
 
     try {
@@ -191,7 +201,8 @@ function extractTree(source, stateName) {
   for (const { fromQuestion, fromAnswer, response } of allResponses) {
     if (response.endpoint && response.value) {
       // This is a terminal result
-      const resultKey = typeof response.value === 'string' ? response.value : JSON.stringify(response.value);
+      const resultKey =
+        typeof response.value === 'string' ? response.value : JSON.stringify(response.value);
       resultNodes.set(`${fromQuestion}:${fromAnswer}`, resultKey);
     } else if (response.new_question) {
       const nodeId = `${response.new_question.id}`;
@@ -265,5 +276,7 @@ for (const { fromQuestion, fromAnswer, response } of allResponses) {
 
 const outputPath = join(OUTPUT_DIR, `${state}.json`);
 writeFileSync(outputPath, JSON.stringify(treeJson, null, 2));
-console.log(`✓ Extracted ${state} tree: ${Object.keys(treeJson.nodes).length} nodes, ${treeJson.transitions.length} transitions`);
+console.log(
+  `✓ Extracted ${state} tree: ${Object.keys(treeJson.nodes).length} nodes, ${treeJson.transitions.length} transitions`,
+);
 console.log(`  Output: ${outputPath}`);
