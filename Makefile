@@ -1,4 +1,4 @@
-.PHONY: up down dev logs lint test e2e seed extract-trees audit format
+.PHONY: up down dev logs lint test e2e seed extract-trees audit format migrate
 
 up:
 	docker compose up -d
@@ -14,6 +14,13 @@ dev:
 
 logs:
 	docker compose logs -f
+
+# Applies Alembic migrations to the Compose Postgres. Deliberately separate from
+# `make up`: the API never migrates itself on boot, so a bad migration is applied
+# only when an operator runs this. `run` starts postgres (and waits for its
+# healthcheck) if it isn't already up.
+migrate:
+	docker compose run --rm api alembic upgrade head
 
 lint:
 	pnpm lint

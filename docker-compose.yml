@@ -57,8 +57,13 @@ services:
       # Monorepo root so the Dockerfile can reach packages/shared/ (decision trees).
       context: .
       dockerfile: apps/api/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
-      - DATABASE_URL=sqlite:///./data/eligibility.db
+      # Schema is owned by Alembic: run `make migrate` before first boot and
+      # after any change that adds a migration. The API never migrates itself.
+      - DATABASE_URL=postgresql+psycopg://eligibility:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@postgres:5432/eligibility
       - ALLOWED_ORIGINS=https://localhost
       # Tell the tree loader where the shared knowledge base was copied to.
       - STATE_TREES_DIR=/shared/state-trees
@@ -66,8 +71,6 @@ services:
     # Load remaining vars (LLM_PROVIDER, CSRF_SECRET, SESSION_SECRET, etc.) from .env.
     env_file:
       - .env
-    volumes:
-      - api_data:/app/data
     healthcheck:
       # python:3.13-slim has no curl/wget — use the stdlib urllib instead.
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz')"]
@@ -83,6 +86,28 @@ services:
     security_opt:
       - "no-new-privileges:true"
     pids_limit: 100
+    mem_limit: 512m
+    networks:
+      - eligibility-agent
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=eligibility
+      - POSTGRES_DB=eligibility
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    # No published ports: only services on the internal network reach it.
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eligibility -d eligibility"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    security_opt:
+      - "no-new-privileges:true"
     mem_limit: 512m
     networks:
       - eligibility-agent
@@ -105,5 +130,5 @@ networks:
 volumes:
   caddy_data:
   caddy_config:
-  api_data:
+  postgres_data:
   ollama_data:
