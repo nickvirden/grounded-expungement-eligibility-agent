@@ -1,6 +1,8 @@
 # Phased Execution Plan
 
-This document outlines the commit-by-commit execution plan for the WipeRecord Eligibility 2026 modernization project. Each phase lives on its own stacked feature branch.
+This document outlines the commit-by-commit execution plan for the Grounded Expungement Eligibility
+Agent rebuild — a modernization of the WipeRecord eligibility questionnaire, modeled on a real-world
+record-clearing workflow. Each phase lives on its own stacked feature branch.
 
 ## Branching Strategy
 
@@ -11,20 +13,21 @@ main
            └── phase/03-backend-foundation
                 └── phase/04-security-stack
                      └── phase/05-agent-harness
-                          └── phase/06-fe-foundation
-                               └── phase/07-quick-form
-                                    └── phase/08-agent-chat
-                                         └── phase/09-e2e-hardening  ← all work landed here
-                                              └── (phase/10-docs-release merged into 09)
+                          └── phase/06-fe-scaffold
+                               └── phase/07-fe-quick-form
+                                    └── phase/08-fe-agent-chat
+                                         └── phase/09-polish-docs
 ```
 
-Each phase branches from the previous phase's branch (stacked PR pattern). Reviewers can inspect per-phase diffs independently.
+Each phase branches from the previous phase's branch, so its diff is reviewable independently of later
+phases. Each phase then merges into `main` on its own, in order — `main` picks up phase 01 first,
+phase 02 next, and so on — rather than the whole stack landing as one merge at the end.
 
 ---
 
 ## Phase 0 — Repo Bootstrap · `main`
 
-- [x] Create private repo `nickvirden/grounded-expungement-eligibility-agent`
+- [x] Create public repo `nickvirden/grounded-expungement-eligibility-agent`
 - [x] Repo-scoped git identity (local only)
 - [x] Initial scaffold: README, LICENSE, .gitignore, PLAN.md
 
@@ -44,7 +47,7 @@ Each phase branches from the previous phase's branch (stacked PR pattern). Revie
 - [x] Extract Texas decision tree to JSON
 - [x] Extract service catalog to JSON
 - [x] JSON Schema validation
-- [ ] (Stretch) Extract Florida decision tree — deferred; out of scope for v0.1
+- [ ] (Stretch) Extract Florida decision tree — deferred; out of scope for the single-state demo
 
 ---
 
@@ -80,7 +83,7 @@ Each phase branches from the previous phase's branch (stacked PR pattern). Revie
 
 ---
 
-## Phase 6 — Frontend Foundation · `phase/06-fe-foundation`
+## Phase 6 — Frontend Foundation · `phase/06-fe-scaffold`
 
 - [x] Next.js 15 App Router scaffold with styled-components v6 and distroless Dockerfile
 - [x] Security headers (X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Cache-Control: no-store on intake pages) in next.config.ts
@@ -89,7 +92,7 @@ Each phase branches from the previous phase's branch (stacked PR pattern). Revie
 
 ---
 
-## Phase 7 — Quick Form Flow · `phase/07-quick-form`
+## Phase 7 — Quick Form Flow · `phase/07-fe-quick-form`
 
 - [x] Quick Form stepper component (react-hook-form + zod)
 - [x] Quick Form page with server-rendered first node
@@ -97,7 +100,7 @@ Each phase branches from the previous phase's branch (stacked PR pattern). Revie
 
 ---
 
-## Phase 8 — Agent Chat Flow + Trace · `phase/08-agent-chat`
+## Phase 8 — Agent Chat Flow + Trace · `phase/08-fe-agent-chat`
 
 - [x] /api/chat route handler (SSE proxy with CSRF + Origin checks)
 - [x] Agent chat and Case File card components
@@ -105,7 +108,7 @@ Each phase branches from the previous phase's branch (stacked PR pattern). Revie
 
 ---
 
-## Phase 9 — E2E + Container Hardening · `phase/09-e2e-hardening`
+## Phase 9 — E2E + Container Hardening · `phase/09-polish-docs`
 
 - [x] Playwright config and quick-form happy path (5 scenarios)
 - [ ] (Droppable) Talk-to-agent happy path with stubbed LLM — deferred
@@ -115,18 +118,22 @@ Each phase branches from the previous phase's branch (stacked PR pattern). Revie
 
 ---
 
-## Phase 10 — Docs + Release · (merged into phase/09-e2e-hardening)
+## Phase 10 — Docs + Release · (merged into phase/09-polish-docs)
 
 - [x] DECISIONS.md final pass (13 sections covering all major architectural choices)
 - [x] README quickstart, architecture diagram, demo script, tech stack table
 - [x] PLAN.md final status update (this file)
-- [x] Release v0.1.0
+
+Each phase above is tagged individually as it lands on `main` (`v0.1.0` through `v0.9.0`, one per
+phase). Once CI and automated versioning are live, further merges continue versioning from that point
+automatically; `v1.0.0` marks the first stable release, cut once the full v1 scope is complete and
+gated by CI.
 
 ---
 
 ## Summary
 
-All phases completed as of v0.1.0. Three items explicitly deferred:
+All phases completed as of v0.9.0. Three items explicitly deferred:
 
 | Item | Reason |
 |------|--------|

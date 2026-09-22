@@ -42,10 +42,10 @@ cp .env.example .env
 make up
 ```
 
-Open:
-- **UI:** https://localhost:3000
-- **API Docs:** https://localhost:8000/api/docs
-- **Health:** https://localhost:8000/healthz
+Open (Caddy fronts everything on 443/80, no port needed):
+- **UI:** https://localhost
+- **API Docs:** https://localhost/api/docs
+- **Health:** https://localhost/healthz
 
 ### Without Docker (local dev)
 ```bash
@@ -101,7 +101,7 @@ Security layers: Caddy TLS → SecurityHeaders → CSRF (double-submit) → Stri
 ## Demo Script
 
 ### Quick Form (2 minutes)
-1. Open https://localhost:3000
+1. Open https://localhost
 2. Select **Texas** from the state picker
 3. Click **Quick Form**
 4. Answer the questions (try: all "No" responses for the fastest path to a result)
