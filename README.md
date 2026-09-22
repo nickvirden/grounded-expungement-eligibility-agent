@@ -132,7 +132,7 @@ pnpm test
 
 # Type checks
 cd apps/web && pnpm next build   # TS errors fail the build
-cd apps/api && uv run mypy app/  # strict mode
+cd apps/api && uv run --extra dev mypy app/  # strict mode
 ```
 
 ---
