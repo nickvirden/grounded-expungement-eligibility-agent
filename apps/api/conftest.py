@@ -22,5 +22,9 @@ def create_test_tables() -> None:
     Without this, tests that use TestClient without a context manager won't
     trigger the FastAPI lifespan (which normally calls create_db_and_tables),
     resulting in 'no such table' errors.
+
+    This only creates tables on the default SQLite database. Running the suite
+    against Postgres (DATABASE_URL=postgresql+psycopg://...) requires
+    `alembic upgrade head` first, so the tests exercise the migrated schema.
     """
     create_db_and_tables()

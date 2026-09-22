@@ -39,8 +39,16 @@ Both modes drive the same deterministic eligibility rule engine extracted from t
 git clone <this repo>
 cd grounded-expungement-eligibility-agent
 cp .env.example .env
+# Set POSTGRES_PASSWORD in .env (URL-safe, e.g. `openssl rand -hex 24`)
+make migrate   # starts Postgres and applies Alembic migrations
 make up
 ```
+
+Migrations are an explicit step: the API never alters the schema on boot. Re-run
+`make migrate` whenever you pull a change that adds a migration, then `make up --build`
+so the running API is rebuilt against the new schema too -- `/readyz` (which the
+compose healthcheck uses) fails loudly if the two are ever out of sync in either
+direction.
 
 Open (Caddy fronts everything on 443/80, no port needed):
 - **UI:** https://localhost
@@ -48,6 +56,8 @@ Open (Caddy fronts everything on 443/80, no port needed):
 - **Health:** https://localhost/healthz
 
 ### Without Docker (local dev)
+Local dev defaults to a SQLite file (`apps/api/data/eligibility.db`), created
+from the models on startup — no database server or migration step needed.
 ```bash
 # Terminal 1 — API
 cd apps/api
@@ -86,11 +96,11 @@ FastAPI (apps/api)
   ├─ /api/intakes      — intake CRUD + SSE agent stream
   └─ /healthz / /readyz
 
-Persistence (SQLite → swap to Postgres by changing DATABASE_URL)
+Persistence (Postgres via Docker Compose, Alembic-migrated; SQLite for local dev/tests)
   ├─ intake
-  ├─ eligibility_result
-  ├─ agent_run
-  └─ agent_step
+  ├─ eligibilityresult
+  ├─ agentrun
+  └─ agentstep
 
 Security layers: Caddy TLS → SecurityHeaders → CSRF (double-submit) → StrictOrigin
 → CORS → rate limiting → Pydantic strict validation → PII-redacting structured logs
@@ -138,6 +148,28 @@ cd apps/web && pnpm next build   # TS errors fail the build
 cd apps/api && uv run --extra dev mypy app/  # strict mode
 ```
 
+The backend suite runs against SQLite by default. To run it against Postgres,
+point `DATABASE_URL` at a scratch database and migrate it first — the suite
+relies on the migrated schema there, not on `create_all`:
+```bash
+docker run --rm -d -p 5433:5432 -e POSTGRES_PASSWORD=test -e POSTGRES_DB=test --name pg-test postgres:16-alpine
+cd apps/api
+export DATABASE_URL=postgresql+psycopg://postgres:test@localhost:5433/test
+uv run alembic upgrade head
+uv run alembic downgrade base && uv run alembic upgrade head  # reversibility
+uv run --extra dev pytest -q
+docker stop pg-test
+```
+
+### Schema changes
+Edit `apps/api/app/models.py`, then generate and review a migration:
+```bash
+cd apps/api
+uv run --extra dev alembic revision --autogenerate -m "describe the change"
+```
+Autogenerate is a draft: read the generated file in `apps/api/alembic/versions/`
+before committing it.
+
 ---
 
 ## Branch Structure
@@ -169,8 +201,8 @@ Each branch is clean and self-contained. See `DECISIONS.md` for the full archite
 | Styling | styled-components v6 | Deep expertise; SSR registry in App Router |
 | Agent Framework | Pydantic AI | Type-safe tools, TestModel, structured output |
 | Backend | FastAPI, Pydantic v2 | Async-native, free OpenAPI, ergonomic with Pydantic AI |
-| ORM | SQLModel + Alembic | Pydantic models ↔ SQLAlchemy, zero-config migrations |
-| Database | SQLite → Postgres | Zero-ops demo; one-line swap |
+| ORM | SQLModel + Alembic | Pydantic models ↔ SQLAlchemy; versioned, reversible migrations |
+| Database | Postgres 16 (psycopg3); SQLite for local dev/tests | Production-realistic deploy; zero-ops inner loop |
 | Proxy | Caddy | Auto-TLS, reverse proxy, security headers |
 | Containerisation | Docker Compose | Multi-stage distroless builds |
 | Python deps | uv | Fast, reproducible |

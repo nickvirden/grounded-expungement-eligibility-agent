@@ -73,6 +73,58 @@ jobs:
         working-directory: apps/api
         run: uv run pytest -q
 
+  # SQLite and Postgres differ in real ways (case sensitivity, type
+  # coercion, transaction/constraint semantics) that the sqlite-backed api
+  # job above can't surface. This runs the same suite against the actual
+  # database the Compose deploy uses, migrated with Alembic like a real
+  # deploy would be -- not create_all, which only ever runs on SQLite.
+  api-postgres:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: ci-test-password
+          POSTGRES_DB: ci_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql+psycopg://postgres:ci-test-password@localhost:5432/ci_test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v3
+
+      - name: Install dependencies
+        working-directory: apps/api
+        run: uv sync --extra dev --locked
+
+      - name: Apply migrations
+        working-directory: apps/api
+        run: uv run alembic upgrade head
+
+      # Proves the migration is genuinely reversible (not just that it
+      # applies once) and that it matches app/models.py exactly -- a future
+      # model change with no matching migration would otherwise pass this
+      # job silently (create_all covers the gap on SQLite; only `alembic
+      # check` would catch it on Postgres).
+      - name: Verify migration reversibility and drift
+        working-directory: apps/api
+        run: |
+          uv run alembic downgrade base
+          uv run alembic upgrade head
+          uv run alembic check
+
+      - name: Unit tests
+        working-directory: apps/api
+        run: uv run pytest -q
+
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 15
