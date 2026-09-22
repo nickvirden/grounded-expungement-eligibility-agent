@@ -1,14 +1,14 @@
 # Grounded Expungement Eligibility Agent — Audit-Trailed
 
-A modern rewrite of the legacy WipeRecord eligibility questionnaire, demonstrating agentic AI architecture, security-first design, and production-grade engineering.
+**ClearSlate** is a modern rewrite of a legacy eligibility questionnaire, demonstrating agentic AI architecture, security-first design, and production-grade engineering.
 
-Built as a rebuild of an agentic eligibility-screening tool, modeled on a real-world record-clearing workflow (WipeRecord).
+It's a fictional product, modeled on a real-world record-clearing workflow (WipeRecord) — not affiliated with, endorsed by, or a rebuild of any real company's actual system.
 
 ---
 
 ## The Problem
 
-WipeRecord helps people determine if their criminal record qualifies for expungement or sealing. The legacy system (2015-era Node.js + AngularJS) routes users through a server-side decision tree and then hands off to human attorneys for processing. It works, but it has no agentic intelligence, no structured persistence, and no way to handle the open-ended narratives users want to share.
+Services like WipeRecord help people determine if their criminal record qualifies for expungement or sealing, typically via a server-side decision tree that hands off to human attorneys for processing. That pattern works, but it has no agentic intelligence, no structured persistence, and no way to handle the open-ended narratives users want to share — the gap ClearSlate is built to close.
 
 ---
 

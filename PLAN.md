@@ -1,8 +1,9 @@
 # Phased Execution Plan
 
-This document outlines the commit-by-commit execution plan for the Grounded Expungement Eligibility
-Agent rebuild — a modernization of the WipeRecord eligibility questionnaire, modeled on a real-world
-record-clearing workflow. Each phase lives on its own stacked feature branch.
+This document outlines the commit-by-commit execution plan for ClearSlate, a fictional eligibility
+questionnaire modeled on a real-world record-clearing workflow (WipeRecord) — not affiliated with,
+endorsed by, or a rebuild of any real company's actual system. Each phase lives on its own stacked
+feature branch.
 
 ## Branching Strategy
 

@@ -5,8 +5,8 @@ import { MainContent, PageWrapper, SkipLink } from './layout.styles';
 
 export const metadata: Metadata = {
   title: {
-    default: 'WipeRecord Eligibility — AI-Powered Record Relief',
-    template: '%s | WipeRecord',
+    default: 'ClearSlate Eligibility — AI-Powered Record Relief',
+    template: '%s | ClearSlate',
   },
   description:
     'Find out if your record qualifies for expungement, sealing, or other relief — guided by AI.',

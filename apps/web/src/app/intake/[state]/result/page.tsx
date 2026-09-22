@@ -96,7 +96,7 @@ export default async function ResultPage({ params, searchParams }: Props) {
 
         <ActionRow>
           <PrimaryButton as={Link} href="/">
-            Get started with WipeRecord
+            Get started with ClearSlate
           </PrimaryButton>
           <SecondaryButton as={Link} href={`/intake/${state}/quick`}>
             Start over
