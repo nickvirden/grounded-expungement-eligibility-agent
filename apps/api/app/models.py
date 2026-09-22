@@ -1,6 +1,8 @@
 import datetime
 from typing import Optional
 
+_utcnow = lambda: datetime.datetime.now(datetime.UTC)  # noqa: E731
+
 import ulid
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -20,7 +22,7 @@ class Service(SQLModel, table=True):
 
 class Intake(SQLModel, table=True):
     id: str = Field(default_factory=_ulid_str, primary_key=True)
-    created_at: datetime.datetime = Field(default_factory=datetime.datetime.utcnow)
+    created_at: datetime.datetime = Field(default_factory=_utcnow)
     mode: str = Field(description="'quick' or 'agent'")
     state: str
     narrative_text: Optional[str] = None
@@ -44,7 +46,7 @@ class EligibilityResult(SQLModel, table=True):
     recommended_service_keys: str = Field(default="[]")
     traversed_path_json: str = Field(default="[]")
     confidence: float = Field(default=1.0)
-    computed_at: datetime.datetime = Field(default_factory=datetime.datetime.utcnow)
+    computed_at: datetime.datetime = Field(default_factory=_utcnow)
 
     intake: Optional[Intake] = Relationship(back_populates="eligibility_results")
 
@@ -58,7 +60,7 @@ class AgentRun(SQLModel, table=True):
     total_tokens_in: int = 0
     total_tokens_out: int = 0
     total_cost_usd: float = 0.0
-    started_at: datetime.datetime = Field(default_factory=datetime.datetime.utcnow)
+    started_at: datetime.datetime = Field(default_factory=_utcnow)
     ended_at: Optional[datetime.datetime] = None
     error: Optional[str] = None
 
@@ -78,6 +80,6 @@ class AgentStep(SQLModel, table=True):
     latency_ms: int = 0
     tokens_in: int = 0
     tokens_out: int = 0
-    created_at: datetime.datetime = Field(default_factory=datetime.datetime.utcnow)
+    created_at: datetime.datetime = Field(default_factory=_utcnow)
 
     run: Optional[AgentRun] = Relationship(back_populates="steps")

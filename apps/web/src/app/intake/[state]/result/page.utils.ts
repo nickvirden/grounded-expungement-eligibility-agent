@@ -36,8 +36,12 @@ const DEFAULT_META: ResultMeta = {
 
 export function getResultMeta(resultKey: string | null): ResultMeta {
   if (!resultKey) return DEFAULT_META;
-  // Try exact match first, then slug normalisation
+  // 1. Exact match
   if (resultKey in RESULT_META) return RESULT_META[resultKey] as ResultMeta;
+  // 2. Strip state prefix: "texas_expungement" → "expungement"
+  const withoutPrefix = resultKey.replace(/^[a-z]+_/, '');
+  if (withoutPrefix in RESULT_META) return RESULT_META[withoutPrefix] as ResultMeta;
+  // 3. Slug normalisation (case-insensitive, non-alphanumeric stripped)
   const normalised = resultKey.toLowerCase().replace(/[^a-z0-9]/g, '');
   for (const [key, meta] of Object.entries(RESULT_META)) {
     if (key.toLowerCase() === normalised) return meta;

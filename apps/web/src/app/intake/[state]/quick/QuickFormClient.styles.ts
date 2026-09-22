@@ -127,9 +127,15 @@ export const QuestionText = styled.h2`
   line-height: 1.35;
   letter-spacing: -0.02em;
   margin-bottom: var(--space-3);
+  & > *:first-child {
+    margin-top: 0;
+  }
+  & > *:last-child {
+    margin-bottom: 0;
+  }
 `;
 
-export const HelpText = styled.p`
+export const HelpText = styled.div`
   font-size: 0.9375rem;
   color: var(--color-navy-600);
   line-height: 1.6;
@@ -138,14 +144,29 @@ export const HelpText = styled.p`
   background: var(--color-blue-100);
   border-radius: var(--radius-lg);
   border-left: 3px solid var(--color-blue-500);
+  & > *:first-child {
+    margin-top: 0;
+  }
+  & > *:last-child {
+    margin-bottom: 0;
+  }
 `;
 
 // ─── Answer buttons ───────────────────────────────────────────────────────────
 
-export const AnswerList = styled.div`
+export const AnswerList = styled.ul`
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+`;
+
+export const AnswerListItem = styled.li`
+  list-style: none;
+  margin: 0;
+  padding: 0;
 `;
 
 interface AnswerButtonProps {

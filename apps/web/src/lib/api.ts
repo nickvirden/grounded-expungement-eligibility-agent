@@ -26,11 +26,26 @@ const API_BASE =
 
 // ─── CSRF helpers ─────────────────────────────────────────────────────────────
 
-/** Read the CSRF token from the cookie set by the API on GET requests. */
+/**
+ * Read the CSRF token from the cookie set by the API on GET requests.
+ *
+ * Production uses __Host-csrf (requires HTTPS + Secure flag).
+ * Local dev/test uses plain csrf (HTTP-compatible).
+ * We check both so the client works regardless of environment.
+ */
 function getCsrfToken(): string {
   if (typeof document === 'undefined') return '';
-  const match = document.cookie.match(/(?:^|;\s*)__Host-csrf=([^;]+)/);
-  return match?.[1] ?? '';
+  const secure = document.cookie.match(/(?:^|;\s*)__Host-csrf=([^;]+)/);
+  if (secure) return secure[1]!;
+  const dev = document.cookie.match(/(?:^|;\s*)csrf=([^;]+)/);
+  return dev?.[1] ?? '';
+}
+
+/** Ensure a CSRF cookie is present, fetching one from the API if needed. */
+async function ensureCsrfToken(): Promise<void> {
+  if (getCsrfToken()) return;
+  // Fire a GET /healthz to trigger the CSRF cookie; ignore the response body.
+  await fetch(`${API_BASE}/healthz`, { credentials: 'include' });
 }
 
 async function fetchJson<T>(
@@ -42,11 +57,18 @@ async function fetchJson<T>(
 
   const method = (options.method ?? 'GET').toUpperCase();
   if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
+    // Lazily bootstrap the CSRF cookie if the browser doesn't have one yet.
+    // This happens on first mutation in a fresh browser session.
+    await ensureCsrfToken();
     const token = getCsrfToken();
     if (token) headers.set('X-CSRF-Token', token);
   }
 
-  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+  const res = await fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers,
+    credentials: 'include', // Required to send/receive cookies cross-origin
+  });
 
   if (!res.ok) {
     const body = await res.text();
@@ -68,8 +90,9 @@ export class ApiError extends Error {
 // ─── States ───────────────────────────────────────────────────────────────────
 
 export async function listStates(): Promise<string[]> {
-  const data = await fetchJson<{ states: string[] }>('/api/states');
-  return data.states;
+  // API returns list[StateInfo] — extract just the state key
+  const data = await fetchJson<Array<{ state: string }>>('/api/states');
+  return data.map((s) => s.state);
 }
 
 export async function getStateInfo(state: string): Promise<StateInfo> {

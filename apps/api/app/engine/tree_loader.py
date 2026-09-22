@@ -1,10 +1,32 @@
 """Loads extracted state decision trees from the shared JSON package."""
 import json
-from pathlib import Path
 from functools import lru_cache
+from pathlib import Path
 
-_DEFAULT_TREES_DIR = Path(__file__).parents[4] / "packages" / "shared" / "state-trees"
-_DEFAULT_CATALOG = Path(__file__).parents[4] / "packages" / "shared" / "service-catalog.json"
+def _infer_repo_root(start: Path) -> Path | None:
+    """Walk up from `start` to find a monorepo root containing packages/shared/."""
+    for parent in start.parents:
+        if (parent / "packages" / "shared").exists():
+            return parent
+    return None
+
+
+_HERE = Path(__file__).resolve()
+_REPO_ROOT = _infer_repo_root(_HERE)
+
+# Default location in docker-compose builds (copied into the API image)
+_DOCKER_SHARED = Path("/shared")
+
+_DEFAULT_TREES_DIR = (
+    (_REPO_ROOT / "packages" / "shared" / "state-trees")  # type: ignore[operator]
+    if _REPO_ROOT
+    else (_DOCKER_SHARED / "state-trees")
+)
+_DEFAULT_CATALOG = (
+    (_REPO_ROOT / "packages" / "shared" / "service-catalog.json")  # type: ignore[operator]
+    if _REPO_ROOT
+    else (_DOCKER_SHARED / "service-catalog.json")
+)
 
 
 @lru_cache(maxsize=32)

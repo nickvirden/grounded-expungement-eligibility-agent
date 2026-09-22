@@ -4,11 +4,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import { assessEligibility } from '@/lib/api';
+import { sanitizeLegacyHtml } from '@/lib/sanitizeLegacyHtml';
 import type { AssessResponse } from '@/lib/schemas';
 import { ArrowRightIcon } from '@/components/icons/index';
 import {
   AnswerButton,
   AnswerList,
+  AnswerListItem,
   BackButton,
   ErrorBanner,
   FormBody,
@@ -35,7 +37,8 @@ interface EntryQuestion {
   question_id: number;
   question: string;
   help: string | null;
-  answers: Array<{ label: string; position: number }>;
+  // API uses 'value'; AssessResponse (after Zod transform) uses 'label'
+  answers: Array<{ value?: string; label?: string; position: number }>;
   questions_left: number;
 }
 
@@ -120,6 +123,15 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
     [isLoading, questionId, state, traversedPath, router],
   );
 
+  const safeQuestionHtml = useMemo(
+    () => sanitizeLegacyHtml(questionText),
+    [questionText],
+  );
+  const safeHelpHtml = useMemo(
+    () => (questionHelp ? sanitizeLegacyHtml(questionHelp) : ''),
+    [questionHelp],
+  );
+
   return (
     <PageShell>
       <FormHeader>
@@ -140,9 +152,13 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
 
       <FormBody>
         <FormCard aria-labelledby={headingId} key={`step-${stepNumber}`}>
-          <QuestionText>{questionText}</QuestionText>
+          <QuestionText
+            role="heading"
+            aria-level={2}
+            dangerouslySetInnerHTML={{ __html: safeQuestionHtml }}
+          />
 
-          {questionHelp && <HelpText>{questionHelp}</HelpText>}
+          {questionHelp && <HelpText dangerouslySetInnerHTML={{ __html: safeHelpHtml }} />}
 
           {isLoading ? (
             <LoadingRow aria-label="Loading next question">
@@ -151,9 +167,9 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
               <LoadingDot />
             </LoadingRow>
           ) : (
-            <AnswerList role="list">
+            <AnswerList>
               {answers.map((answer) => (
-                <li key={answer.position} style={undefined}>
+                <AnswerListItem key={answer.position}>
                   <AnswerButton
                     onClick={() => void handleAnswer(answer.position)}
                     $selected={selectedPosition === answer.position}
@@ -161,12 +177,16 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
                     disabled={isLoading}
                     aria-pressed={selectedPosition === answer.position}
                   >
-                    {answer.label}
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: sanitizeLegacyHtml(answer.label ?? answer.value ?? ''),
+                      }}
+                    />
                     {selectedPosition === answer.position && (
                       <ArrowRightIcon size={16} color="var(--color-blue-600)" aria-hidden="true" />
                     )}
                   </AnswerButton>
-                </li>
+                </AnswerListItem>
               ))}
             </AnswerList>
           )}

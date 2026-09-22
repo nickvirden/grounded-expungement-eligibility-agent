@@ -19,18 +19,27 @@ services:
 
   web:
     build:
-      context: ./apps/web
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        # Baked into the Next.js standalone bundle at build time.
+        # Browser-side API calls go through Caddy at https://localhost.
+        NEXT_PUBLIC_API_URL: https://localhost
     environment:
       - NODE_ENV=production
-      - API_URL=http://api:8000
+      # Server-side (Route Handlers / RSC) calls go directly to the api container.
+      - INTERNAL_API_URL=http://api:8000
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/"]
-      interval: 10s
+      # distroless has no shell/wget — use the bundled node binary directly.
+      # Next.js standalone in this image binds to the container hostname, not 127.0.0.1.
+      test: ["CMD", "/nodejs/bin/node", "-e", "const host=process.env.HOSTNAME||'localhost';require('http').get('http://'+host+':3000/', (r) => process.exit(r.statusCode < 500 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 15s
       timeout: 5s
-      retries: 3
-      start_period: 10s
-    read_only: true
+      retries: 5
+      start_period: 30s
+    # Next.js (standalone) uses filesystem caching for prerender/ISR updates.
+    # Keeping the container read-only breaks navigation and agent flows.
+    read_only: false
     tmpfs:
       - /tmp
     cap_drop:
@@ -45,17 +54,23 @@ services:
 
   api:
     build:
-      context: ./apps/api
-      dockerfile: Dockerfile
+      # Monorepo root so the Dockerfile can reach packages/shared/ (decision trees).
+      context: .
+      dockerfile: apps/api/Dockerfile
     environment:
       - DATABASE_URL=sqlite:///./data/eligibility.db
       - ALLOWED_ORIGINS=https://localhost
+      # Tell the tree loader where the shared knowledge base was copied to.
+      - STATE_TREES_DIR=/shared/state-trees
+      - SERVICE_CATALOG_PATH=/shared/service-catalog.json
+    # Load remaining vars (LLM_PROVIDER, CSRF_SECRET, SESSION_SECRET, etc.) from .env.
     env_file:
-      - .env.example
+      - .env
     volumes:
       - api_data:/app/data
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/healthz"]
+      # python:3.13-slim has no curl/wget — use the stdlib urllib instead.
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz')"]
       interval: 10s
       timeout: 5s
       retries: 3

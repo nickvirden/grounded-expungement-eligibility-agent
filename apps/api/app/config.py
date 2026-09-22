@@ -6,7 +6,9 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     database_url: str = "sqlite:///./data/eligibility.db"
-    allowed_origins: list[str] = Field(default_factory=lambda: ["https://localhost:3000"])
+    # Prefer a simple env var format (comma-separated) over JSON. This avoids
+    # pydantic-settings treating list[str] as a "complex" type requiring JSON.
+    allowed_origins: str = Field(default="https://localhost:3000")
 
     llm_provider: str = "openai"
     openai_api_key: str = ""
@@ -30,6 +32,10 @@ class Settings(BaseSettings):
 
     logfire_token: str = ""
     debug: bool = False
+
+    @property
+    def allowed_origins_list(self) -> list[str]:
+        return [s.strip() for s in self.allowed_origins.split(",") if s.strip()]
 
 
 settings = Settings()

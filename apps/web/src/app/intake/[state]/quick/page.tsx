@@ -29,7 +29,8 @@ export default async function QuickFormPage({ params }: Props) {
     question_id: number;
     question: string;
     help: string | null;
-    answers: Array<{ label: string; position: number }>;
+    // API (and Texas JSON tree) uses 'value'; normalized to 'label' by Zod on client
+    answers: Array<{ value?: string; label?: string; position: number }>;
     questions_left: number;
   } | null = null;
 

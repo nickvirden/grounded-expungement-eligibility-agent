@@ -23,8 +23,9 @@ export default async function HomePage() {
       { next: { revalidate: 3600 } },
     );
     if (res.ok) {
-      const data = (await res.json()) as { states: string[] };
-      states = data.states ?? [];
+      // API returns list[StateInfo] — extract the state key from each object
+      const data = (await res.json()) as Array<{ state: string }> | { states: string[] };
+      states = Array.isArray(data) ? data.map((s) => s.state) : (data.states ?? []);
     }
   } catch {
     // Graceful degradation: fall back to static list on API unavailability.
