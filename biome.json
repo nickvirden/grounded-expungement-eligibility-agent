@@ -41,10 +41,14 @@
     "ignore": [
       "node_modules",
       ".next",
+      ".turbo",
       "dist",
       "coverage",
       "playwright-report",
-      "test-results"
+      "test-results",
+      "apps/api/**",
+      "**/*.tsbuildinfo",
+      "pnpm-lock.yaml"
     ]
   }
 }

@@ -1,0 +1,53 @@
+name: Release
+
+# Every push to main is a candidate release. semantic-release inspects the
+# Conventional Commits since the last tag and decides whether a release is
+# warranted at all — a chore/docs-only push correctly produces no release.
+on:
+  push:
+    branches: [main]
+
+# No cancel-in-progress: a release that's already publishing shouldn't be
+# killed mid-flight by a second push landing right after it. Queuing (the
+# default) serializes runs instead.
+concurrency:
+  group: release-${{ github.workflow }}
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # semantic-release and its non-bundled plugins (changelog, git) are
+      # pulled on demand via npx rather than declared in package.json, so
+      # this workflow doesn't force release tooling on local installs.
+      #
+      # conventional-changelog-conventionalcommits is pinned to 8.x because
+      # commit-analyzer/release-notes-generator resolve the preset package by
+      # name at runtime (not as a declared dependency), and newer preset
+      # majors require conventional-changelog-writer@9+ while the bundled
+      # writer here is 8.x — an unpinned install throws "Missing helper"
+      # mid-release instead of failing the recognizable way.
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          npx
+          --package semantic-release
+          --package @semantic-release/changelog
+          --package @semantic-release/git
+          --package conventional-changelog-conventionalcommits@8
+          -- semantic-release

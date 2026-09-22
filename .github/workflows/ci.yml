@@ -1,0 +1,123 @@
+name: CI
+
+# release.yml gates what ships to production after a merge. This workflow
+# runs on every PR and reports pass/fail, but until branch protection or a
+# ruleset requires it as a status check, a red run here does not itself
+# block merging — that's a separate GitHub repo setting, not something a
+# workflow file can enforce on its own.
+#
+# The web and api gates run independently since they're separate toolchains;
+# e2e needs both, since Playwright's webServer config boots the real FastAPI
+# + Next.js dev servers directly (not Docker).
+on:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      # No `version:` input here — pnpm/action-setup errors if both this and
+      # package.json's `packageManager` field specify a version.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Unit tests
+        run: pnpm test
+
+      - name: Build
+        run: pnpm --filter web build
+
+  api:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      # No python-version input — this action version doesn't support it; uv
+      # reads apps/api/.python-version itself and provisions that interpreter.
+      - uses: astral-sh/setup-uv@v3
+
+      - name: Install dependencies
+        working-directory: apps/api
+        run: uv sync --extra dev --locked
+
+      - name: Lint (ruff)
+        working-directory: apps/api
+        run: uv run ruff check .
+
+      - name: Typecheck (mypy --strict)
+        working-directory: apps/api
+        run: uv run mypy .
+
+      - name: Unit tests
+        working-directory: apps/api
+        run: uv run pytest -q
+
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      # No `version:` input here — pnpm/action-setup errors if both this and
+      # package.json's `packageManager` field specify a version.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # No python-version input — this action version doesn't support it; uv
+      # reads apps/api/.python-version itself and provisions that interpreter.
+      - uses: astral-sh/setup-uv@v3
+
+      - name: Install JS dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Python dependencies
+        working-directory: apps/api
+        run: uv sync --locked
+
+      # Playwright's own guidance is to install fresh rather than cache the
+      # browser binaries: the download is fast enough that a cache restore
+      # doesn't reliably beat it, and a stale cached binary silently drifts
+      # from the @playwright/test version pinned in package.json.
+      - name: Install Playwright browsers
+        working-directory: e2e
+        run: pnpm exec playwright install --with-deps chromium
+
+      # playwright.config.ts's webServer block boots FastAPI (uv run, port
+      # 8001, ephemeral test SQLite DB, LLM_PROVIDER=testmodel) and Next.js
+      # (pnpm dev, port 3000, pointed at the test API) itself — no Docker
+      # Compose involved here, matching how the suite already runs locally.
+      - name: E2E tests
+        run: pnpm e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: e2e/playwright-report/
+          retention-days: 14
