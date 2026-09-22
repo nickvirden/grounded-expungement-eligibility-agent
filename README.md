@@ -107,12 +107,14 @@ Security layers: Caddy TLS → SecurityHeaders → CSRF (double-submit) → Stri
 4. Answer the questions (try: all "No" responses for the fastest path to a result)
 5. Observe the result page with traversed decision path
 
-### Talk to Agent (requires an LLM API key)
-```bash
-# Set your provider in .env:
-LLM_PROVIDER=openai
-OPENAI_API_KEY=sk-...
-```
+### Talk to Agent
+No API key needed -- the default `LLM_PROVIDER=testmodel` drives real tool
+calls (`assess_eligibility`, `recommend_services`) against your actual
+narrative, deterministically, with no external LLM call. `openai`/`anthropic`
+are rejected at startup today (a known, currently-broken bug in their
+provider construction, not a credentials issue) -- `ollama` is the only
+real-model option that currently works, for anyone running a self-hosted
+model.
 1. From the landing page, select **Texas → Talk to Agent**
 2. Type: _"I was arrested in Texas in 2019 for a DUI misdemeanor. I was not convicted — charges were dropped. I have no other charges."_
 3. Watch the agent stream reasoning, call the `assess_eligibility` tool, and render the Case File card in real-time

@@ -1,4 +1,4 @@
-from pydantic import Field
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -10,7 +10,12 @@ class Settings(BaseSettings):
     # pydantic-settings treating list[str] as a "complex" type requiring JSON.
     allowed_origins: str = Field(default="https://localhost:3000")
 
-    llm_provider: str = "openai"
+    # testmodel is the only provider whose construction actually works today
+    # (see app/agents/providers.py) -- openai/anthropic pass api_key directly
+    # to the model classes, which the installed pydantic-ai rejects. Default
+    # here and fail fast below rather than let a misconfigured deploy crash
+    # opaquely at import time via AgentRunner().
+    llm_provider: str = "testmodel"
     openai_api_key: str = ""
     anthropic_api_key: str = ""
     ollama_base_url: str = "http://ollama:11434"
@@ -36,6 +41,23 @@ class Settings(BaseSettings):
     @property
     def allowed_origins_list(self) -> list[str]:
         return [s.strip() for s in self.allowed_origins.split(",") if s.strip()]
+
+    @model_validator(mode="after")
+    def _reject_unusable_llm_providers(self) -> "Settings":
+        # openai/anthropic construction is a known, currently-broken bug in
+        # app/agents/providers.py (real Provider-object construction, not a
+        # typing issue) -- fixing it is separate, scoped work. Fail loudly
+        # and immediately at startup rather than let a misconfigured deploy
+        # crash later with a confusing TypeError from deep inside
+        # AgentRunner(). ollama stays available as a real, working
+        # self-hosted option for anyone who wants a non-testmodel run.
+        if self.llm_provider.lower() in ("openai", "anthropic"):
+            raise ValueError(
+                f"LLM_PROVIDER={self.llm_provider!r} is not usable yet -- its provider "
+                "construction is a known bug, not just unconfigured credentials. "
+                "Use 'testmodel' (default) or 'ollama' instead."
+            )
+        return self
 
 
 settings = Settings()
