@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://grounded-expungement-eligibility-agent/schemas/state-tree.schema.json",
+  "$id": "https://raw.githubusercontent.com/nickvirden/grounded-expungement-eligibility-agent/main/packages/shared/schemas/state-tree.schema.json",
   "title": "State Decision Tree",
   "description": "Schema for extracted eligibility decision trees",
   "type": "object",

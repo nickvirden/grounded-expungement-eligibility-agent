@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://grounded-expungement-eligibility-agent/schemas/service-catalog.schema.json",
+  "$id": "https://raw.githubusercontent.com/nickvirden/grounded-expungement-eligibility-agent/main/packages/shared/schemas/service-catalog.schema.json",
   "title": "Service Catalog",
   "description": "Schema for the legal services catalog",
   "type": "object",
