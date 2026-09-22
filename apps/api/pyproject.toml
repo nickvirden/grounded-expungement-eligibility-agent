@@ -16,6 +16,7 @@ dependencies = [
     "itsdangerous>=2.2.0",
     "httpx>=0.28.0",
     "ulid-py>=1.1.0",
+    "psycopg[binary]>=3.2.0",
 ]
 
 [project.optional-dependencies]
