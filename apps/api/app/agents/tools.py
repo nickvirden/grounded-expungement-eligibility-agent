@@ -119,15 +119,13 @@ def tool_assess_eligibility(
 def tool_recommend_services(result_label: str) -> list[ServiceRecommendation]:
     """Return services matching an eligibility result label."""
     catalog = load_service_catalog()
-    recs: list[ServiceRecommendation] = []
-    for svc in catalog.get("services", []):
-        if result_label in svc.get("eligibility_keys", []):
-            recs.append(
-                ServiceRecommendation(
-                    key=svc["key"],
-                    name=svc["name"],
-                    description=svc["description"],
-                    base_price_usd=svc["base_price_usd"],
-                )
-            )
-    return recs
+    return [
+        ServiceRecommendation(
+            key=svc["key"],
+            name=svc["name"],
+            description=svc["description"],
+            base_price_usd=svc["base_price_usd"],
+        )
+        for svc in catalog.get("services", [])
+        if result_label in svc.get("eligibility_keys", [])
+    ]

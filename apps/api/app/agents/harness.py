@@ -90,23 +90,26 @@ def _choose_answer_position(
             if pos is not None:
                 return pos
 
-    if "dismiss" in question_text_lc:
-        if has("dismiss"):
-            pos = pick_by_substrings(["dismiss"])
-            if pos is not None:
-                return pos
+    if "dismiss" in question_text_lc and has("dismiss"):
+        pos = pick_by_substrings(["dismiss"])
+        if pos is not None:
+            return pos
 
-    if "acquit" in question_text_lc or "pardon" in question_text_lc or "overturned" in question_text_lc:
-        if has("acquit") or has("pardon") or has("overturn"):
-            pos = pick_by_substrings(["acquitted", "pardon", "overturned"])
-            if pos is not None:
-                return pos
+    asks_about_vacated = any(
+        term in question_text_lc for term in ("acquit", "pardon", "overturned")
+    )
+    if asks_about_vacated and (has("acquit") or has("pardon") or has("overturn")):
+        pos = pick_by_substrings(["acquitted", "pardon", "overturned"])
+        if pos is not None:
+            return pos
 
-    if "no charges" in question_text_lc or "no charge" in question_text_lc:
-        if has("no charges") or has("no charge") or has("never charged") or has("not charged"):
-            pos = pick_by_substrings(["no charges", "no charges were filed", "no charges filed"])
-            if pos is not None:
-                return pos
+    asks_about_no_charges = "no charges" in question_text_lc or "no charge" in question_text_lc
+    if asks_about_no_charges and (
+        has("no charges") or has("no charge") or has("never charged") or has("not charged")
+    ):
+        pos = pick_by_substrings(["no charges", "no charges were filed", "no charges filed"])
+        if pos is not None:
+            return pos
 
     if "statute of limitations" in question_text_lc or "enough time" in question_text_lc:
         if years_ago is not None:

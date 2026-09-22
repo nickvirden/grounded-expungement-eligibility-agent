@@ -2,7 +2,7 @@
 import json
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from sqlmodel import Session, select
 
@@ -93,7 +93,7 @@ async def get_intake(
 
 
 @router.get("/{intake_id}/stream")
-async def stream_intake(intake_id: str, request: Request) -> StreamingResponse:
+async def stream_intake(intake_id: str) -> StreamingResponse:
     """SSE stream: run the agent for this intake and stream events."""
     # Note: For the demo, we read state/narrative from the existing intake record.
     with Session(engine) as session:

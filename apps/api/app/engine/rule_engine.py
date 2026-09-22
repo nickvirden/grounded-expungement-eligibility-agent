@@ -118,11 +118,11 @@ def get_entry_question(state: str) -> StepResult:
 def get_recommended_services(result_key: str) -> list[str]:
     """Return service keys that match a given result label."""
     catalog = load_service_catalog()
-    matching: list[str] = []
-    for svc in catalog.get("services", []):
-        if result_key in svc.get("eligibility_keys", []):
-            matching.append(svc["key"])
-    return matching
+    return [
+        svc["key"]
+        for svc in catalog.get("services", [])
+        if result_key in svc.get("eligibility_keys", [])
+    ]
 
 
 def _value_to_key(value: str) -> str:
