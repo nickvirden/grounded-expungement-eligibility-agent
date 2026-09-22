@@ -1,10 +1,11 @@
 import datetime
-from typing import Optional
-
-_utcnow = lambda: datetime.datetime.now(datetime.UTC)  # noqa: E731
 
 import ulid
 from sqlmodel import Field, Relationship, SQLModel
+
+
+def _utcnow() -> datetime.datetime:
+    return datetime.datetime.now(datetime.UTC)
 
 
 def _ulid_str() -> str:
@@ -25,8 +26,8 @@ class Intake(SQLModel, table=True):
     created_at: datetime.datetime = Field(default_factory=_utcnow)
     mode: str = Field(description="'quick' or 'agent'")
     state: str
-    narrative_text: Optional[str] = None
-    case_facts_json: Optional[str] = None
+    narrative_text: str | None = None
+    case_facts_json: str | None = None
     status: str = Field(default="pending")
 
     eligibility_results: list["EligibilityResult"] = Relationship(
@@ -48,7 +49,7 @@ class EligibilityResult(SQLModel, table=True):
     confidence: float = Field(default=1.0)
     computed_at: datetime.datetime = Field(default_factory=_utcnow)
 
-    intake: Optional[Intake] = Relationship(back_populates="eligibility_results")
+    intake: Intake | None = Relationship(back_populates="eligibility_results")
 
 
 class AgentRun(SQLModel, table=True):
@@ -61,10 +62,10 @@ class AgentRun(SQLModel, table=True):
     total_tokens_out: int = 0
     total_cost_usd: float = 0.0
     started_at: datetime.datetime = Field(default_factory=_utcnow)
-    ended_at: Optional[datetime.datetime] = None
-    error: Optional[str] = None
+    ended_at: datetime.datetime | None = None
+    error: str | None = None
 
-    intake: Optional[Intake] = Relationship(back_populates="agent_runs")
+    intake: Intake | None = Relationship(back_populates="agent_runs")
     steps: list["AgentStep"] = Relationship(
         back_populates="run",
         cascade_delete=True,
@@ -82,4 +83,4 @@ class AgentStep(SQLModel, table=True):
     tokens_out: int = 0
     created_at: datetime.datetime = Field(default_factory=_utcnow)
 
-    run: Optional[AgentRun] = Relationship(back_populates="steps")
+    run: AgentRun | None = Relationship(back_populates="steps")

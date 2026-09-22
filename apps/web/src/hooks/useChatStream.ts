@@ -1,7 +1,7 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
 import type { EligibilityReport, SseEvent } from '@/lib/schemas';
+import { useCallback, useRef, useState } from 'react';
 
 export type MessageRole = 'user' | 'agent';
 
@@ -125,9 +125,7 @@ export function useChatStream(): UseChatStreamResult {
 
           if (event.type === 'text_chunk') {
             setMessages((prev) =>
-              prev.map((m) =>
-                m.id === msgId ? { ...m, content: m.content + event.text } : m,
-              ),
+              prev.map((m) => (m.id === msgId ? { ...m, content: m.content + event.text } : m)),
             );
           } else if (event.type === 'final') {
             setReport(event.report);
@@ -157,9 +155,7 @@ export function useChatStream(): UseChatStreamResult {
     } finally {
       setIsLoading(false);
       // Mark streaming bubble as done
-      setMessages((prev) =>
-        prev.map((m) => (m.isStreaming ? { ...m, isStreaming: false } : m)),
-      );
+      setMessages((prev) => prev.map((m) => (m.isStreaming ? { ...m, isStreaming: false } : m)));
     }
   }, []);
 

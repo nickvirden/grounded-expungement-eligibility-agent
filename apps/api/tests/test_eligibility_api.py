@@ -1,5 +1,4 @@
 """Integration tests for the eligibility API router."""
-import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app

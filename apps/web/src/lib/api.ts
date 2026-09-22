@@ -35,8 +35,8 @@ const API_BASE =
  */
 function getCsrfToken(): string {
   if (typeof document === 'undefined') return '';
-  const secure = document.cookie.match(/(?:^|;\s*)__Host-csrf=([^;]+)/);
-  if (secure) return secure[1]!;
+  const secure = document.cookie.match(/(?:^|;\s*)__Host-csrf=([^;]+)/)?.[1];
+  if (secure) return secure;
   const dev = document.cookie.match(/(?:^|;\s*)csrf=([^;]+)/);
   return dev?.[1] ?? '';
 }
@@ -48,10 +48,7 @@ async function ensureCsrfToken(): Promise<void> {
   await fetch(`${API_BASE}/healthz`, { credentials: 'include' });
 }
 
-async function fetchJson<T>(
-  path: string,
-  options: RequestInit = {},
-): Promise<T> {
+async function fetchJson<T>(path: string, options: RequestInit = {}): Promise<T> {
   const headers = new Headers(options.headers);
   headers.set('Content-Type', 'application/json');
 

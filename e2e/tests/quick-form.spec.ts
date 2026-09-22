@@ -105,11 +105,9 @@ test.describe('Quick Form — Texas happy path', () => {
     // We use Playwright's built-in retry so we don't race the React re-render.
     const isOnResultPage = page.url().includes('/result');
     if (!isOnResultPage) {
-      await expect(progressBar).not.toHaveAttribute(
-        'aria-valuenow',
-        String(initialValue ?? 0),
-        { timeout: 5_000 },
-      );
+      await expect(progressBar).not.toHaveAttribute('aria-valuenow', String(initialValue ?? 0), {
+        timeout: 5_000,
+      });
       const newValue = await progressBar.getAttribute('aria-valuenow');
       expect(Number(newValue)).toBeGreaterThan(Number(initialValue));
     }

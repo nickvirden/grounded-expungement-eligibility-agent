@@ -1,5 +1,5 @@
 """Strict-origin CORS enforcement + Sec-Fetch-Site check for state-changing requests."""
-from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
@@ -9,7 +9,7 @@ _MUTATING = {"POST", "PUT", "PATCH", "DELETE"}
 
 
 class StrictOriginMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):  # type: ignore[override]
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         if request.method in _MUTATING:
             origin = request.headers.get("origin", "")
             sec_fetch_site = request.headers.get("sec-fetch-site", "")

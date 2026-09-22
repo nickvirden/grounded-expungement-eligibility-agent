@@ -2,20 +2,22 @@
 import asyncio
 import datetime
 import json
-import time
+import re
 from collections.abc import AsyncGenerator
-import inspect
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import structlog
-from pydantic_ai import Agent
+from sqlmodel import Session
 
 from app.agents.eligibility_agent import AgentDeps, EligibilityReport, build_agent
 from app.agents.guardrails import GuardrailError, check_confidence, check_max_steps
 from app.config import settings
 from app.db import engine
 from app.engine import rule_engine
-from app.models import AgentRun, AgentStep, Intake
+from app.models import AgentRun, AgentStep
+
+if TYPE_CHECKING:
+    from pydantic_ai import Agent
 
 log = structlog.get_logger()
 
@@ -24,8 +26,6 @@ _CURRENT_YEAR = datetime.datetime.now(datetime.UTC).year
 
 def _extract_year(text: str) -> int | None:
     # Simple deterministic heuristic for demo runs (not legal reasoning).
-    import re
-
     match = re.search(r"\b(19\d{2}|20\d{2})\b", text)
     if not match:
         return None
@@ -89,23 +89,26 @@ def _choose_answer_position(
             if pos is not None:
                 return pos
 
-    if "dismiss" in question_text_lc:
-        if has("dismiss"):
-            pos = pick_by_substrings(["dismiss"])
-            if pos is not None:
-                return pos
+    if "dismiss" in question_text_lc and has("dismiss"):
+        pos = pick_by_substrings(["dismiss"])
+        if pos is not None:
+            return pos
 
-    if "acquit" in question_text_lc or "pardon" in question_text_lc or "overturned" in question_text_lc:
-        if has("acquit") or has("pardon") or has("overturn"):
-            pos = pick_by_substrings(["acquitted", "pardon", "overturned"])
-            if pos is not None:
-                return pos
+    asks_about_vacated = any(
+        term in question_text_lc for term in ("acquit", "pardon", "overturned")
+    )
+    if asks_about_vacated and (has("acquit") or has("pardon") or has("overturn")):
+        pos = pick_by_substrings(["acquitted", "pardon", "overturned"])
+        if pos is not None:
+            return pos
 
-    if "no charges" in question_text_lc or "no charge" in question_text_lc:
-        if has("no charges") or has("no charge") or has("never charged") or has("not charged"):
-            pos = pick_by_substrings(["no charges", "no charges were filed", "no charges filed"])
-            if pos is not None:
-                return pos
+    asks_about_no_charges = "no charges" in question_text_lc or "no charge" in question_text_lc
+    if asks_about_no_charges and (
+        has("no charges") or has("no charge") or has("never charged") or has("not charged")
+    ):
+        pos = pick_by_substrings(["no charges", "no charges were filed", "no charges filed"])
+        if pos is not None:
+            return pos
 
     if "statute of limitations" in question_text_lc or "enough time" in question_text_lc:
         if years_ago is not None:
@@ -211,10 +214,8 @@ class AgentRunner:
         intake_id: str,
         state: str,
         narrative: str,
-    ) -> AsyncGenerator[dict[str, Any], None]:
+    ) -> AsyncGenerator[dict[str, Any]]:
         """Run the agent and yield SSE event dicts."""
-        from sqlmodel import Session, select
-
         run_id = None
 
         with Session(engine) as session:
@@ -290,15 +291,13 @@ class AgentRunner:
                                 session.commit()
 
                             yield {"type": "text_chunk", "text": text}
-                    except Exception as e:  # noqa: BLE001
+                    except Exception as e:
                         # Some models/providers (notably TestModel) can produce non-text
                         # responses where stream_text() is not supported. In that case
                         # we still return a final structured report, just without token streaming.
                         log.info("stream_text_unavailable", error=str(e), run_id=run_id)
 
-                    final = result.get_output()
-                    if inspect.isawaitable(final):
-                        final = await final
+                    final = await result.get_output()
                     # Never trust a model to echo state/intake correctly.
                     final = final.model_copy(update={"intake_id": intake_id, "state": state})
                     check_confidence(final.confidence)
@@ -326,21 +325,23 @@ class AgentRunner:
             _mark_run_failed(run_id, str(e))
             yield {"type": "error", "code": "guardrail", "message": str(e)}
 
+        # These handlers log with `log.error`, not `log.exception`: structlog's
+        # ConsoleRenderer (configured in app/main.py) renders tracebacks with frame
+        # locals, and this frame holds the user's narrative. `redact_pii` only sees
+        # event-dict keys, so a traceback would leak criminal-history PII to the logs.
         except TimeoutError:
             msg = f"Agent exceeded time limit of {settings.agent_timeout_seconds}s"
-            log.error("agent_timeout", run_id=run_id)
+            log.error("agent_timeout", run_id=run_id)  # noqa: TRY400
             _mark_run_failed(run_id, msg)
             yield {"type": "error", "code": "timeout", "message": msg}
 
-        except Exception as e:  # noqa: BLE001
-            log.error("agent_error", error=str(e), run_id=run_id)
+        except Exception as e:
+            log.error("agent_error", error=str(e), run_id=run_id)  # noqa: TRY400
             _mark_run_failed(run_id, str(e))
             yield {"type": "error", "code": "internal", "message": "An error occurred"}
 
 
 def _mark_run_failed(run_id: str, error: str) -> None:
-    from sqlmodel import Session
-
     with Session(engine) as session:
         run = session.get(AgentRun, run_id)
         if run:

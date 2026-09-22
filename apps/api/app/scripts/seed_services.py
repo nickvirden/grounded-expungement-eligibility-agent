@@ -32,7 +32,9 @@ def seed() -> None:
                 )
             )
         session.commit()
-        print(f"✓ Seeded {len(catalog.get('services', []))} services")
+        # A one-shot CLI (`make seed`) reports to the operator's terminal; the app's
+        # structlog pipeline is only configured inside the API process.
+        print(f"✓ Seeded {len(catalog.get('services', []))} services")  # noqa: T201
 
 
 if __name__ == "__main__":

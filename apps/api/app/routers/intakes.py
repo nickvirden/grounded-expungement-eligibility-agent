@@ -1,14 +1,15 @@
 """Intakes router: POST create, GET detail, SSE stream, DELETE for right-to-erasure."""
 import json
-from typing import Annotated
+from collections.abc import AsyncGenerator
+from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from sqlmodel import Session, select
 
 from app.agents.guardrails import GuardrailError, check_jurisdiction, sanitize_narrative
 from app.agents.harness import AgentRunner
-from app.db import get_session
+from app.db import engine, get_session
 from app.models import AgentRun, AgentStep, EligibilityResult, Intake
 from app.schemas import IntakeCreate
 
@@ -21,7 +22,7 @@ _runner = AgentRunner()
 async def create_intake(
     body: IntakeCreate,
     session: Annotated[Session, Depends(get_session)],
-) -> dict:
+) -> dict[str, Any]:
     """Create an intake record. Returns the intake ID for SSE streaming."""
     try:
         check_jurisdiction(body.state)
@@ -52,7 +53,7 @@ async def create_intake(
 async def get_intake(
     intake_id: str,
     session: Annotated[Session, Depends(get_session)],
-) -> dict:
+) -> dict[str, Any]:
     intake = session.get(Intake, intake_id)
     if not intake:
         raise HTTPException(status_code=404, detail="Intake not found")
@@ -93,21 +94,17 @@ async def get_intake(
 
 
 @router.get("/{intake_id}/stream")
-async def stream_intake(intake_id: str, request: Request) -> StreamingResponse:
+async def stream_intake(intake_id: str) -> StreamingResponse:
     """SSE stream: run the agent for this intake and stream events."""
     # Note: For the demo, we read state/narrative from the existing intake record.
-    from sqlmodel import Session as SSession
-
-    from app.db import engine
-
-    with SSession(engine) as session:
+    with Session(engine) as session:
         intake = session.get(Intake, intake_id)
         if not intake:
             raise HTTPException(status_code=404, detail="Intake not found")
         state = intake.state
         narrative = intake.narrative_text or ""
 
-    async def event_generator():  # noqa: ANN202
+    async def event_generator() -> AsyncGenerator[str]:
         async for event in _runner.run_stream(intake_id, state, narrative):
             data = json.dumps(event)
             yield f"data: {data}\n\n"

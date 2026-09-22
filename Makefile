@@ -17,14 +17,14 @@ logs:
 
 lint:
 	pnpm lint
-	cd apps/api && uv run ruff check . && uv run mypy .
+	cd apps/api && uv run --extra dev ruff check . && uv run --extra dev mypy .
 
 format:
 	pnpm format
-	cd apps/api && uv run ruff format .
+	cd apps/api && uv run --extra dev ruff format .
 
 test:
-	cd apps/api && uv run pytest -q
+	cd apps/api && uv run --extra dev pytest -q
 	pnpm test
 
 e2e:
@@ -43,5 +43,5 @@ extract-trees:
 	node scripts/extract_state_tree.mjs
 
 audit:
-	cd apps/api && uv run pip-audit
+	cd apps/api && uv run --extra dev pip-audit
 	pnpm audit

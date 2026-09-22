@@ -122,9 +122,9 @@ OPENAI_API_KEY=sk-...
 ## Running Tests
 
 ```bash
-# Backend: all 66 tests
+# Backend: all 70 tests (pytest lives in the dev extra)
 cd apps/api
-uv run pytest tests/ -v
+uv run --extra dev pytest tests/ -v
 
 # Frontend: node:test unit tests
 cd apps/web
@@ -132,7 +132,7 @@ pnpm test
 
 # Type checks
 cd apps/web && pnpm next build   # TS errors fail the build
-cd apps/api && uv run mypy app/  # strict mode
+cd apps/api && uv run --extra dev mypy app/  # strict mode
 ```
 
 ---

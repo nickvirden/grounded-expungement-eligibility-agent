@@ -21,11 +21,6 @@ async def assess(req: EligibilityAssessRequest) -> EligibilityAssessResponse:
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e)) from e
 
-    services: list[dict] = []
-    if result.is_terminal and result.result_label:
-        service_keys = rule_engine.get_recommended_services(result.result_label)
-        services = [{"key": k} for k in service_keys]
-
     return EligibilityAssessResponse(
         is_terminal=result.is_terminal,
         result_key=result.result_key,

@@ -1,5 +1,5 @@
 """Security middleware tests: headers, CSRF, origin enforcement, rate limiting."""
-import pytest
+import httpx
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -83,9 +83,7 @@ class TestCSRFMiddleware:
 class TestStrictOriginMiddleware:
     """State-changing requests from non-allowlisted origins must be rejected."""
 
-    def _post_with_origin(
-        self, origin: str, sec_fetch_site: str = ""
-    ):  # noqa: ANN201
+    def _post_with_origin(self, origin: str, sec_fetch_site: str = "") -> httpx.Response:
         token = generate_csrf_token()
         c = TestClient(app, cookies={CSRF_COOKIE: token}, raise_server_exceptions=True)
         headers: dict[str, str] = {CSRF_HEADER: token, "Origin": origin}

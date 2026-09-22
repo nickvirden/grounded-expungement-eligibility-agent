@@ -1,12 +1,12 @@
 'use client';
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useCallback, useId, useMemo, useRef, useState } from 'react';
+import { ArrowRightIcon } from '@/components/icons/index';
 import { assessEligibility } from '@/lib/api';
 import { sanitizeLegacyHtml } from '@/lib/sanitizeLegacyHtml';
 import type { AssessResponse } from '@/lib/schemas';
-import { ArrowRightIcon } from '@/components/icons/index';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import {
   AnswerButton,
   AnswerList,
@@ -27,11 +27,7 @@ import {
   QuestionText,
   StepCounter,
 } from './QuickFormClient.styles';
-import {
-  computeProgress,
-  responseToStep,
-  stepToPathEntry,
-} from './QuickFormClient.utils';
+import { computeProgress, responseToStep, stepToPathEntry } from './QuickFormClient.utils';
 
 interface EntryQuestion {
   question_id: number;
@@ -123,10 +119,7 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
     [isLoading, questionId, state, traversedPath, router],
   );
 
-  const safeQuestionHtml = useMemo(
-    () => sanitizeLegacyHtml(questionText),
-    [questionText],
-  );
+  const safeQuestionHtml = useMemo(() => sanitizeLegacyHtml(questionText), [questionText]);
   const safeHelpHtml = useMemo(
     () => (questionHelp ? sanitizeLegacyHtml(questionHelp) : ''),
     [questionHelp],
@@ -146,19 +139,31 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
         </StepCounter>
       </FormHeader>
 
-      <ProgressTrack role="progressbar" aria-valuenow={Math.round(progress * 100)} aria-valuemin={0} aria-valuemax={100}>
+      <ProgressTrack
+        role="progressbar"
+        aria-valuenow={Math.round(progress * 100)}
+        aria-valuemin={0}
+        aria-valuemax={100}
+      >
         <ProgressFill $pct={progress} />
       </ProgressTrack>
 
       <FormBody>
         <FormCard aria-labelledby={headingId} key={`step-${stepNumber}`}>
+          {/* Tree questions, help text and answers carry legacy inline markup (bold, lists,
+              line breaks). Each string passes through sanitizeLegacyHtml, an attribute-free
+              tag allowlist, before it reaches dangerouslySetInnerHTML. */}
           <QuestionText
             role="heading"
             aria-level={2}
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized by sanitizeLegacyHtml
             dangerouslySetInnerHTML={{ __html: safeQuestionHtml }}
           />
 
-          {questionHelp && <HelpText dangerouslySetInnerHTML={{ __html: safeHelpHtml }} />}
+          {questionHelp && (
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized by sanitizeLegacyHtml
+            <HelpText dangerouslySetInnerHTML={{ __html: safeHelpHtml }} />
+          )}
 
           {isLoading ? (
             <LoadingRow aria-label="Loading next question">
@@ -178,6 +183,7 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
                     aria-pressed={selectedPosition === answer.position}
                   >
                     <span
+                      // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized by sanitizeLegacyHtml
                       dangerouslySetInnerHTML={{
                         __html: sanitizeLegacyHtml(answer.label ?? answer.value ?? ''),
                       }}
@@ -194,9 +200,7 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
           {error && <ErrorBanner role="alert">{error}</ErrorBanner>}
 
           {traversedPath.length > 0 && (
-            <PathCrumb aria-label="Decision path so far">
-              {traversedPath.join(' → ')}
-            </PathCrumb>
+            <PathCrumb aria-label="Decision path so far">{traversedPath.join(' → ')}</PathCrumb>
           )}
         </FormCard>
       </FormBody>

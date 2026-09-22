@@ -1,8 +1,13 @@
+from typing import Any
+
+import structlog
 from fastapi import APIRouter, HTTPException
 
 from app.engine.rule_engine import get_entry_question
 from app.engine.tree_loader import list_available_states, load_tree
 from app.schemas import StateInfo
+
+log = structlog.get_logger()
 
 router = APIRouter(prefix="/api/states", tags=["states"])
 
@@ -23,13 +28,15 @@ async def list_states() -> list[StateInfo]:
                     result_keys=list(tree.get("results", {}).keys()),
                 )
             )
-        except Exception:  # noqa: BLE001
+        except Exception as e:
+            # One malformed tree should not take down the whole state list.
+            log.warning("state_tree_unloadable", tree=s, error=str(e))
             continue
     return result
 
 
 @router.get("/{state}/tree")
-async def get_tree(state: str) -> dict:
+async def get_tree(state: str) -> dict[str, Any]:
     """Return the full decision tree JSON for a state (for the Quick Form stepper)."""
     try:
         return load_tree(state.lower())
@@ -38,7 +45,7 @@ async def get_tree(state: str) -> dict:
 
 
 @router.get("/{state}/entry")
-async def get_entry(state: str) -> dict:
+async def get_entry(state: str) -> dict[str, Any]:
     """Return the entry (first) question for a state."""
     try:
         result = get_entry_question(state.lower())

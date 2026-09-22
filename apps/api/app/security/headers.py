@@ -3,13 +3,13 @@
 Sets: HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy,
 Permissions-Policy, COOP, CORP, removes Server/X-Powered-By.
 """
-from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import Response
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):  # type: ignore[override]
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         response: Response = await call_next(request)
         response.headers["Strict-Transport-Security"] = (
             "max-age=63072000; includeSubDomains; preload"

@@ -1,6 +1,7 @@
 """Tests for the deterministic eligibility rule engine."""
 import json
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -10,9 +11,10 @@ from app.engine.tree_loader import list_available_states, load_tree
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 
 
-def load_fixture(name: str) -> dict:
+def load_fixture(name: str) -> dict[str, Any]:
     with (FIXTURES_DIR / name).open() as f:
-        return json.load(f)
+        fixture: dict[str, Any] = json.load(f)
+    return fixture
 
 
 class TestRuleEngine:

@@ -22,4 +22,3 @@ describe('sanitizeLegacyHtml', () => {
     assert.match(clean, /<p>Hi<\/p>/);
   });
 });
-

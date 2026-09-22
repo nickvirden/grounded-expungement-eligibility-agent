@@ -1,3 +1,5 @@
+from typing import Any
+
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -31,7 +33,7 @@ class EligibilityAssessResponse(BaseModel):
     next_question_id: int | None = None
     next_question_text: str | None = None
     next_question_help: str | None = None
-    next_answers: list[dict] | None = None
+    next_answers: list[dict[str, Any]] | None = None
     questions_left: int | None = None
     traversed_path: list[str] = Field(default_factory=list)
 

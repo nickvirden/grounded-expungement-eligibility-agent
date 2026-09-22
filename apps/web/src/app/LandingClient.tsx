@@ -1,5 +1,6 @@
 'use client';
 
+import { ChatIcon, ScaleIcon } from '@/components/icons';
 import Link from 'next/link';
 import { useState } from 'react';
 import { formatStateName } from './LandingClient.utils';
@@ -9,9 +10,10 @@ import {
   FieldGroup,
   FieldLabel,
   Headline,
-  Highlight,
   HeroSection,
+  Highlight,
   LogoBadge,
+  ModeBadge,
   ModeCard,
   ModeCards,
   ModeDescription,
@@ -22,9 +24,7 @@ import {
   Subheading,
   Wordmark,
   WordmarkText,
-  ModeBadge,
 } from './page.styles';
-import { ScaleIcon, ChatIcon } from '@/components/icons';
 
 interface Props {
   states: string[];
@@ -44,8 +44,7 @@ export default function LandingClient({ states }: Props) {
         </Wordmark>
 
         <Headline>
-          Find out if you qualify for{' '}
-          <Highlight>record relief</Highlight>
+          Find out if you qualify for <Highlight>record relief</Highlight>
         </Headline>
 
         <Subheading>

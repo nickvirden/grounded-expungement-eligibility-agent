@@ -1,9 +1,9 @@
 'use client';
 
-import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
 import { ArrowRightIcon } from '@/components/icons';
 import { useChatStream } from '@/hooks/useChatStream';
+import Link from 'next/link';
+import { useEffect, useRef, useState } from 'react';
 import CaseFileCard from './CaseFileCard';
 import {
   BackLink,
@@ -38,7 +38,9 @@ export default function TalkClient({ state, stateName }: Props) {
   const hasStarted = messages.length > 0;
   const agentStatus = isLoading ? 'running' : report ? 'complete' : error ? 'error' : 'pending';
 
-  // Auto-scroll message list on new content
+  // Auto-scroll message list on new content. `messages` is the re-run trigger, not a value
+  // the effect reads, so the exhaustive-deps rule sees it as unnecessary.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: messages triggers the scroll
   useEffect(() => {
     if (listRef.current) {
       listRef.current.scrollTop = listRef.current.scrollHeight;
@@ -107,29 +109,18 @@ export default function TalkClient({ state, stateName }: Props) {
             value={draft}
             onChange={handleTextareaChange}
             onKeyDown={handleKeyDown}
-            placeholder={
-              hasStarted ? 'Continue the conversation…' : 'Describe your situation…'
-            }
+            placeholder={hasStarted ? 'Continue the conversation…' : 'Describe your situation…'}
             disabled={isLoading}
             rows={2}
             aria-label="Message input"
           />
-          <SendButton
-            type="submit"
-            disabled={isLoading || !draft.trim()}
-            aria-label="Send message"
-          >
+          <SendButton type="submit" disabled={isLoading || !draft.trim()} aria-label="Send message">
             <ArrowRightIcon size={20} color="white" aria-hidden="true" />
           </SendButton>
         </InputArea>
       </ChatColumn>
 
-      <CaseFileCard
-        state={state}
-        intakeId={intakeId}
-        status={agentStatus}
-        report={report}
-      />
+      <CaseFileCard state={state} intakeId={intakeId} status={agentStatus} report={report} />
     </TalkShell>
   );
 }
