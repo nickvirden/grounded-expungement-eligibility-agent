@@ -1,7 +1,7 @@
 [project]
 name = "grounded-expungement-eligibility-agent-api"
 version = "0.1.0"
-description = "WipeRecord Eligibility API - FastAPI + Pydantic AI"
+description = "ClearSlate Eligibility API - FastAPI + Pydantic AI"
 requires-python = ">=3.13"
 dependencies = [
     "fastapi>=0.115.0",

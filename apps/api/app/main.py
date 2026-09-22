@@ -42,7 +42,7 @@ async def lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
 
 
 app = FastAPI(
-    title="WipeRecord Eligibility API",
+    title="ClearSlate Eligibility API",
     version="0.1.0",
     lifespan=lifespan,
     docs_url="/api/docs",

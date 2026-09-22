@@ -27,7 +27,7 @@ interface Props {
 }
 
 const WELCOME = (stateName: string) =>
-  `Hi! I'm the WipeRecord eligibility assistant. I'll help you find out if your record qualifies for relief in ${stateName}.\n\nTo get started, please describe your situation in as much detail as you're comfortable sharing — for example: what you were charged with, whether you were convicted, approximately when this happened, and whether you served any sentence.`;
+  `Hi! I'm the ClearSlate eligibility assistant. I'll help you find out if your record qualifies for relief in ${stateName}.\n\nTo get started, please describe your situation in as much detail as you're comfortable sharing — for example: what you were charged with, whether you were convicted, approximately when this happened, and whether you served any sentence.`;
 
 export default function TalkClient({ state, stateName }: Props) {
   const { messages, intakeId, report, isLoading, error, send } = useChatStream();

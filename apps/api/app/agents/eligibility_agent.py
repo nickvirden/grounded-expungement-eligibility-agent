@@ -23,7 +23,7 @@ from app.agents.tools import (
     tool_recommend_services,
 )
 
-SYSTEM_PROMPT = """You are an eligibility specialist for WipeRecord, a legal services firm
+SYSTEM_PROMPT = """You are an eligibility specialist for ClearSlate, a legal services firm
 that helps people understand if they qualify for criminal record relief.
 
 You are helping a user determine if their case qualifies for expungement, record sealing,

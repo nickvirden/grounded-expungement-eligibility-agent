@@ -40,7 +40,7 @@ export default function LandingClient({ states }: Props) {
           <LogoBadge aria-hidden="true">
             <ScaleIcon size={22} color="white" />
           </LogoBadge>
-          <WordmarkText>WipeRecord</WordmarkText>
+          <WordmarkText>ClearSlate</WordmarkText>
         </Wordmark>
 
         <Headline>
