@@ -6,8 +6,8 @@ from sqlmodel import Session, SQLModel, create_engine
 from app.config import settings
 
 _db_url = settings.database_url
-_is_sqlite = _db_url.startswith("sqlite")
-if _is_sqlite:
+is_sqlite = _db_url.startswith("sqlite")
+if is_sqlite:
     db_path = _db_url.replace("sqlite:///", "")
     Path(db_path).parent.mkdir(parents=True, exist_ok=True)
     connect_args = {"check_same_thread": False}
@@ -26,7 +26,7 @@ def create_db_and_tables() -> None:
     schema changes would silently apply on boot, bypassing the explicit
     migration step.
     """
-    if _is_sqlite:
+    if is_sqlite:
         SQLModel.metadata.create_all(engine)
 
 

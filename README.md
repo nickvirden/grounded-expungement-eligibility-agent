@@ -95,9 +95,9 @@ FastAPI (apps/api)
 
 Persistence (Postgres via Docker Compose, Alembic-migrated; SQLite for local dev/tests)
   ├─ intake
-  ├─ eligibility_result
-  ├─ agent_run
-  └─ agent_step
+  ├─ eligibilityresult
+  ├─ agentrun
+  └─ agentstep
 
 Security layers: Caddy TLS → SecurityHeaders → CSRF (double-submit) → StrictOrigin
 → CORS → rate limiting → Pydantic strict validation → PII-redacting structured logs

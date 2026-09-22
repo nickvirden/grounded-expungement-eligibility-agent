@@ -109,6 +109,18 @@ jobs:
         working-directory: apps/api
         run: uv run alembic upgrade head
 
+      # Proves the migration is genuinely reversible (not just that it
+      # applies once) and that it matches app/models.py exactly -- a future
+      # model change with no matching migration would otherwise pass this
+      # job silently (create_all covers the gap on SQLite; only `alembic
+      # check` would catch it on Postgres).
+      - name: Verify migration reversibility and drift
+        working-directory: apps/api
+        run: |
+          uv run alembic downgrade base
+          uv run alembic upgrade head
+          uv run alembic check
+
       - name: Unit tests
         working-directory: apps/api
         run: uv run pytest -q
