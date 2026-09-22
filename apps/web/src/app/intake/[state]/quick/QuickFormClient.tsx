@@ -150,13 +150,20 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
 
       <FormBody>
         <FormCard aria-labelledby={headingId} key={`step-${stepNumber}`}>
+          {/* Tree questions, help text and answers carry legacy inline markup (bold, lists,
+              line breaks). Each string passes through sanitizeLegacyHtml, an attribute-free
+              tag allowlist, before it reaches dangerouslySetInnerHTML. */}
           <QuestionText
             role="heading"
             aria-level={2}
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized by sanitizeLegacyHtml
             dangerouslySetInnerHTML={{ __html: safeQuestionHtml }}
           />
 
-          {questionHelp && <HelpText dangerouslySetInnerHTML={{ __html: safeHelpHtml }} />}
+          {questionHelp && (
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized by sanitizeLegacyHtml
+            <HelpText dangerouslySetInnerHTML={{ __html: safeHelpHtml }} />
+          )}
 
           {isLoading ? (
             <LoadingRow aria-label="Loading next question">
@@ -176,6 +183,7 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
                     aria-pressed={selectedPosition === answer.position}
                   >
                     <span
+                      // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized by sanitizeLegacyHtml
                       dangerouslySetInnerHTML={{
                         __html: sanitizeLegacyHtml(answer.label ?? answer.value ?? ''),
                       }}

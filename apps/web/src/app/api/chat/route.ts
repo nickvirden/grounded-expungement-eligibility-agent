@@ -4,7 +4,7 @@
  * Creates a new agent intake on the FastAPI backend and returns the intake_id.
  * The client then opens a GET /api/chat/[intake_id]/stream connection to read the SSE stream.
  */
-import { randomBytes } from 'crypto';
+import { randomBytes } from 'node:crypto';
 import { NextResponse } from 'next/server';
 
 const API_BASE = process.env.INTERNAL_API_URL ?? 'http://localhost:8000';

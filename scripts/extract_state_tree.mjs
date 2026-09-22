@@ -187,7 +187,7 @@ function extractTree(source, stateName) {
   for (let q = 0; q <= 20; q++) {
     for (let a = 0; a <= 20; a++) {
       const resp = callHandler(q, a);
-      if (resp && resp.success) {
+      if (resp?.success) {
         allResponses.push({ fromQuestion: q, fromAnswer: a, response: resp });
       }
     }
@@ -226,7 +226,7 @@ const { allResponses, questionNodes, resultNodes } = extractTree(fileContent, st
 const treeJson = {
   state,
   version: '1.0.0',
-  extractedFrom: 'questionnaire-api/states/' + state + '.js',
+  extractedFrom: `questionnaire-api/states/${state}.js`,
   extractedAt: new Date().toISOString(),
   nodes: {},
   results: {

@@ -35,8 +35,8 @@ const API_BASE =
  */
 function getCsrfToken(): string {
   if (typeof document === 'undefined') return '';
-  const secure = document.cookie.match(/(?:^|;\s*)__Host-csrf=([^;]+)/);
-  if (secure) return secure[1]!;
+  const secure = document.cookie.match(/(?:^|;\s*)__Host-csrf=([^;]+)/)?.[1];
+  if (secure) return secure;
   const dev = document.cookie.match(/(?:^|;\s*)csrf=([^;]+)/);
   return dev?.[1] ?? '';
 }
