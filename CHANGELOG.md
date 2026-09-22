@@ -1,3 +1,10 @@
+## [0.9.3](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v0.9.2...v0.9.3) (2026-09-22)
+
+### Bug Fixes
+
+* **api:** default LLM_PROVIDER to testmodel, fail fast on openai/anthropic ([8c87b6d](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/8c87b6dd679b27eb1e04d1797dde1b6e572ba246))
+* **api:** two real gaps found by the opus verifier in the v1 safety default ([c7de054](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/c7de054bae5f86a505ed9515722a569e7ed9be6b))
+
 ## [0.9.2](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v0.9.1...v0.9.2) (2026-09-22)
 
 ### Bug Fixes
