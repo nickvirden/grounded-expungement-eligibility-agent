@@ -26,9 +26,11 @@ This document records every significant architectural and technical decision mad
 
 ## 3. Provider Abstraction
 
-**Decision:** Pluggable LLM provider via `LLM_PROVIDER` env var (openai | anthropic | ollama).
+**Decision:** Pluggable LLM provider via `LLM_PROVIDER` env var (testmodel today; openai | anthropic | ollama once their construction is fixed).
 
 **Why:** Demonstrates production thinking (vendor lock-in avoidance, cost routing potential, offline demo capability). At scale, this layer would add fallback chains, cost-based routing, and circuit breakers.
+
+**Current state:** `openai`, `anthropic`, and `ollama` construction all share the same real bug -- credentials/base URLs need to go through a `Provider` object, not passed directly to the model classes as this code currently does. `Settings` defaults to `testmodel` and rejects all three outright at startup rather than let a misconfigured deploy crash later with a confusing error deep inside `AgentRunner()`.
 
 ---
 
