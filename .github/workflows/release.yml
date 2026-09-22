@@ -7,6 +7,12 @@ on:
   push:
     branches: [main]
 
+# No cancel-in-progress: a release that's already publishing shouldn't be
+# killed mid-flight by a second push landing right after it. Queuing (the
+# default) serializes runs instead.
+concurrency:
+  group: release-${{ github.workflow }}
+
 permissions:
   contents: write
   issues: write
@@ -15,6 +21,7 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
