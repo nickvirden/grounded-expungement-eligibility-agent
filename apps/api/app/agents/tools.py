@@ -5,7 +5,6 @@ Each tool has a Pydantic input/output schema. The critical invariant:
 The agent is prohibited by system prompt from stating a result without
 calling this tool.
 """
-import json
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field

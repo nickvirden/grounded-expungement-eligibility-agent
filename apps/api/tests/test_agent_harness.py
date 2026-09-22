@@ -8,12 +8,12 @@ from app.agents.guardrails import (
     check_max_steps,
     sanitize_narrative,
 )
-from app.agents.tools import (  # noqa: E402
+from app.agents.tools import (
     tool_assess_eligibility,
     tool_lookup_state_tree,
     tool_recommend_services,
 )
-from app.config import settings  # noqa: E402
+from app.config import settings
 
 
 class TestGuardrails:
@@ -103,7 +103,7 @@ class TestIntakesRouter:
     from app.main import app
     from app.security.csrf import CSRF_COOKIE, CSRF_HEADER, generate_csrf_token
 
-    def _csrf_client(self):  # noqa: ANN201
+    def _csrf_client(self):
         from fastapi.testclient import TestClient
 
         from app.main import app

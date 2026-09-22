@@ -10,7 +10,7 @@ os.environ.setdefault("DATABASE_URL", "sqlite:///./data/test_eligibility.db")
 os.environ.setdefault("LLM_PROVIDER", "testmodel")
 os.environ.setdefault("CSRF_SECRET", "test-csrf-secret-32-chars-minimum!")
 
-import pytest  # noqa: E402
+import pytest
 
 
 @pytest.fixture(scope="session", autouse=True)

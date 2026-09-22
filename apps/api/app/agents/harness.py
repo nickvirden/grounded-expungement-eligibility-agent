@@ -1,10 +1,9 @@
 """AgentRunner: wraps Pydantic AI with run/step persistence, SSE events, and guardrails."""
 import asyncio
 import datetime
-import json
-import time
-from collections.abc import AsyncGenerator
 import inspect
+import json
+from collections.abc import AsyncGenerator
 from typing import Any
 
 import structlog
@@ -15,7 +14,7 @@ from app.agents.guardrails import GuardrailError, check_confidence, check_max_st
 from app.config import settings
 from app.db import engine
 from app.engine import rule_engine
-from app.models import AgentRun, AgentStep, Intake
+from app.models import AgentRun, AgentStep
 
 log = structlog.get_logger()
 
@@ -211,9 +210,9 @@ class AgentRunner:
         intake_id: str,
         state: str,
         narrative: str,
-    ) -> AsyncGenerator[dict[str, Any], None]:
+    ) -> AsyncGenerator[dict[str, Any]]:
         """Run the agent and yield SSE event dicts."""
-        from sqlmodel import Session, select
+        from sqlmodel import Session
 
         run_id = None
 
@@ -290,7 +289,7 @@ class AgentRunner:
                                 session.commit()
 
                             yield {"type": "text_chunk", "text": text}
-                    except Exception as e:  # noqa: BLE001
+                    except Exception as e:
                         # Some models/providers (notably TestModel) can produce non-text
                         # responses where stream_text() is not supported. In that case
                         # we still return a final structured report, just without token streaming.
@@ -332,7 +331,7 @@ class AgentRunner:
             _mark_run_failed(run_id, msg)
             yield {"type": "error", "code": "timeout", "message": msg}
 
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             log.error("agent_error", error=str(e), run_id=run_id)
             _mark_run_failed(run_id, str(e))
             yield {"type": "error", "code": "internal", "message": "An error occurred"}

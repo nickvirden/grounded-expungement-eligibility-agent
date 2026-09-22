@@ -9,7 +9,7 @@ The engine never uses an LLM — all decisions are fully deterministic.
 from dataclasses import dataclass, field
 from typing import Any
 
-from app.engine.tree_loader import load_tree, load_service_catalog
+from app.engine.tree_loader import load_service_catalog, load_tree
 
 
 @dataclass

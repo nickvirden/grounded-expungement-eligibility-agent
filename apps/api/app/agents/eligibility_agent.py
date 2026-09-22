@@ -12,7 +12,7 @@ the agent MUST call assess_eligibility for every eligibility determination.
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent, RunContext
 
-from app.agents.guardrails import check_jurisdiction, sanitize_narrative
+from app.agents.guardrails import check_jurisdiction
 from app.agents.providers import make_model
 from app.agents.tools import (
     EligibilityToolResult,
@@ -90,7 +90,7 @@ def build_agent() -> Agent[AgentDeps, EligibilityReport]:
         answer_position: int,
     ) -> EligibilityToolResult:
         """Deterministically advance one step in the eligibility decision tree.
-        
+
         MUST be called for every eligibility determination. Never state an outcome
         without calling this tool first.
         """

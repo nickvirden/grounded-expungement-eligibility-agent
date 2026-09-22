@@ -23,7 +23,7 @@ async def list_states() -> list[StateInfo]:
                     result_keys=list(tree.get("results", {}).keys()),
                 )
             )
-        except Exception:  # noqa: BLE001
+        except Exception:
             continue
     return result
 

@@ -3,6 +3,7 @@ import json
 from functools import lru_cache
 from pathlib import Path
 
+
 def _infer_repo_root(start: Path) -> Path | None:
     """Walk up from `start` to find a monorepo root containing packages/shared/."""
     for parent in start.parents:

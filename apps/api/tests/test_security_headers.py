@@ -1,5 +1,4 @@
 """Security middleware tests: headers, CSRF, origin enforcement, rate limiting."""
-import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -85,7 +84,7 @@ class TestStrictOriginMiddleware:
 
     def _post_with_origin(
         self, origin: str, sec_fetch_site: str = ""
-    ):  # noqa: ANN201
+    ):
         token = generate_csrf_token()
         c = TestClient(app, cookies={CSRF_COOKIE: token}, raise_server_exceptions=True)
         headers: dict[str, str] = {CSRF_HEADER: token, "Origin": origin}

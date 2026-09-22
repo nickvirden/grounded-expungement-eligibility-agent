@@ -107,7 +107,7 @@ async def stream_intake(intake_id: str, request: Request) -> StreamingResponse:
         state = intake.state
         narrative = intake.narrative_text or ""
 
-    async def event_generator():  # noqa: ANN202
+    async def event_generator():
         async for event in _runner.run_stream(intake_id, state, narrative):
             data = json.dumps(event)
             yield f"data: {data}\n\n"
