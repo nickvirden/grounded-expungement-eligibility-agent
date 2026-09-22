@@ -328,14 +328,18 @@ class AgentRunner:
             _mark_run_failed(run_id, str(e))
             yield {"type": "error", "code": "guardrail", "message": str(e)}
 
+        # These handlers log with `log.error`, not `log.exception`: structlog's
+        # ConsoleRenderer (configured in app/main.py) renders tracebacks with frame
+        # locals, and this frame holds the user's narrative. `redact_pii` only sees
+        # event-dict keys, so a traceback would leak criminal-history PII to the logs.
         except TimeoutError:
             msg = f"Agent exceeded time limit of {settings.agent_timeout_seconds}s"
-            log.error("agent_timeout", run_id=run_id)
+            log.error("agent_timeout", run_id=run_id)  # noqa: TRY400
             _mark_run_failed(run_id, msg)
             yield {"type": "error", "code": "timeout", "message": msg}
 
         except Exception as e:
-            log.error("agent_error", error=str(e), run_id=run_id)
+            log.error("agent_error", error=str(e), run_id=run_id)  # noqa: TRY400
             _mark_run_failed(run_id, str(e))
             yield {"type": "error", "code": "internal", "message": "An error occurred"}
 

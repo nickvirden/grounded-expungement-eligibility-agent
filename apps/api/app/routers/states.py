@@ -1,8 +1,11 @@
+import structlog
 from fastapi import APIRouter, HTTPException
 
 from app.engine.rule_engine import get_entry_question
 from app.engine.tree_loader import list_available_states, load_tree
 from app.schemas import StateInfo
+
+log = structlog.get_logger()
 
 router = APIRouter(prefix="/api/states", tags=["states"])
 
@@ -23,7 +26,9 @@ async def list_states() -> list[StateInfo]:
                     result_keys=list(tree.get("results", {}).keys()),
                 )
             )
-        except Exception:
+        except Exception as e:
+            # One malformed tree should not take down the whole state list.
+            log.warning("state_tree_unloadable", tree=s, error=str(e))
             continue
     return result
 
