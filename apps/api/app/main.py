@@ -10,7 +10,7 @@ from slowapi.middleware import SlowAPIMiddleware
 
 from app.config import settings
 from app.db import create_db_and_tables
-from app.routers import eligibility, health, states
+from app.routers import eligibility, health, intakes, states
 from app.security.csrf import CSRFMiddleware
 from app.security.headers import SecurityHeadersMiddleware
 from app.security.origin import StrictOriginMiddleware
@@ -70,3 +70,4 @@ app.add_middleware(
 app.include_router(health.router)
 app.include_router(eligibility.router)
 app.include_router(states.router)
+app.include_router(intakes.router)
