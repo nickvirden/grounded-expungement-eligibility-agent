@@ -1,6 +1,6 @@
 {
   "name": "grounded-expungement-eligibility-agent",
-  "version": "0.9.3",
+  "version": "0.10.0",
   "private": true,
   "packageManager": "pnpm@9.15.4",
   "engines": {

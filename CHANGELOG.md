@@ -1,3 +1,15 @@
+## [0.10.0](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v0.9.3...v0.10.0) (2026-09-22)
+
+### Features
+
+* **api:** add Alembic migrations with an initial schema revision ([9405287](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/9405287f7e1c25d12d518e7a0706ad482ad5258f))
+* run the Compose deploy on Postgres with an explicit make migrate ([e2ef6ca](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/e2ef6ca835e3e4bac8ba513dd6f4704fc32c22e1))
+
+### Bug Fixes
+
+* **api:** distinguish unreachable/unmigrated/stale-code readyz states ([f7a309e](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/f7a309ed26fc51de4b151a1111ee715fd8ef9abd))
+* three real gaps found by the Phase 7 opus verifier ([c2041e7](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/c2041e727f7bbeb450496415fba0f9eca2836502))
+
 ## [0.9.3](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v0.9.2...v0.9.3) (2026-09-22)
 
 ### Bug Fixes
