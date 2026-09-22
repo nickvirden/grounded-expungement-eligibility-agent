@@ -1,20 +1,31 @@
-from pydantic import Field, model_validator
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# All three real-model constructors in app/agents/providers.py are broken
+# today (openai, anthropic, and ollama all pass api_key/base_url directly to
+# model classes that reject them -- credentials need a Provider object
+# instead). Fixing them is separate, scoped work. testmodel is the only
+# provider that actually works right now.
+_UNUSABLE_LLM_PROVIDERS = frozenset({"openai", "anthropic", "ollama"})
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    # env_ignore_empty: an env var set to "" (e.g. a placeholder line left
+    # blank in .env.example, loaded verbatim via docker-compose's env_file)
+    # must fall through to the field default, not be treated as an explicit
+    # empty value -- otherwise LLM_PROVIDER="" bypasses the intended
+    # "unset means testmodel" default and crashes downstream instead.
+    model_config = SettingsConfigDict(
+        env_file=".env", env_file_encoding="utf-8", extra="ignore", env_ignore_empty=True
+    )
 
     database_url: str = "sqlite:///./data/eligibility.db"
     # Prefer a simple env var format (comma-separated) over JSON. This avoids
     # pydantic-settings treating list[str] as a "complex" type requiring JSON.
     allowed_origins: str = Field(default="https://localhost:3000")
 
-    # testmodel is the only provider whose construction actually works today
-    # (see app/agents/providers.py) -- openai/anthropic pass api_key directly
-    # to the model classes, which the installed pydantic-ai rejects. Default
-    # here and fail fast below rather than let a misconfigured deploy crash
-    # opaquely at import time via AgentRunner().
+    # Default here and fail fast below rather than let a misconfigured
+    # deploy crash opaquely at import time via AgentRunner().
     llm_provider: str = "testmodel"
     openai_api_key: str = ""
     anthropic_api_key: str = ""
@@ -42,22 +53,26 @@ class Settings(BaseSettings):
     def allowed_origins_list(self) -> list[str]:
         return [s.strip() for s in self.allowed_origins.split(",") if s.strip()]
 
-    @model_validator(mode="after")
-    def _reject_unusable_llm_providers(self) -> "Settings":
-        # openai/anthropic construction is a known, currently-broken bug in
-        # app/agents/providers.py (real Provider-object construction, not a
-        # typing issue) -- fixing it is separate, scoped work. Fail loudly
-        # and immediately at startup rather than let a misconfigured deploy
-        # crash later with a confusing TypeError from deep inside
-        # AgentRunner(). ollama stays available as a real, working
-        # self-hosted option for anyone who wants a non-testmodel run.
-        if self.llm_provider.lower() in ("openai", "anthropic"):
+    @field_validator("llm_provider")
+    @classmethod
+    def _reject_unusable_llm_providers(cls, value: str) -> str:
+        # A field_validator only ever sees this field's own value in its
+        # error output, unlike a mode="after" model_validator, which embeds
+        # the whole (truncated) settings dict -- including the tail of
+        # whatever secret happens to sit next to llm_provider, e.g.
+        # ANTHROPIC_API_KEY. That's real leakage into container logs for a
+        # very plausible misconfiguration (setting a provider and its key
+        # together). Normalize case/whitespace here too, since this is the
+        # one place that validates the raw value -- downstream comparisons
+        # can then trust it's already lowercased and trimmed.
+        normalized = value.strip().lower()
+        if normalized in _UNUSABLE_LLM_PROVIDERS:
             raise ValueError(
-                f"LLM_PROVIDER={self.llm_provider!r} is not usable yet -- its provider "
-                "construction is a known bug, not just unconfigured credentials. "
-                "Use 'testmodel' (default) or 'ollama' instead."
+                f"LLM_PROVIDER={value!r} is not usable yet -- its provider construction is "
+                "a known bug (see app/agents/providers.py), not just unconfigured "
+                "credentials. Use 'testmodel' (the default) instead."
             )
-        return self
+        return normalized
 
 
 settings = Settings()
