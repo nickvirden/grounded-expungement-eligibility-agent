@@ -1,15 +1,25 @@
 name: CI
 
-# release.yml gates what ships to production after a merge; this gates the
-# merge itself. The web and api gates run independently since they're
-# separate toolchains; e2e needs both, since Playwright's webServer config
-# boots the real FastAPI + Next.js dev servers directly (not Docker).
+# release.yml gates what ships to production after a merge. This workflow
+# runs on every PR and reports pass/fail, but until branch protection or a
+# ruleset requires it as a status check, a red run here does not itself
+# block merging — that's a separate GitHub repo setting, not something a
+# workflow file can enforce on its own.
+#
+# The web and api gates run independently since they're separate toolchains;
+# e2e needs both, since Playwright's webServer config boots the real FastAPI
+# + Next.js dev servers directly (not Docker).
 on:
   pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   web:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -39,16 +49,17 @@ jobs:
 
   api:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
-      # No python-version input — this action version doesn't support it; uv sync
-      # provisions the right interpreter itself from apps/api/pyproject.toml's requires-python.
+      # No python-version input — this action version doesn't support it; uv
+      # reads apps/api/.python-version itself and provisions that interpreter.
       - uses: astral-sh/setup-uv@v3
 
       - name: Install dependencies
         working-directory: apps/api
-        run: uv sync --extra dev
+        run: uv sync --extra dev --locked
 
       - name: Lint (ruff)
         working-directory: apps/api
@@ -64,6 +75,7 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -76,8 +88,8 @@ jobs:
           node-version: 22
           cache: pnpm
 
-      # No python-version input — this action version doesn't support it; uv sync
-      # provisions the right interpreter itself from apps/api/pyproject.toml's requires-python.
+      # No python-version input — this action version doesn't support it; uv
+      # reads apps/api/.python-version itself and provisions that interpreter.
       - uses: astral-sh/setup-uv@v3
 
       - name: Install JS dependencies
@@ -85,7 +97,7 @@ jobs:
 
       - name: Install Python dependencies
         working-directory: apps/api
-        run: uv sync
+        run: uv sync --locked
 
       # Playwright's own guidance is to install fresh rather than cache the
       # browser binaries: the download is fast enough that a cache restore
