@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://grounded-expungement-eligibility-agent/schemas/service-catalog.schema.json",
+  "title": "Service Catalog",
+  "description": "Schema for the legal services catalog",
+  "type": "object",
+  "required": ["version", "services"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "services": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Service"
+      },
+      "minItems": 1
+    }
+  },
+  "$defs": {
+    "Service": {
+      "type": "object",
+      "required": ["key", "state", "name", "description", "eligibility_keys", "base_price_usd"],
+      "properties": {
+        "key": {
+          "type": "string",
+          "pattern": "^[a-z_]+$"
+        },
+        "state": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "eligibility_keys": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "base_price_usd": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

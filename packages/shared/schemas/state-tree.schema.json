@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://grounded-expungement-eligibility-agent/schemas/state-tree.schema.json",
+  "title": "State Decision Tree",
+  "description": "Schema for extracted eligibility decision trees",
+  "type": "object",
+  "required": ["state", "version", "nodes", "results", "transitions"],
+  "properties": {
+    "state": {
+      "type": "string",
+      "description": "US state identifier (lowercase)"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "extractedFrom": {
+      "type": "string"
+    },
+    "extractedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "nodes": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/Node"
+      },
+      "minProperties": 1
+    },
+    "results": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "minProperties": 1
+    },
+    "transitions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Transition"
+      },
+      "minItems": 1
+    }
+  },
+  "$defs": {
+    "Node": {
+      "type": "object",
+      "required": ["question", "answers"],
+      "properties": {
+        "question": {
+          "type": "string",
+          "minLength": 1
+        },
+        "help": {
+          "type": ["string", "null"]
+        },
+        "answers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Answer"
+          }
+        },
+        "questionsLeft": {
+          "type": ["integer", "null"]
+        }
+      }
+    },
+    "Answer": {
+      "type": "object",
+      "required": ["value", "position"],
+      "properties": {
+        "value": {
+          "type": "string"
+        },
+        "position": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "Transition": {
+      "type": "object",
+      "required": ["from", "to"],
+      "properties": {
+        "from": {
+          "type": "object",
+          "required": ["questionId", "answerPosition"],
+          "properties": {
+            "questionId": { "type": "integer", "minimum": 0 },
+            "answerPosition": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "to": {
+          "type": "object",
+          "required": ["type"],
+          "properties": {
+            "type": { "enum": ["question", "result"] },
+            "questionId": { "type": "integer" },
+            "question": { "type": "string" },
+            "value": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}
