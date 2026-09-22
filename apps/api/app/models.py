@@ -1,9 +1,11 @@
 import datetime
 
-_utcnow = lambda: datetime.datetime.now(datetime.UTC)  # noqa: E731
-
 import ulid
 from sqlmodel import Field, Relationship, SQLModel
+
+
+def _utcnow() -> datetime.datetime:
+    return datetime.datetime.now(datetime.UTC)
 
 
 def _ulid_str() -> str:

@@ -8,7 +8,7 @@ from sqlmodel import Session, select
 
 from app.agents.guardrails import GuardrailError, check_jurisdiction, sanitize_narrative
 from app.agents.harness import AgentRunner
-from app.db import get_session
+from app.db import engine, get_session
 from app.models import AgentRun, AgentStep, EligibilityResult, Intake
 from app.schemas import IntakeCreate
 
@@ -96,11 +96,7 @@ async def get_intake(
 async def stream_intake(intake_id: str, request: Request) -> StreamingResponse:
     """SSE stream: run the agent for this intake and stream events."""
     # Note: For the demo, we read state/narrative from the existing intake record.
-    from sqlmodel import Session as SSession
-
-    from app.db import engine
-
-    with SSession(engine) as session:
+    with Session(engine) as session:
         intake = session.get(Intake, intake_id)
         if not intake:
             raise HTTPException(status_code=404, detail="Intake not found")

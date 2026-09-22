@@ -1,5 +1,6 @@
 """Agent harness tests using Pydantic AI TestModel — no real LLM calls."""
 import pytest
+from fastapi.testclient import TestClient
 
 from app.agents.guardrails import (
     GuardrailError,
@@ -14,6 +15,8 @@ from app.agents.tools import (
     tool_recommend_services,
 )
 from app.config import settings
+from app.main import app
+from app.security.csrf import CSRF_COOKIE, CSRF_HEADER, generate_csrf_token
 
 
 class TestGuardrails:
@@ -98,23 +101,11 @@ class TestTools:
 class TestIntakesRouter:
     """Integration tests for the intakes router."""
 
-    from fastapi.testclient import TestClient
-
-    from app.main import app
-    from app.security.csrf import CSRF_COOKIE, CSRF_HEADER, generate_csrf_token
-
-    def _csrf_client(self):
-        from fastapi.testclient import TestClient
-
-        from app.main import app
-        from app.security.csrf import CSRF_COOKIE, generate_csrf_token
-
+    def _csrf_client(self) -> tuple[TestClient, str]:
         token = generate_csrf_token()
         return TestClient(app, cookies={CSRF_COOKIE: token}), token
 
     def test_create_intake(self) -> None:
-        from app.security.csrf import CSRF_HEADER
-
         c, token = self._csrf_client()
         resp = c.post(
             "/api/intakes",
@@ -126,8 +117,6 @@ class TestIntakesRouter:
         assert "intake_id" in data
 
     def test_create_intake_invalid_state(self) -> None:
-        from app.security.csrf import CSRF_HEADER
-
         c, token = self._csrf_client()
         resp = c.post(
             "/api/intakes",
@@ -142,8 +131,6 @@ class TestIntakesRouter:
         assert resp.status_code == 404
 
     def test_create_and_get_intake(self) -> None:
-        from app.security.csrf import CSRF_HEADER
-
         c, token = self._csrf_client()
         create_resp = c.post(
             "/api/intakes",
@@ -160,8 +147,6 @@ class TestIntakesRouter:
         assert data["state"] == "texas"
 
     def test_delete_intake(self) -> None:
-        from app.security.csrf import CSRF_HEADER
-
         c, token = self._csrf_client()
         create_resp = c.post(
             "/api/intakes",

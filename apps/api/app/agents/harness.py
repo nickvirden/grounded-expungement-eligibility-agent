@@ -3,11 +3,12 @@ import asyncio
 import datetime
 import inspect
 import json
+import re
 from collections.abc import AsyncGenerator
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import structlog
-from pydantic_ai import Agent
+from sqlmodel import Session
 
 from app.agents.eligibility_agent import AgentDeps, EligibilityReport, build_agent
 from app.agents.guardrails import GuardrailError, check_confidence, check_max_steps
@@ -16,6 +17,9 @@ from app.db import engine
 from app.engine import rule_engine
 from app.models import AgentRun, AgentStep
 
+if TYPE_CHECKING:
+    from pydantic_ai import Agent
+
 log = structlog.get_logger()
 
 _CURRENT_YEAR = datetime.datetime.now(datetime.UTC).year
@@ -23,8 +27,6 @@ _CURRENT_YEAR = datetime.datetime.now(datetime.UTC).year
 
 def _extract_year(text: str) -> int | None:
     # Simple deterministic heuristic for demo runs (not legal reasoning).
-    import re
-
     match = re.search(r"\b(19\d{2}|20\d{2})\b", text)
     if not match:
         return None
@@ -212,8 +214,6 @@ class AgentRunner:
         narrative: str,
     ) -> AsyncGenerator[dict[str, Any]]:
         """Run the agent and yield SSE event dicts."""
-        from sqlmodel import Session
-
         run_id = None
 
         with Session(engine) as session:
@@ -338,8 +338,6 @@ class AgentRunner:
 
 
 def _mark_run_failed(run_id: str, error: str) -> None:
-    from sqlmodel import Session
-
     with Session(engine) as session:
         run = session.get(AgentRun, run_id)
         if run:
