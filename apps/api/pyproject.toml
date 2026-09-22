@@ -43,11 +43,13 @@ line-length = 100
 select = ["E", "F", "W", "I", "N", "UP", "S", "B", "A", "C4", "DTZ", "T20", "ICN", "PIE", "PT", "RSE", "RET", "SIM", "TID", "TCH", "ARG", "PLC", "PLE", "PLW", "TRY", "FLY", "PERF", "RUF"]
 ignore = ["S101", "TRY003", "RET504"]
 
-# The real-provider (openai/anthropic) construction in providers.py is
-# known-broken -- v1 hard-defaults to and fails fast outside testmodel, so
-# this code path never runs in production. The fix (correct Provider-object
-# construction) is deliberately scoped to a later v2 phase alongside cost
-# tracking and spend-cap work, not mixed into an unrelated CI-gate pass.
+# app/agents/providers.py's openai/anthropic construction passes api_key
+# directly to the model classes, which the installed pydantic-ai rejects --
+# credentials must go through a Provider object instead. This is a live bug,
+# not dead code: LLM_PROVIDER still defaults to "openai", so importing
+# app.main with default settings crashes today. Exempting lint/type checks
+# here only defers fixing the construction itself; it does not make the bug
+# safe. Remove this exemption as part of that fix.
 [tool.ruff.lint.per-file-ignores]
 "app/agents/providers.py" = ["PLC0415"]
 
@@ -56,6 +58,8 @@ strict = true
 python_version = "3.13"
 plugins = ["pydantic.mypy"]
 
+# See the ruff per-file-ignores comment above -- same known-broken
+# construction, same "fix removes this exemption" expectation.
 [[tool.mypy.overrides]]
 module = "app.agents.providers"
 ignore_errors = true
