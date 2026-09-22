@@ -3,6 +3,15 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.security.csrf import CSRF_COOKIE, CSRF_HEADER, generate_csrf_token
+
+
+def _csrf_client() -> tuple[TestClient, str]:
+    """Return a TestClient with a pre-set CSRF cookie and the matching token."""
+    token = generate_csrf_token()
+    c = TestClient(app, cookies={CSRF_COOKIE: token}, raise_server_exceptions=True)
+    return c, token
+
 
 client = TestClient(app)
 
@@ -48,8 +57,10 @@ class TestStatesEndpoints:
 
 class TestEligibilityAssessEndpoints:
     def test_assess_terminal_expungement(self) -> None:
-        resp = client.post(
+        c, token = _csrf_client()
+        resp = c.post(
             "/api/eligibility/assess",
+            headers={CSRF_HEADER: token},
             json={"state": "texas", "question_id": 1, "answer_position": 1},
         )
         assert resp.status_code == 200
@@ -58,8 +69,10 @@ class TestEligibilityAssessEndpoints:
         assert data["result_label"] == "Texas Expungement"
 
     def test_assess_terminal_dnq(self) -> None:
-        resp = client.post(
+        c, token = _csrf_client()
+        resp = c.post(
             "/api/eligibility/assess",
+            headers={CSRF_HEADER: token},
             json={"state": "texas", "question_id": 0, "answer_position": 4},
         )
         assert resp.status_code == 200
@@ -68,8 +81,10 @@ class TestEligibilityAssessEndpoints:
         assert "Does Not Qualify" in data["result_label"]
 
     def test_assess_non_terminal_returns_question(self) -> None:
-        resp = client.post(
+        c, token = _csrf_client()
+        resp = c.post(
             "/api/eligibility/assess",
+            headers={CSRF_HEADER: token},
             json={"state": "texas", "question_id": 0, "answer_position": 0},
         )
         assert resp.status_code == 200
@@ -79,22 +94,28 @@ class TestEligibilityAssessEndpoints:
         assert data["next_question_text"] is not None
 
     def test_assess_unknown_state(self) -> None:
-        resp = client.post(
+        c, token = _csrf_client()
+        resp = c.post(
             "/api/eligibility/assess",
+            headers={CSRF_HEADER: token},
             json={"state": "unknownstate", "question_id": 0, "answer_position": 0},
         )
         assert resp.status_code == 404
 
     def test_assess_invalid_transition(self) -> None:
-        resp = client.post(
+        c, token = _csrf_client()
+        resp = c.post(
             "/api/eligibility/assess",
+            headers={CSRF_HEADER: token},
             json={"state": "texas", "question_id": 99, "answer_position": 99},
         )
         assert resp.status_code == 422
 
     def test_assess_returns_traversed_path(self) -> None:
-        resp = client.post(
+        c, token = _csrf_client()
+        resp = c.post(
             "/api/eligibility/assess",
+            headers={CSRF_HEADER: token},
             json={"state": "texas", "question_id": 1, "answer_position": 1},
         )
         assert resp.status_code == 200

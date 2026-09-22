@@ -2,15 +2,24 @@ from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 import structlog
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 
 from app.config import settings
 from app.db import create_db_and_tables
 from app.routers import eligibility, health, states
+from app.security.csrf import CSRFMiddleware
+from app.security.headers import SecurityHeadersMiddleware
+from app.security.origin import StrictOriginMiddleware
+from app.security.rate_limit import limiter
+from app.security.redaction import redact_pii
 
 structlog.configure(
     processors=[
+        redact_pii,
         structlog.contextvars.merge_contextvars,
         structlog.processors.add_log_level,
         structlog.processors.TimeStamper(fmt="iso"),
@@ -40,6 +49,16 @@ app = FastAPI(
     redoc_url="/api/redoc",
 )
 
+# State for slowapi
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # type: ignore[arg-type]
+
+# Middleware order: outermost runs LAST on request, FIRST on response.
+# We want security headers on every response → add first so they apply last.
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(StrictOriginMiddleware)
+app.add_middleware(CSRFMiddleware)
+app.add_middleware(SlowAPIMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.allowed_origins,
