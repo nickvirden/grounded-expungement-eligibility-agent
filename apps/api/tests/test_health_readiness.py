@@ -1,21 +1,20 @@
 """readyz's schema-currency check.
 
-Booting against an unmigrated database (make up before make migrate) used to
-report "ok" on both health endpoints and only fail on the first real request
-with a raw "relation does not exist" error. readyz now checks the database
-is actually at the latest Alembic migration first.
+An unmigrated database is a real production hazard: without this check, the
+app boots and reports healthy against a schema it can't actually serve
+requests against, failing later with a raw "relation does not exist" error
+on the first real request instead of at boot.
 
 The default test suite runs on SQLite, where this check is a no-op by design
 (see app/db.py) -- these tests talk to a real, separate Postgres instance to
 exercise the actual check logic, and reset/re-migrate that instance's schema
-between cases. Deliberately NOT pointed at CI's api-postgres job's shared
+between cases. Deliberately not pointed at the shared CI Postgres job's
 database: these tests drop and recreate tables, which would corrupt whatever
 state the rest of that job's pytest run depends on if run against the same
-database. Skipped automatically if no Postgres is reachable on the port
-below -- run one locally to exercise this suite (see the module docstring's
-default URL), or point READYZ_TEST_POSTGRES_URL at an isolated instance.
-Wiring a second, isolated database into CI for this is a reasonable
-follow-up, not done here to avoid that corruption risk.
+database. A second, isolated CI database for this suite is a reasonable
+addition, not present today. Skipped automatically if no Postgres is
+reachable on the port below -- run one locally to exercise this suite (see
+the default URL), or point READYZ_TEST_POSTGRES_URL at an isolated instance.
 """
 import os
 import subprocess

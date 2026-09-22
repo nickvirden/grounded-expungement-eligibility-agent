@@ -45,7 +45,10 @@ make up
 ```
 
 Migrations are an explicit step: the API never alters the schema on boot. Re-run
-`make migrate` whenever you pull a change that adds a migration.
+`make migrate` whenever you pull a change that adds a migration, then `make up --build`
+so the running API is rebuilt against the new schema too -- `/readyz` (which the
+compose healthcheck uses) fails loudly if the two are ever out of sync in either
+direction.
 
 Open (Caddy fronts everything on 443/80, no port needed):
 - **UI:** https://localhost
