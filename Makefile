@@ -24,7 +24,7 @@ format:
 	cd apps/api && uv run ruff format .
 
 test:
-	cd apps/api && uv run pytest -q
+	cd apps/api && uv run --extra dev pytest -q
 	pnpm test
 
 e2e:
