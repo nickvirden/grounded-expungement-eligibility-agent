@@ -2,6 +2,7 @@
 import json
 from functools import lru_cache
 from pathlib import Path
+from typing import Any
 
 
 def _infer_repo_root(start: Path) -> Path | None:
@@ -19,19 +20,19 @@ _REPO_ROOT = _infer_repo_root(_HERE)
 _DOCKER_SHARED = Path("/shared")
 
 _DEFAULT_TREES_DIR = (
-    (_REPO_ROOT / "packages" / "shared" / "state-trees")  # type: ignore[operator]
+    (_REPO_ROOT / "packages" / "shared" / "state-trees")
     if _REPO_ROOT
     else (_DOCKER_SHARED / "state-trees")
 )
 _DEFAULT_CATALOG = (
-    (_REPO_ROOT / "packages" / "shared" / "service-catalog.json")  # type: ignore[operator]
+    (_REPO_ROOT / "packages" / "shared" / "service-catalog.json")
     if _REPO_ROOT
     else (_DOCKER_SHARED / "service-catalog.json")
 )
 
 
 @lru_cache(maxsize=32)
-def load_tree(state: str, trees_dir: str = "") -> dict:
+def load_tree(state: str, trees_dir: str = "") -> dict[str, Any]:
     """Load and cache a state decision tree by state name."""
     base = Path(trees_dir) if trees_dir else _DEFAULT_TREES_DIR
     path = base / f"{state.lower()}.json"
@@ -42,7 +43,7 @@ def load_tree(state: str, trees_dir: str = "") -> dict:
 
 
 @lru_cache(maxsize=1)
-def load_service_catalog(catalog_path: str = "") -> dict:
+def load_service_catalog(catalog_path: str = "") -> dict[str, Any]:
     """Load and cache the service catalog."""
     path = Path(catalog_path) if catalog_path else _DEFAULT_CATALOG
     if not path.exists():

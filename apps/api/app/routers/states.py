@@ -1,3 +1,5 @@
+from typing import Any
+
 import structlog
 from fastapi import APIRouter, HTTPException
 
@@ -34,7 +36,7 @@ async def list_states() -> list[StateInfo]:
 
 
 @router.get("/{state}/tree")
-async def get_tree(state: str) -> dict:
+async def get_tree(state: str) -> dict[str, Any]:
     """Return the full decision tree JSON for a state (for the Quick Form stepper)."""
     try:
         return load_tree(state.lower())
@@ -43,7 +45,7 @@ async def get_tree(state: str) -> dict:
 
 
 @router.get("/{state}/entry")
-async def get_entry(state: str) -> dict:
+async def get_entry(state: str) -> dict[str, Any]:
     """Return the entry (first) question for a state."""
     try:
         result = get_entry_question(state.lower())

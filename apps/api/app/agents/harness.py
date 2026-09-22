@@ -1,7 +1,6 @@
 """AgentRunner: wraps Pydantic AI with run/step persistence, SSE events, and guardrails."""
 import asyncio
 import datetime
-import inspect
 import json
 import re
 from collections.abc import AsyncGenerator
@@ -298,9 +297,7 @@ class AgentRunner:
                         # we still return a final structured report, just without token streaming.
                         log.info("stream_text_unavailable", error=str(e), run_id=run_id)
 
-                    final = result.get_output()
-                    if inspect.isawaitable(final):
-                        final = await final
+                    final = await result.get_output()
                     # Never trust a model to echo state/intake correctly.
                     final = final.model_copy(update={"intake_id": intake_id, "state": state})
                     check_confidence(final.confidence)
