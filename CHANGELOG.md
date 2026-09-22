@@ -1,3 +1,16 @@
+## [0.9.2](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v0.9.1...v0.9.2) (2026-09-22)
+
+### Bug Fixes
+
+* **api:** collapse nested conditionals, use comprehensions, remove dead code ([7fd2b37](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/7fd2b37e3daf0b58510bf067c5ae385ea2e890fb))
+* **api:** correct false justification on the providers.py lint exemption ([b4a9eb5](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/b4a9eb535b1842563903d5933db5b02106552e17))
+* **api:** drop unused imports and stale noqa directives, sort imports, modernize typing syntax ([30669fb](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/30669fb3bc02e492f7e7e02e250dc0e08b53dffe))
+* **api:** hoist function-local imports to module level ([65a18f8](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/65a18f8019071f20bd1bac468750801ab3ebb94b))
+* **api:** resolve logging findings without leaking PII into tracebacks ([96f2b79](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/96f2b79a34972a412cd64d55c917a26be0f48acb))
+* **api:** satisfy mypy --strict outside the LLM provider factory ([38275ab](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/38275ab1d93ca3402737af0460cd86a2e778d0cc))
+* **api:** scope providers.py's known-broken real-LLM construction out of the gates ([e5d90e5](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/e5d90e5b5db6dd227454c5807d63bf55cadfa769))
+* **web:** resolve Biome lint findings ([b8749cb](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/b8749cb6f150fee615613242a53964f53c9ec7bc))
+
 ## [0.9.1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v0.9.0...v0.9.1) (2026-09-22)
 
 ### Bug Fixes
