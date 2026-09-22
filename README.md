@@ -117,7 +117,7 @@ It's a stand-in for the real agent, not the agent itself -- `openai`,
 currently-broken bug in their provider construction, not a credentials
 issue), so there's currently no way to run the real tool-calling agent.
 1. From the landing page, select **Texas → Talk to Agent**
-2. Type: _"I was arrested in Texas in 2019 for a DUI misdemeanor. The charges were dismissed. I have no other charges."_ (the keyword match is naive substring matching, not semantic understanding -- e.g. "not convicted" contains "convicted" and would be misread as a conviction; phrasing like "dismissed" or "no conviction" avoids that trap)
+2. Type: _"I was arrested in Texas in 2019 for a DUI misdemeanor. The charges were dismissed. I have no other charges."_ (the keyword match is naive substring matching, not semantic understanding -- e.g. "not convicted" contains "convicted" and would be misread as a conviction; stick to a clean "dismissed" phrasing rather than negating "conviction", which hits the same trap)
 3. Watch the deterministic result stream in and the Case File card render in real-time
 
 ---

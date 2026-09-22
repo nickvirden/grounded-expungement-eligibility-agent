@@ -15,6 +15,13 @@ class Settings(BaseSettings):
     # must fall through to the field default, not be treated as an explicit
     # empty value -- otherwise LLM_PROVIDER="" bypasses the intended
     # "unset means testmodel" default and crashes downstream instead.
+    # This applies to every field, not just llm_provider -- e.g. a blank
+    # DATABASE_URL now falls back to the sqlite default instead of failing
+    # loudly. Accepted here (every field already has a sane default, and no
+    # deploy sets these to an intentionally-blank value), but revisit if a
+    # future field's "blank" and "use the default" meanings genuinely need
+    # to differ -- a per-field validator, not this blanket setting, would be
+    # the right tool then.
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", extra="ignore", env_ignore_empty=True
     )
