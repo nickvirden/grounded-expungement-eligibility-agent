@@ -103,7 +103,14 @@ Persistence (Postgres via Docker Compose, Alembic-migrated; SQLite for local dev
   └─ agentstep
 
 Security layers: Caddy TLS → SecurityHeaders → CSRF (double-submit) → StrictOrigin
-→ CORS → rate limiting → Pydantic strict validation → PII-redacting structured logs
+→ CORS → Pydantic strict validation → PII-redacting structured logs
+
+Rate limiting (slowapi, in-memory) applies only to the two routes that create
+LLM/DB cost -- POST /api/intakes and GET /api/intakes/{id}/stream -- not as a
+blanket layer on every request like the ones above. The counter is per API
+instance and resets on cold start, so the real-world limit is approximately
+N× the configured per-minute value, where N is however many instances are
+warm at once. See DECISIONS.md §13.
 ```
 
 ---

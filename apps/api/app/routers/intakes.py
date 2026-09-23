@@ -3,7 +3,7 @@ import json
 from collections.abc import AsyncGenerator
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from sqlmodel import Session, select
 
@@ -12,6 +12,7 @@ from app.agents.harness import AgentRunner
 from app.db import engine, get_session
 from app.models import AgentRun, AgentStep, EligibilityResult, Intake
 from app.schemas import IntakeCreate
+from app.security.rate_limit import intakes_per_minute, limiter
 
 router = APIRouter(prefix="/api/intakes", tags=["intakes"])
 
@@ -19,7 +20,9 @@ _runner = AgentRunner()
 
 
 @router.post("", status_code=201)
+@limiter.limit(intakes_per_minute)
 async def create_intake(
+    request: Request,  # noqa: ARG001 -- slowapi's decorator inspects the call signature for this exact name
     body: IntakeCreate,
     session: Annotated[Session, Depends(get_session)],
 ) -> dict[str, Any]:
@@ -94,8 +97,21 @@ async def get_intake(
 
 
 @router.get("/{intake_id}/stream")
-async def stream_intake(intake_id: str) -> StreamingResponse:
-    """SSE stream: run the agent for this intake and stream events."""
+@limiter.limit(intakes_per_minute)
+async def stream_intake(
+    request: Request,  # noqa: ARG001 -- slowapi's decorator inspects the call signature for this exact name
+    intake_id: str,
+) -> StreamingResponse:
+    """SSE stream: run the agent for this intake and stream events.
+
+    slowapi's `@limiter.limit` wraps this function itself, so its rate-limit
+    check only runs once FastAPI has already resolved every `Depends(...)`
+    parameter and is about to call the endpoint body. Any auth check on this
+    route must therefore live inside this function body, not in a
+    `Depends(...)` -- a dependency rejecting an unauthenticated request
+    (401/403) runs *before* this decorator, letting an attacker send
+    unlimited unauthenticated requests without ever tripping the limit.
+    """
     # Note: For the demo, we read state/narrative from the existing intake record.
     with Session(engine) as session:
         intake = session.get(Intake, intake_id)

@@ -39,8 +39,10 @@ export default defineConfig({
       // FastAPI on a dedicated test port with ephemeral DB
       // ALLOWED_ORIGINS includes http (no TLS) for local dev/test. The API splits it on
       // commas (app/config.py), so it must be a plain comma-separated list, not JSON.
+      // RATE_LIMIT_ENABLED=false: test retries and CI re-runs hit POST /api/intakes from the
+      // same shared budget repeatedly, which would otherwise trip the 2/minute limit.
       command:
-        'cd .. && DATABASE_URL=sqlite:///./apps/api/data/test_e2e.db LLM_PROVIDER=testmodel CSRF_SECURE=false ALLOWED_ORIGINS=http://localhost:3000,https://localhost:3000 uv run --directory apps/api uvicorn app.main:app --port 8001',
+        'cd .. && DATABASE_URL=sqlite:///./apps/api/data/test_e2e.db LLM_PROVIDER=testmodel CSRF_SECURE=false RATE_LIMIT_ENABLED=false ALLOWED_ORIGINS=http://localhost:3000,https://localhost:3000 uv run --directory apps/api uvicorn app.main:app --port 8001',
       url: 'http://localhost:8001/healthz',
       reuseExistingServer: !isCI,
       timeout: 45_000,

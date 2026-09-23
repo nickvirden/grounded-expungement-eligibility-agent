@@ -124,7 +124,17 @@ This document records every significant architectural and technical decision mad
 
 ---
 
-## 13. What We'd Do With More Time
+## 13. Rate Limiting: Per-Route slowapi Decorators, No Per-Client Identification
+
+**Decision:** `@limiter.limit(intakes_per_minute)` on `POST /api/intakes` and `GET /api/intakes/{id}/stream` only — the two routes that trigger LLM/DB cost, each with its own independent 2/minute budget (`key_style="endpoint"` keys the counter by route, not by URL, so rotating the intake ID in the stream URL doesn't reset it). `@limiter.exempt` on `/healthz` and `/readyz` so uptime probes are never rate-limited. slowapi's default key function is `get_remote_address`, which reads the IP off the raw connection — but every request in this app's actual deployment passes through the Next.js server (`apps/web/src/app/api/backend/[...path]/route.ts` and friends) before reaching the API, and none of those proxy routes forward the original client's IP. So in practice `get_remote_address` sees the Next.js server's own outbound address(es) rather than the visitor's, collapsing all visitors onto a budget that's effectively shared per API instance rather than per-IP/per-NAT.
+
+**Why not a more precise per-visitor limit:** A per-IP limit would still be coarse — a shared IP (office NAT, campus network) shares one budget — but that's moot here since the proxying described above already collapses every visitor onto one key. A more precise identifier (session cookie, fingerprint) was considered and rejected: for a demo with no real traffic to speak of, plumbing per-visitor identification through the Next.js proxy layer is more machinery than the actual risk (a shared 2/minute budget on cost-triggering routes) justifies right now.
+
+**Accepted tradeoff — in-memory storage resets per instance:** slowapi's default storage is an in-process counter. Each serverless instance (e.g. each warm Vercel lambda) keeps its own counter, and that counter resets to zero on every cold start. In practice this means the real-world limit is approximately N× the configured per-minute number, where N is however many instances happen to be warm at once — not a fixed, precise cap. For a low-traffic demo this is an acceptable tradeoff, not a bug: a shared store (Redis) would fix it, but adds an operational dependency this project doesn't otherwise need.
+
+---
+
+## 14. What We'd Do With More Time
 
 
 
