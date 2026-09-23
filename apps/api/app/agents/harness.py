@@ -11,13 +11,13 @@ from pydantic_ai import RunUsage, UsageLimits
 from pydantic_ai.models import Model
 from sqlmodel import Session
 
-from app.agents import pricing
+from app.agents import pricing, spend_cap
 from app.agents.eligibility_agent import AgentDeps, EligibilityReport, build_agent
 from app.agents.guardrails import GuardrailError, check_confidence, check_max_steps
 from app.config import settings
 from app.db import engine
 from app.engine import rule_engine
-from app.models import AgentRun, AgentStep
+from app.models import AgentRun, AgentStep, Intake
 
 if TYPE_CHECKING:
     from pydantic_ai import Agent
@@ -222,6 +222,21 @@ class AgentRunner:
             # there's no price-table entry to record it against.
             pricing.price_for_model(self._model_name)
 
+    def ensure_affordable(self) -> None:
+        """Raise spend_cap.SpendCapExceededError unless this runner's model is
+        free or affordable under today's spend.
+
+        Called both by the HTTP router (so a blocked request gets a clean
+        503 before the replay guard's one-shot claim is spent) and again at
+        the top of run_stream() below (so any other caller of this harness,
+        e.g. a manual smoke-test script, is protected too, not just the
+        router). A no-op for testmodel, which has no price-table entry and
+        never makes a real request.
+        """
+        if settings.llm_provider == "testmodel":
+            return
+        spend_cap.ensure_affordable(self._model_name)
+
     async def run_stream(
         self,
         intake_id: str,
@@ -245,6 +260,26 @@ class AgentRunner:
         # and falls back to run_usage.
         run_usage: RunUsage | None = None
         usage: RunUsage | None = None
+        # Flips to "completed" only on a genuine final report; every other
+        # exit path (cap block, guardrail, timeout, unhandled error) leaves
+        # the intake at its default "failed" so a caller waiting on it isn't
+        # left stuck at "running" forever.
+        intake_final_status = "failed"
+
+        try:
+            self.ensure_affordable()
+        except spend_cap.SpendCapExceededError as e:
+            # Checked before the AgentRun row below is ever created: a
+            # blocked request must not look like an attempted run, and the
+            # HTTP router (which checks this same condition before claiming
+            # the intake) is the normal place this actually surfaces as a
+            # 503 -- reaching this branch at all means either a caller that
+            # skipped the router (e.g. a manual smoke-test script) or a rare
+            # race against the router's own pre-check.
+            log.warning("spend_cap_exceeded", error=str(e), intake_id=intake_id)
+            yield {"type": "error", "code": "spend_cap", "message": str(e)}
+            _finalize_intake(intake_id, intake_final_status)
+            return
 
         with Session(engine) as session:
             run = AgentRun(
@@ -290,6 +325,7 @@ class AgentRunner:
                         session.add(step)
                         session.commit()
 
+                    intake_final_status = "completed"
                     yield {"type": "final", "report": final.model_dump()}
                     return
 
@@ -364,6 +400,7 @@ class AgentRunner:
                             session.add(step)
                             session.commit()
 
+                        intake_final_status = "completed"
                         yield {"type": "final", "report": final.model_dump()}
                     finally:
                         # Captured here, inside the run_stream() context, so
@@ -400,6 +437,7 @@ class AgentRunner:
             # (from result.usage()) is preferred when a `result` was ever
             # constructed; run_usage covers every failure before that point.
             _record_usage(run_id, self._model_name, usage if usage is not None else run_usage)
+            _finalize_intake(intake_id, intake_final_status)
 
 
 def _record_usage(run_id: str | None, model_name: str, usage: RunUsage | None) -> None:
@@ -426,6 +464,23 @@ def _record_usage(run_id: str | None, model_name: str, usage: RunUsage | None) -
             run.total_tokens_out = tokens_out
             run.total_cost_usd = cost
             session.add(run)
+            session.commit()
+
+
+def _finalize_intake(intake_id: str, status: str) -> None:
+    """Move the intake out of "running" once its run has actually finished --
+    completed, failed, or blocked by the spend cap before it began. Runs
+    regardless of which caller started the run: the HTTP router's atomic
+    claim (see app/routers/intakes.py) sets "running" so a second stream
+    attempt gets 409 instead of a second billable run, and this is what
+    unblocks that -- without it, a run that failed after being claimed would
+    leave the intake stuck at "running" forever.
+    """
+    with Session(engine) as session:
+        intake = session.get(Intake, intake_id)
+        if intake:
+            intake.status = status
+            session.add(intake)
             session.commit()
 
 

@@ -141,9 +141,14 @@ class TestUsagePersistsOnFailureBeforeFinalAnswer:
 
         # llm_provider must be non-testmodel for run_stream() to take the
         # real-agent branch at all; max_agent_steps=1 forces the request
-        # limit to trip on the agent's second request.
+        # limit to trip on the agent's second request. daily_spend_cap_usd
+        # is raised well above this run's worst-case cost -- the default $0
+        # cap would otherwise block run_stream() before it ever reaches the
+        # request-limit failure this test is actually about (see
+        # test_spend_cap.py for the cap's own behavior).
         monkeypatch.setattr(settings, "llm_provider", "openai")
         monkeypatch.setattr(settings, "max_agent_steps", 1)
+        monkeypatch.setattr(settings, "daily_spend_cap_usd", 1000.0)
 
         events = [
             event async for event in runner.run_stream(_create_intake(), "texas", "n/a")

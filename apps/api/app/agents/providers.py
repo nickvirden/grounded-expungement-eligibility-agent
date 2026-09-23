@@ -9,8 +9,9 @@ deploy can't make a real, billable call by accident: this module's own
 `pydantic_ai.models.ALLOW_MODEL_REQUESTS`, set at import in app/main.py
 whenever that flag is off and enforced inside pydantic-ai's own
 OpenAI/Anthropic/Ollama request paths -- independent of whatever happens
-here. A daily spend cap, sitting directly in front of every model call
-inside the agent harness itself, is a planned third layer, not built yet.
+here. The third layer is the daily spend cap in app/agents/spend_cap.py,
+checked inside the agent harness directly in front of every model call, so
+it protects every caller of the harness, not just the HTTP router.
 """
 from typing import Final
 
