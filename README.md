@@ -135,7 +135,7 @@ issue), so there's currently no way to run the real tool-calling agent.
 ## Running Tests
 
 ```bash
-# Backend: all 86 tests (pytest lives in the dev extra)
+# Backend: all 92 tests (pytest lives in the dev extra)
 cd apps/api
 uv run --extra dev pytest tests/ -v
 
