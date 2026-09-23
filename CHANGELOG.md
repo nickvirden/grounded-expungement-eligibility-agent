@@ -1,3 +1,9 @@
+## [0.11.1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v0.11.0...v0.11.1) (2026-09-23)
+
+### Bug Fixes
+
+* **api:** regenerate uv.lock for the 1.0.0 version bump ([f27acb6](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/f27acb6428c542df1021bb12cdf01efd8390ffb7))
+
 ## [0.11.0](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v0.10.0...v0.11.0) (2026-09-23)
 
 ### Features
