@@ -129,10 +129,12 @@ No API key needed -- the default `LLM_PROVIDER=testmodel` runs a
 deterministic demo path: it picks a branch of the decision tree by matching
 a few keywords in your narrative (e.g. "dismissed", "convicted"), then
 walks the same rule engine the Quick Form uses, with no external LLM call.
-It's a stand-in for the real agent, not the agent itself -- `openai`,
-`anthropic`, and `ollama` are all rejected at startup today (a known,
-currently-broken bug in their provider construction, not a credentials
-issue), so there's currently no way to run the real tool-calling agent.
+It's a stand-in for the real agent, not the agent itself -- the deployed
+site keeps this as the only provider on purpose, to guarantee $0 ongoing
+LLM spend. `openai`, `anthropic`, and `ollama` are real, working
+providers behind an opt-in (`ALLOW_REAL_LLM_PROVIDERS=true`), for anyone
+running this locally with their own credentials; see DECISIONS.md for
+the layered defenses that keep a real provider from firing by accident.
 1. From the landing page, select **Texas → Talk to Agent**
 2. Type: _"I was arrested in Texas in 2019 for a DUI misdemeanor. The charges were dismissed. I have no other charges."_ (the keyword match is naive substring matching, not semantic understanding -- e.g. "not convicted" contains "convicted" and would be misread as a conviction; stick to a clean "dismissed" phrasing rather than negating "conviction", which hits the same trap)
 3. Watch the deterministic result stream in and the Case File card render in real-time

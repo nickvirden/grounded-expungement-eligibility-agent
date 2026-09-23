@@ -26,11 +26,11 @@ This document records every significant architectural and technical decision mad
 
 ## 3. Provider Abstraction
 
-**Decision:** Pluggable LLM provider via `LLM_PROVIDER` env var (testmodel today; openai | anthropic | ollama once their construction is fixed).
+**Decision:** Pluggable LLM provider via `LLM_PROVIDER` env var (`testmodel`, `openai`, `anthropic`, `ollama`), with real providers behind an `ALLOW_REAL_LLM_PROVIDERS` opt-in that defaults off.
 
 **Why:** Demonstrates production thinking (vendor lock-in avoidance, cost routing potential, offline demo capability). At scale, this layer would add fallback chains, cost-based routing, and circuit breakers.
 
-**Current state:** `openai`, `anthropic`, and `ollama` construction all share the same real bug -- credentials/base URLs need to go through a `Provider` object, not passed directly to the model classes as this code currently does. `Settings` defaults to `testmodel` and rejects all three outright at startup rather than let a misconfigured deploy crash later with a confusing error deep inside `AgentRunner()`.
+**Current state:** all three real providers construct correctly, each via its `Provider` object (`OpenAIProvider`/`AnthropicProvider`/`OllamaProvider`), passed to the model class rather than credentials on the model class directly. The deployed site keeps `ALLOW_REAL_LLM_PROVIDERS` off and `LLM_PROVIDER=testmodel`, on purpose, to guarantee $0 ongoing spend -- this is a product decision, not a remaining bug. Two independent layers keep a real provider from firing while the opt-in is off: `make_model()` in `app/agents/providers.py` refuses to construct one at all, and `pydantic_ai.models.ALLOW_MODEL_REQUESTS` is set to `False` at startup, which every real OpenAI/Anthropic/Ollama request path checks before firing (and which `TestModel` never checks, so the default path is unaffected). A third, independent layer -- a daily spend cap defaulting to $0 -- is planned but not built yet. Turning real providers on for a real deployment means flipping the opt-in and providing credentials -- documented as a deliberate, reviewable step, not a default.
 
 ---
 
