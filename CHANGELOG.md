@@ -1,3 +1,27 @@
+## [2.0.0](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v1.0.1...v2.0.0) (2026-09-23)
+
+### ⚠ BREAKING CHANGES
+
+* **api,web:** GET /api/intakes/{id}/stream requires
+Authorization: Bearer <stream_token> from POST /api/intakes's response
+for agent-mode intakes; re-streaming an already-claimed intake returns
+409 (from the replay guard); SSE_SIGNING_KEY (16+ characters) must be
+set for Talk-to-Agent to work, though its absence only disables that one
+feature rather than the whole API.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+### Features
+
+* **api,web:** require a signed stream token for the intake SSE stream ([ce2a43e](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/ce2a43e2d0b43f14eda5b6df96c78a8d00648631))
+* **api:** add a replay guard and a $0-by-default spend cap ([a2bbbfc](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/a2bbbfce50d11a8c63729237cae70b3a12283c8a))
+* **api:** fix real-LLM provider construction, keep it opt-in and off ([47c2486](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/47c2486b65cfc3de252265b1b26da45aeb6db10c))
+* **api:** rate-limit intake creation and the agent stream ([e2e3577](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/e2e357770c3eaf89cf135fb303468b8efbeee1d1))
+
+### Bug Fixes
+
+* **api:** create a real Intake row before inserting an AgentRun in tests ([b3e4be4](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/b3e4be476cbfb9809426f7a03a81dbdbbae0ba73))
+
 ## [1.0.1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v1.0.0...v1.0.1) (2026-09-23)
 
 ### Bug Fixes
