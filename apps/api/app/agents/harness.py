@@ -7,14 +7,17 @@ from collections.abc import AsyncGenerator
 from typing import TYPE_CHECKING, Any
 
 import structlog
+from pydantic_ai import RunUsage, UsageLimits
+from pydantic_ai.models import Model
 from sqlmodel import Session
 
+from app.agents import pricing, spend_cap
 from app.agents.eligibility_agent import AgentDeps, EligibilityReport, build_agent
 from app.agents.guardrails import GuardrailError, check_confidence, check_max_steps
 from app.config import settings
 from app.db import engine
 from app.engine import rule_engine
-from app.models import AgentRun, AgentStep
+from app.models import AgentRun, AgentStep, Intake
 
 if TYPE_CHECKING:
     from pydantic_ai import Agent
@@ -208,6 +211,31 @@ class AgentRunner:
 
     def __init__(self) -> None:
         self._agent: Agent[AgentDeps, EligibilityReport] = build_agent()
+        # Resolved once here so every run_stream() call records the same
+        # value for AgentRun.model, regardless of provider.
+        model = self._agent.model
+        self._model_name: str = model.model_name if isinstance(model, Model) else "unknown"
+        if settings.llm_provider != "testmodel":
+            # Fail here, at import time (AgentRunner() is constructed at
+            # import in app/routers/intakes.py), rather than after a real,
+            # billable call already happened and _record_usage discovers
+            # there's no price-table entry to record it against.
+            pricing.price_for_model(self._model_name)
+
+    def ensure_affordable(self) -> None:
+        """Raise spend_cap.SpendCapExceededError unless this runner's model is
+        free or affordable under today's spend.
+
+        Called both by the HTTP router (so a blocked request gets a clean
+        503 before the replay guard's one-shot claim is spent) and again at
+        the top of run_stream() below (so any other caller of this harness,
+        e.g. a manual smoke-test script, is protected too, not just the
+        router). A no-op for testmodel, which has no price-table entry and
+        never makes a real request.
+        """
+        if settings.llm_provider == "testmodel":
+            return
+        spend_cap.ensure_affordable(self._model_name)
 
     async def run_stream(
         self,
@@ -217,12 +245,47 @@ class AgentRunner:
     ) -> AsyncGenerator[dict[str, Any]]:
         """Run the agent and yield SSE event dicts."""
         run_id = None
+        # Both stay None for the deterministic testmodel path, where no real
+        # request is ever made and _record_usage must not attempt a price
+        # lookup for it. For the real-provider path, run_usage is passed into
+        # run_stream() below and updated in place by pydantic-ai as real
+        # requests happen, so it holds token counts even if the run never
+        # reaches a `result` object at all (the request/token limit, or a
+        # provider HTTP error, can both fire while entering the run_stream()
+        # context, before it yields one). This still undercounts the one
+        # in-flight request that trips a token limit mid-stream -- pydantic-ai
+        # raises before folding that response into run_usage, so its cost is
+        # billed but not recorded here. `usage` is the more precise
+        # result.usage() read once a `result` exists; _record_usage prefers it
+        # and falls back to run_usage.
+        run_usage: RunUsage | None = None
+        usage: RunUsage | None = None
+        # Flips to "completed" only on a genuine final report; every other
+        # exit path (cap block, guardrail, timeout, unhandled error) leaves
+        # the intake at its default "failed" so a caller waiting on it isn't
+        # left stuck at "running" forever.
+        intake_final_status = "failed"
+
+        try:
+            self.ensure_affordable()
+        except spend_cap.SpendCapExceededError as e:
+            # Checked before the AgentRun row below is ever created: a
+            # blocked request must not look like an attempted run, and the
+            # HTTP router (which checks this same condition before claiming
+            # the intake) is the normal place this actually surfaces as a
+            # 503 -- reaching this branch at all means either a caller that
+            # skipped the router (e.g. a manual smoke-test script) or a rare
+            # race against the router's own pre-check.
+            log.warning("spend_cap_exceeded", error=str(e), intake_id=intake_id)
+            yield {"type": "error", "code": "spend_cap", "message": str(e)}
+            _finalize_intake(intake_id, intake_final_status)
+            return
 
         with Session(engine) as session:
             run = AgentRun(
                 intake_id=intake_id,
                 provider=settings.llm_provider,
-                model="",
+                model=self._model_name,
                 status="running",
             )
             session.add(run)
@@ -262,6 +325,7 @@ class AgentRunner:
                         session.add(step)
                         session.commit()
 
+                    intake_final_status = "completed"
                     yield {"type": "final", "report": final.model_dump()}
                     return
 
@@ -271,54 +335,79 @@ class AgentRunner:
                     "Please help me determine my eligibility for record relief."
                 )
 
+                # request_limit/total_tokens_limit are the real, reachable
+                # step/token guardrail: EligibilityReport is a structured
+                # output type, and pydantic-ai's stream_text() raises
+                # UserError for structured output, so the loop-based
+                # check_max_steps() call below never actually runs against a
+                # real provider. UsageLimits is enforced by pydantic-ai
+                # itself, independent of that loop.
+                usage_limits = UsageLimits(
+                    request_limit=settings.max_agent_steps,
+                    total_tokens_limit=settings.max_total_tokens,
+                )
+                run_usage = RunUsage()
+
                 async with self._agent.run_stream(
                     user_prompt,
                     deps=AgentDeps(state=state, narrative=narrative),
+                    usage_limits=usage_limits,
+                    usage=run_usage,
                 ) as result:
                     try:
-                        async for text in result.stream_text():
-                            check_max_steps(step_count)
-                            step_count += 1
+                        try:
+                            async for text in result.stream_text():
+                                check_max_steps(step_count)
+                                step_count += 1
 
-                            with Session(engine) as session:
-                                step = AgentStep(
-                                    run_id=run_id,
-                                    step_idx=step_count,
-                                    type="llm_chunk",
-                                    payload_json=json.dumps({"text": text}),
-                                )
-                                session.add(step)
-                                session.commit()
+                                with Session(engine) as session:
+                                    step = AgentStep(
+                                        run_id=run_id,
+                                        step_idx=step_count,
+                                        type="llm_chunk",
+                                        payload_json=json.dumps({"text": text}),
+                                    )
+                                    session.add(step)
+                                    session.commit()
 
-                            yield {"type": "text_chunk", "text": text}
-                    except Exception as e:
-                        # Some models/providers (notably TestModel) can produce non-text
-                        # responses where stream_text() is not supported. In that case
-                        # we still return a final structured report, just without token streaming.
-                        log.info("stream_text_unavailable", error=str(e), run_id=run_id)
+                                yield {"type": "text_chunk", "text": text}
+                        except Exception as e:
+                            # Some models/providers (notably TestModel) can
+                            # produce non-text responses where stream_text()
+                            # is not supported. In that case we still return
+                            # a final structured report, just without token
+                            # streaming.
+                            log.info("stream_text_unavailable", error=str(e), run_id=run_id)
 
-                    final = await result.get_output()
-                    # Never trust a model to echo state/intake correctly.
-                    final = final.model_copy(update={"intake_id": intake_id, "state": state})
-                    check_confidence(final.confidence)
+                        final = await result.get_output()
+                        # Never trust a model to echo state/intake correctly.
+                        final = final.model_copy(update={"intake_id": intake_id, "state": state})
+                        check_confidence(final.confidence)
 
-                    with Session(engine) as session:
-                        run_rec = session.get(AgentRun, run_id)
-                        if run_rec:
-                            run_rec.status = "completed"
-                            run_rec.ended_at = datetime.datetime.now(datetime.UTC)
-                            session.add(run_rec)
+                        with Session(engine) as session:
+                            run_rec = session.get(AgentRun, run_id)
+                            if run_rec:
+                                run_rec.status = "completed"
+                                run_rec.ended_at = datetime.datetime.now(datetime.UTC)
+                                session.add(run_rec)
 
-                        step = AgentStep(
-                            run_id=run_id,
-                            step_idx=step_count + 1,
-                            type="final",
-                            payload_json=final.model_dump_json(),
-                        )
-                        session.add(step)
-                        session.commit()
+                            step = AgentStep(
+                                run_id=run_id,
+                                step_idx=step_count + 1,
+                                type="final",
+                                payload_json=final.model_dump_json(),
+                            )
+                            session.add(step)
+                            session.commit()
 
-                    yield {"type": "final", "report": final.model_dump()}
+                        intake_final_status = "completed"
+                        yield {"type": "final", "report": final.model_dump()}
+                    finally:
+                        # Captured here, inside the run_stream() context, so
+                        # a guardrail/timeout/disconnect exit still records
+                        # whatever usage actually happened -- not only a
+                        # clean completion.
+                        usage = result.usage()
 
         except GuardrailError as e:
             log.warning("guardrail_triggered", error=str(e), run_id=run_id)
@@ -339,6 +428,60 @@ class AgentRunner:
             log.error("agent_error", error=str(e), run_id=run_id)  # noqa: TRY400
             _mark_run_failed(run_id, str(e))
             yield {"type": "error", "code": "internal", "message": "An error occurred"}
+
+        finally:
+            # A client disconnect raises CancelledError/GeneratorExit, both
+            # BaseException, so none of the `except` clauses above catch it
+            # -- but `finally` still runs, which is why usage/cost recording
+            # lives here rather than inside any single except branch. `usage`
+            # (from result.usage()) is preferred when a `result` was ever
+            # constructed; run_usage covers every failure before that point.
+            _record_usage(run_id, self._model_name, usage if usage is not None else run_usage)
+            _finalize_intake(intake_id, intake_final_status)
+
+
+def _record_usage(run_id: str | None, model_name: str, usage: RunUsage | None) -> None:
+    """Persist token counts and USD cost for a run, in USD-per-token terms.
+
+    `usage` is None only for the deterministic testmodel path, where no real
+    request is ever made and "test" has no price-table entry to look up.
+    Every real-provider path passes a RunUsage -- possibly all-zero, if the
+    run failed before any request completed, but never None -- so a real
+    provider's usage is always priced, even on a failure path.
+    """
+    if run_id is None:
+        return
+
+    tokens_in = usage.input_tokens if usage is not None else 0
+    tokens_out = usage.output_tokens if usage is not None else 0
+    cost = pricing.cost_usd(model_name, tokens_in, tokens_out) if usage is not None else 0.0
+
+    with Session(engine) as session:
+        run = session.get(AgentRun, run_id)
+        if run:
+            run.model = model_name
+            run.total_tokens_in = tokens_in
+            run.total_tokens_out = tokens_out
+            run.total_cost_usd = cost
+            session.add(run)
+            session.commit()
+
+
+def _finalize_intake(intake_id: str, status: str) -> None:
+    """Move the intake out of "running" once its run has actually finished --
+    completed, failed, or blocked by the spend cap before it began. Runs
+    regardless of which caller started the run: the HTTP router's atomic
+    claim (see app/routers/intakes.py) sets "running" so a second stream
+    attempt gets 409 instead of a second billable run, and this is what
+    unblocks that -- without it, a run that failed after being claimed would
+    leave the intake stuck at "running" forever.
+    """
+    with Session(engine) as session:
+        intake = session.get(Intake, intake_id)
+        if intake:
+            intake.status = status
+            session.add(intake)
+            session.commit()
 
 
 def _mark_run_failed(run_id: str, error: str) -> None:

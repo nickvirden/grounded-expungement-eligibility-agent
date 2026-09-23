@@ -922,7 +922,7 @@ wheels = [
 
 [[package]]
 name = "grounded-expungement-eligibility-agent-api"
-version = "1.0.0"
+version = "2.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "alembic" },

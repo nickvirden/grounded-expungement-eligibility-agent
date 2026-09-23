@@ -40,6 +40,8 @@ git clone <this repo>
 cd grounded-expungement-eligibility-agent
 cp .env.example .env
 # Set POSTGRES_PASSWORD in .env (URL-safe, e.g. `openssl rand -hex 24`)
+# Set SSE_SIGNING_KEY in .env (16+ chars, e.g. `openssl rand -hex 32`) --
+# Talk to Agent returns 503 without it; everything else works regardless.
 make migrate   # starts Postgres and applies Alembic migrations
 make up
 ```
@@ -58,6 +60,9 @@ Open (Caddy fronts everything on 443/80, no port needed):
 ### Without Docker (local dev)
 Local dev defaults to a SQLite file (`apps/api/data/eligibility.db`), created
 from the models on startup — no database server or migration step needed.
+Settings load from a `.env` in the current directory, so this flow needs its
+own `apps/api/.env` (the root `.env.example` isn't read here) -- copy it in
+and set `SSE_SIGNING_KEY` there too if you want Talk to Agent to work.
 ```bash
 # Terminal 1 — API
 cd apps/api
@@ -103,7 +108,14 @@ Persistence (Postgres via Docker Compose, Alembic-migrated; SQLite for local dev
   └─ agentstep
 
 Security layers: Caddy TLS → SecurityHeaders → CSRF (double-submit) → StrictOrigin
-→ CORS → rate limiting → Pydantic strict validation → PII-redacting structured logs
+→ CORS → Pydantic strict validation → PII-redacting structured logs
+
+Rate limiting (slowapi, in-memory) applies only to the two routes that create
+LLM/DB cost -- POST /api/intakes and GET /api/intakes/{id}/stream -- not as a
+blanket layer on every request like the ones above. The counter is per API
+instance and resets on cold start, so the real-world limit is approximately
+N× the configured per-minute value, where N is however many instances are
+warm at once. See DECISIONS.md §13.
 ```
 
 ---
@@ -118,14 +130,18 @@ Security layers: Caddy TLS → SecurityHeaders → CSRF (double-submit) → Stri
 5. Observe the result page with traversed decision path
 
 ### Talk to Agent
-No API key needed -- the default `LLM_PROVIDER=testmodel` runs a
+Needs `SSE_SIGNING_KEY` set (see Quick Start above) -- without it this
+returns 503, though nothing else on the site is affected. No LLM API key
+needed: the default `LLM_PROVIDER=testmodel` runs a
 deterministic demo path: it picks a branch of the decision tree by matching
 a few keywords in your narrative (e.g. "dismissed", "convicted"), then
 walks the same rule engine the Quick Form uses, with no external LLM call.
-It's a stand-in for the real agent, not the agent itself -- `openai`,
-`anthropic`, and `ollama` are all rejected at startup today (a known,
-currently-broken bug in their provider construction, not a credentials
-issue), so there's currently no way to run the real tool-calling agent.
+It's a stand-in for the real agent, not the agent itself -- the deployed
+site keeps this as the only provider on purpose, to guarantee $0 ongoing
+LLM spend. `openai`, `anthropic`, and `ollama` are real, working
+providers behind an opt-in (`ALLOW_REAL_LLM_PROVIDERS=true`), for anyone
+running this locally with their own credentials; see DECISIONS.md for
+the layered defenses that keep a real provider from firing by accident.
 1. From the landing page, select **Texas → Talk to Agent**
 2. Type: _"I was arrested in Texas in 2019 for a DUI misdemeanor. The charges were dismissed. I have no other charges."_ (the keyword match is naive substring matching, not semantic understanding -- e.g. "not convicted" contains "convicted" and would be misread as a conviction; stick to a clean "dismissed" phrasing rather than negating "conviction", which hits the same trap)
 3. Watch the deterministic result stream in and the Case File card render in real-time

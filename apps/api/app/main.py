@@ -1,6 +1,7 @@
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
+import pydantic_ai.models
 import structlog
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -32,6 +33,16 @@ structlog.configure(
 
 log = structlog.get_logger()
 
+# Independent of app/agents/providers.py's make_model() opt-in check: even if
+# that check were somehow bypassed, pydantic-ai's own real OpenAI/Anthropic/
+# Ollama request paths still refuse to fire while this is False. TestModel
+# never checks this flag, so the testmodel-only default is unaffected either
+# way. Set at import time, not inside the `lifespan` startup hook below --
+# a serverless Python runtime isn't guaranteed to actually run ASGI lifespan
+# hooks per invocation the way a long-running server does, and this must
+# hold regardless of that.
+pydantic_ai.models.ALLOW_MODEL_REQUESTS = settings.allow_real_llm_providers
+
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncGenerator[None]:
@@ -43,7 +54,7 @@ async def lifespan(_app: FastAPI) -> AsyncGenerator[None]:
 
 app = FastAPI(
     title="ClearSlate Eligibility API",
-    version="1.0.0",
+    version="2.0.0",
     lifespan=lifespan,
     docs_url="/api/docs",
     redoc_url="/api/redoc",

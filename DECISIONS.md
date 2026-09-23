@@ -26,11 +26,11 @@ This document records every significant architectural and technical decision mad
 
 ## 3. Provider Abstraction
 
-**Decision:** Pluggable LLM provider via `LLM_PROVIDER` env var (testmodel today; openai | anthropic | ollama once their construction is fixed).
+**Decision:** Pluggable LLM provider via `LLM_PROVIDER` env var (`testmodel`, `openai`, `anthropic`, `ollama`), with real providers behind an `ALLOW_REAL_LLM_PROVIDERS` opt-in that defaults off.
 
 **Why:** Demonstrates production thinking (vendor lock-in avoidance, cost routing potential, offline demo capability). At scale, this layer would add fallback chains, cost-based routing, and circuit breakers.
 
-**Current state:** `openai`, `anthropic`, and `ollama` construction all share the same real bug -- credentials/base URLs need to go through a `Provider` object, not passed directly to the model classes as this code currently does. `Settings` defaults to `testmodel` and rejects all three outright at startup rather than let a misconfigured deploy crash later with a confusing error deep inside `AgentRunner()`.
+**Current state:** all three real providers construct correctly, each via its `Provider` object (`OpenAIProvider`/`AnthropicProvider`/`OllamaProvider`), passed to the model class rather than credentials on the model class directly. The deployed site keeps `ALLOW_REAL_LLM_PROVIDERS` off and `LLM_PROVIDER=testmodel`, on purpose, to guarantee $0 ongoing spend -- this is a product decision, not a remaining bug. Two independent layers keep a real provider from firing while the opt-in is off: `make_model()` in `app/agents/providers.py` refuses to construct one at all, and `pydantic_ai.models.ALLOW_MODEL_REQUESTS` is set to `False` at startup, which every real OpenAI/Anthropic/Ollama request path checks before firing (and which `TestModel` never checks, so the default path is unaffected). A third, independent layer -- `DAILY_SPEND_CAP_USD`, defaulting to `0.0` -- sums today's recorded cost before every run and refuses anything that would exceed it, checked inside the agent harness itself so it protects every caller, not just the HTTP route. "Free" is decided from the model's actual price-table entry, never inferred from a token count or a flat per-provider assumption: a genuinely free run (`testmodel`, or Ollama against a verified-local host) is unaffected by prior spend, while every other model -- including a remote Ollama host, which has no real per-token price but isn't actually free -- is refused outright at the $0 default, with no override based on the cap alone. Turning real providers on for a real deployment means flipping the opt-in, raising the cap, and providing credentials -- documented as a deliberate, reviewable step, not a default.
 
 ---
 
@@ -124,7 +124,56 @@ This document records every significant architectural and technical decision mad
 
 ---
 
-## 13. What We'd Do With More Time
+## 13. Rate Limiting: Per-Route slowapi Decorators, No Per-Client Identification
+
+**Decision:** `@limiter.limit(intakes_per_minute)` on `POST /api/intakes` and `GET /api/intakes/{id}/stream` only — the two routes that trigger LLM/DB cost, each with its own independent 2/minute budget (`key_style="endpoint"` keys the counter by route, not by URL, so rotating the intake ID in the stream URL doesn't reset it). `@limiter.exempt` on `/healthz` and `/readyz` so uptime probes are never rate-limited. slowapi's default key function is `get_remote_address`, which reads the IP off the raw connection — but every request in this app's actual deployment passes through the Next.js server (`apps/web/src/app/api/backend/[...path]/route.ts` and friends) before reaching the API, and none of those proxy routes forward the original client's IP. So in practice `get_remote_address` sees the Next.js server's own outbound address(es) rather than the visitor's, collapsing all visitors onto a budget that's effectively shared per API instance rather than per-IP/per-NAT.
+
+**Why not a more precise per-visitor limit:** A per-IP limit would still be coarse — a shared IP (office NAT, campus network) shares one budget — but that's moot here since the proxying described above already collapses every visitor onto one key. A more precise identifier (session cookie, fingerprint) was considered and rejected: for a demo with no real traffic to speak of, plumbing per-visitor identification through the Next.js proxy layer is more machinery than the actual risk (a shared 2/minute budget on cost-triggering routes) justifies right now.
+
+**Accepted tradeoff — in-memory storage resets per instance:** slowapi's default storage is an in-process counter. Each serverless instance (e.g. each warm Vercel lambda) keeps its own counter, and that counter resets to zero on every cold start. In practice this means the real-world limit is approximately N× the configured per-minute number, where N is however many instances happen to be warm at once — not a fixed, precise cap. For a low-traffic demo this is an acceptable tradeoff, not a bug: a shared store (Redis) would fix it, but adds an operational dependency this project doesn't otherwise need.
+
+---
+
+## 14. SSE Stream Authorization: Signed, Single-Purpose Tokens
+
+**Decision:** `GET /api/intakes/{id}/stream` requires a short-lived (120s), `itsdangerous`-signed
+token bound to one intake ID, minted by `POST /api/intakes` and sent as `Authorization: Bearer
+<token>` (never a query param, which would leak into logs and any `Referer` header). The token is
+checked before the intake is ever looked up in the database, so an invalid token gets the same
+response whether or not the requested ID is real -- it can't be used to enumerate intake IDs.
+Failure modes are distinct: missing/malformed/expired token → `401` with `WWW-Authenticate:
+Bearer`; a token minted for a different intake → `403`; the signing key itself unset or too short
+→ `503`.
+
+**Why fail closed per-feature, not at API boot:** Quick Form, health checks, and every other route
+have nothing to do with Talk-to-Agent, so a missing optional secret for one feature shouldn't be
+able to take the rest of the API down with it. A boot-time crash on a missing `SSE_SIGNING_KEY`
+would do exactly that. `app/security/stream_token.py`'s `is_configured()` is checked wherever this
+matters (`POST /api/intakes` for agent-mode intakes, `GET .../stream`) and turns a missing/too-short
+key into a `503` there, not a crash anywhere else.
+
+**Why not a query param or `EventSource`:** `EventSource` has no API for setting request headers,
+which would otherwise push a token into the URL itself -- and a token in the URL ends up in server
+access logs and gets forwarded as `Referer` on any same-page outbound request. `useChatStream`
+already reads its SSE stream via `fetch()` and a `ReadableStream`, not `EventSource`, which makes a
+header-based token straightforward to send alongside the request.
+
+**Why the token isn't single-use:** it's bound to a TTL and one intake ID, not tracked as
+spent-or-not server-side. The thing that actually stops a second billable run on the same intake is
+the replay guard's atomic claim in `app/agents/replay_guard.py`, not the token -- reusing a
+still-valid token against its own intake correctly reaches that 409, rather than a redundant second
+layer of single-use bookkeeping doing the same job.
+
+**Deploy-order tolerance:** `apps/web` and `apps/api` deploy from the same push as two independent
+Vercel projects, not atomically. The web side treats `stream_token` in the create-intake response
+as optional and only sends the header when present, so a web deploy landing slightly ahead of the
+API's doesn't crash -- it just doesn't send a token yet, which an older API doesn't require either.
+The reverse order (new API, old web) is the one direction that's a genuine breaking change: the
+API requires the header unconditionally, since that's the actual point of this feature.
+
+---
+
+## 15. What We'd Do With More Time
 
 
 

@@ -1,13 +1,6 @@
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-# All three real-model constructors in app/agents/providers.py are broken
-# today (openai, anthropic, and ollama all pass api_key/base_url directly to
-# model classes that reject them -- credentials need a Provider object
-# instead). Fixing them is separate, scoped work. testmodel is the only
-# provider that actually works right now.
-_UNUSABLE_LLM_PROVIDERS = frozenset({"openai", "anthropic", "ollama"})
-
 # Neon (and other managed Postgres providers) inject DATABASE_URL with the
 # driver-agnostic "postgres://"/"postgresql://" scheme, but this app's engine
 # needs the explicit psycopg3 dialect to actually connect. A bare scheme
@@ -41,9 +34,23 @@ class Settings(BaseSettings):
     # pydantic-settings treating list[str] as a "complex" type requiring JSON.
     allowed_origins: str = Field(default="https://localhost:3000")
 
-    # Default here and fail fast below rather than let a misconfigured
-    # deploy crash opaquely at import time via AgentRunner().
+    # testmodel needs no credentials and makes no real request. Selecting a
+    # real provider (openai/anthropic/ollama) is checked in app/agents/
+    # providers.py's make_model(), not here -- see allow_real_llm_providers
+    # below for why that check lives there instead of a validator on this
+    # field.
     llm_provider: str = "testmodel"
+    # A real provider (openai/anthropic/ollama) only makes real, billable API
+    # calls once this is explicitly turned on. Checked in
+    # app/agents/providers.py's make_model() as a plain RuntimeError, not
+    # here as a model_validator -- a validator's error output embeds the
+    # whole (truncated) settings dict, which would leak whatever API key
+    # happens to be set alongside this flag into container logs. This is the
+    # first of two independent layers keeping the default at $0 spend: the
+    # second is pydantic_ai.models.ALLOW_MODEL_REQUESTS, flipped off at
+    # startup in app/main.py whenever this flag is off, and checked directly
+    # inside pydantic-ai's own real OpenAI/Anthropic request paths.
+    allow_real_llm_providers: bool = False
     openai_api_key: str = ""
     anthropic_api_key: str = ""
     ollama_base_url: str = "http://ollama:11434"
@@ -52,13 +59,30 @@ class Settings(BaseSettings):
     sse_signing_key: str = ""
     session_secret: str = ""
 
+    rate_limit_enabled: bool = True
     rate_limit_per_minute: int = 30
-    rate_limit_intakes_per_minute: int = 5
+    rate_limit_intakes_per_minute: int = 2
 
     max_agent_steps: int = 8
-    max_total_tokens: int = 20_000
+    # gt=0: the $0-by-default spend cap (see app/agents/spend_cap.py) derives
+    # a real provider's worst-case cost from this value and the price table,
+    # never treating a request as free just because a token count happens to
+    # be zero -- but a zero limit here would still mean this field bounds
+    # nothing, which defeats the point of having a token limit at all. This
+    # constraint only runs on construction, not on a later in-process
+    # attribute assignment, so spend_cap.ensure_affordable() also refuses any
+    # not-free model whose worst-case cost computes to zero, rather than
+    # trusting this field to have stayed positive.
+    max_total_tokens: int = Field(default=20_000, gt=0)
     agent_timeout_seconds: int = 60
     confidence_threshold: float = 0.6
+
+    # The last of three independent layers keeping real-provider spend at $0
+    # by default (see app/agents/providers.py's docstring for the other two).
+    # Defaulting to 0.0 means a real, positively-priced model is refused
+    # unconditionally, before any request is attempted -- see
+    # app/agents/spend_cap.py.
+    daily_spend_cap_usd: float = Field(default=0.0, ge=0)
 
     state_trees_dir: str = ""
     service_catalog_path: str = ""
@@ -72,24 +96,13 @@ class Settings(BaseSettings):
 
     @field_validator("llm_provider")
     @classmethod
-    def _reject_unusable_llm_providers(cls, value: str) -> str:
-        # A field_validator only ever sees this field's own value in its
-        # error output, unlike a mode="after" model_validator, which embeds
-        # the whole (truncated) settings dict -- including the tail of
-        # whatever secret happens to sit next to llm_provider, e.g.
-        # ANTHROPIC_API_KEY. That's real leakage into container logs for a
-        # very plausible misconfiguration (setting a provider and its key
-        # together). Normalize case/whitespace here too, since this is the
-        # one place that validates the raw value -- downstream comparisons
-        # can then trust it's already lowercased and trimmed.
-        normalized = value.strip().lower()
-        if normalized in _UNUSABLE_LLM_PROVIDERS:
-            raise ValueError(
-                f"LLM_PROVIDER={value!r} is not usable yet -- its provider construction is "
-                "a known bug (see app/agents/providers.py), not just unconfigured "
-                "credentials. Use 'testmodel' (the default) instead."
-            )
-        return normalized
+    def _normalize_llm_provider(cls, value: str) -> str:
+        # Normalize case/whitespace here, since this is the one place that
+        # validates the raw value -- downstream comparisons (make_model(),
+        # harness.py's testmodel check) can then trust it's already
+        # lowercased and trimmed, regardless of how a user actually set the
+        # env var.
+        return value.strip().lower()
 
     @field_validator("database_url")
     @classmethod

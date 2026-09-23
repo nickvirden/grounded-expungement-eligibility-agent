@@ -54,9 +54,18 @@ export async function POST(req: Request): Promise<Response> {
   if (!intakeRes.ok) {
     const text = await intakeRes.text();
     console.error('FastAPI intake create failed', intakeRes.status, text);
-    return NextResponse.json({ error: 'Failed to create intake' }, { status: 502 });
+    // 429 (rate limit) and 503 (agent chat unavailable, e.g. no signing
+    // key configured) are real, distinct failure modes the client should
+    // see and react to differently -- collapsing them into a generic 502
+    // would hide that from the chat UI.
+    const status = intakeRes.status === 429 || intakeRes.status === 503 ? intakeRes.status : 502;
+    return NextResponse.json({ error: 'Failed to create intake' }, { status });
   }
 
-  const data = (await intakeRes.json()) as { intake_id: string; status: string };
-  return NextResponse.json({ intake_id: data.intake_id });
+  const data = (await intakeRes.json()) as {
+    intake_id: string;
+    status: string;
+    stream_token?: string | null;
+  };
+  return NextResponse.json({ intake_id: data.intake_id, stream_token: data.stream_token ?? null });
 }
