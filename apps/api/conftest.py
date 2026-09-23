@@ -9,6 +9,11 @@ import os
 os.environ.setdefault("DATABASE_URL", "sqlite:///./data/test_eligibility.db")
 os.environ.setdefault("LLM_PROVIDER", "testmodel")
 os.environ.setdefault("CSRF_SECRET", "test-csrf-secret-32-chars-minimum!")
+# Rate limiting is disabled by default for the suite: the intake-creation
+# limit (2/minute) would otherwise trip in any test file that makes more than
+# a couple of rapid POST /api/intakes calls. Tests that need to exercise the
+# limiter itself (test_rate_limit.py) re-enable it locally.
+os.environ.setdefault("RATE_LIMIT_ENABLED", "false")
 
 import pytest
 

@@ -8,6 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.db import engine, is_sqlite
 from app.schemas import HealthResponse
+from app.security.rate_limit import limiter
 
 router = APIRouter()
 
@@ -48,12 +49,14 @@ def _schema_status() -> str | None:
 
 
 @router.get("/healthz", response_model=HealthResponse)
+@limiter.exempt  # type: ignore[untyped-decorator]  # slowapi's exempt() has no return type annotation
 async def healthz() -> HealthResponse:
     """Liveness: is the process up. Deliberately doesn't check dependencies."""
     return HealthResponse(status="ok")
 
 
 @router.get("/readyz", response_model=HealthResponse)
+@limiter.exempt  # type: ignore[untyped-decorator]  # slowapi's exempt() has no return type annotation
 async def readyz() -> HealthResponse:
     """Readiness: is the process actually able to serve real traffic.
 

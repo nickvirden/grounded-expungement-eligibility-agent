@@ -52,8 +52,9 @@ class Settings(BaseSettings):
     sse_signing_key: str = ""
     session_secret: str = ""
 
+    rate_limit_enabled: bool = True
     rate_limit_per_minute: int = 30
-    rate_limit_intakes_per_minute: int = 5
+    rate_limit_intakes_per_minute: int = 2
 
     max_agent_steps: int = 8
     max_total_tokens: int = 20_000
