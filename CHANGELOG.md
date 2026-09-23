@@ -1,3 +1,17 @@
+## [0.11.0](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v0.10.0...v0.11.0) (2026-09-23)
+
+### Features
+
+* **api:** make apps/api deployable to Vercel's Python runtime ([f419dbe](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/f419dbeb56b1734a02651651aab04a6b2283bcca))
+
+### Bug Fixes
+
+* **web,api:** complete the DELETE-204 fix end to end, correct stale comments ([56c86ad](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/56c86ade0d4838d91d2a4a0ee2c04c752de1fab8))
+* **web,api:** fix Docker CSRF routing, DELETE 204 body, and DB URL scheme ([a4bcf91](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/a4bcf919eb21231526c9d2cc13ab3deb9babce3a))
+* **web:** enforce same-origin on server-to-server CSRF-proxy routes ([27a30e9](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/27a30e91daac6b5f2fa51cca632811c0c0a318ad))
+* **web:** proxy client-side API calls through a same-origin route ([cad1314](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/cad13141c675e4f01db540d3b87dfc5c84b65cf1))
+* **web:** set Permissions-Policy in next.config.ts for the Vercel deploy ([d3d7809](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/d3d780919c6414442e0e898f67e71c845cfd8bce))
+
 ## [0.10.0](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v0.9.3...v0.10.0) (2026-09-22)
 
 ### Features
