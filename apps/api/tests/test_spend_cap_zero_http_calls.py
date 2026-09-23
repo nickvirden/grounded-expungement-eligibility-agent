@@ -259,8 +259,11 @@ class TestRouterChecksTheCapBeforeClaimingTheIntake:
         )
         assert create_resp.status_code == 201
         intake_id = create_resp.json()["intake_id"]
+        token = create_resp.json()["stream_token"]
 
-        stream_resp = client.get(f"/api/intakes/{intake_id}/stream")
+        stream_resp = client.get(
+            f"/api/intakes/{intake_id}/stream", headers={"Authorization": f"Bearer {token}"}
+        )
         assert stream_resp.status_code == 503
 
         assert real_openai_setup.call_count == 0

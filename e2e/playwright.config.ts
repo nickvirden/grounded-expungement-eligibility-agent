@@ -41,8 +41,12 @@ export default defineConfig({
       // commas (app/config.py), so it must be a plain comma-separated list, not JSON.
       // RATE_LIMIT_ENABLED=false: test retries and CI re-runs hit POST /api/intakes from the
       // same shared budget repeatedly, which would otherwise trip the 2/minute limit.
+      // SSE_SIGNING_KEY: agent-mode POST /api/intakes 503s without this configured, before
+      // the stream route is even reached -- a value here (a throwaway test-only key, not a
+      // real secret) is what lets talk-to-agent.spec.ts's happy path mint and verify a
+      // token end-to-end.
       command:
-        'cd .. && DATABASE_URL=sqlite:///./apps/api/data/test_e2e.db LLM_PROVIDER=testmodel CSRF_SECURE=false RATE_LIMIT_ENABLED=false ALLOWED_ORIGINS=http://localhost:3000,https://localhost:3000 uv run --directory apps/api uvicorn app.main:app --port 8001',
+        'cd .. && DATABASE_URL=sqlite:///./apps/api/data/test_e2e.db LLM_PROVIDER=testmodel CSRF_SECURE=false RATE_LIMIT_ENABLED=false SSE_SIGNING_KEY=e2e-test-sse-signing-key-32-chars-min ALLOWED_ORIGINS=http://localhost:3000,https://localhost:3000 uv run --directory apps/api uvicorn app.main:app --port 8001',
       url: 'http://localhost:8001/healthz',
       reuseExistingServer: !isCI,
       timeout: 45_000,

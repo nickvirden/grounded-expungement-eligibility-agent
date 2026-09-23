@@ -134,7 +134,46 @@ This document records every significant architectural and technical decision mad
 
 ---
 
-## 14. What We'd Do With More Time
+## 14. SSE Stream Authorization: Signed, Single-Purpose Tokens
+
+**Decision:** `GET /api/intakes/{id}/stream` requires a short-lived (120s), `itsdangerous`-signed
+token bound to one intake ID, minted by `POST /api/intakes` and sent as `Authorization: Bearer
+<token>` (never a query param, which would leak into logs and any `Referer` header). The token is
+checked before the intake is ever looked up in the database, so an invalid token gets the same
+response whether or not the requested ID is real -- it can't be used to enumerate intake IDs.
+Failure modes are distinct: missing/malformed/expired token → `401` with `WWW-Authenticate:
+Bearer`; a token minted for a different intake → `403`; the signing key itself unset or too short
+→ `503`.
+
+**Why fail closed per-feature, not at API boot:** Quick Form, health checks, and every other route
+have nothing to do with Talk-to-Agent, so a missing optional secret for one feature shouldn't be
+able to take the rest of the API down with it. A boot-time crash on a missing `SSE_SIGNING_KEY`
+would do exactly that. `app/security/stream_token.py`'s `is_configured()` is checked wherever this
+matters (`POST /api/intakes` for agent-mode intakes, `GET .../stream`) and turns a missing/too-short
+key into a `503` there, not a crash anywhere else.
+
+**Why not a query param or `EventSource`:** `EventSource` has no API for setting request headers,
+which would otherwise push a token into the URL itself -- and a token in the URL ends up in server
+access logs and gets forwarded as `Referer` on any same-page outbound request. `useChatStream`
+already reads its SSE stream via `fetch()` and a `ReadableStream`, not `EventSource`, which makes a
+header-based token straightforward to send alongside the request.
+
+**Why the token isn't single-use:** it's bound to a TTL and one intake ID, not tracked as
+spent-or-not server-side. The thing that actually stops a second billable run on the same intake is
+the replay guard's atomic claim in `app/agents/replay_guard.py`, not the token -- reusing a
+still-valid token against its own intake correctly reaches that 409, rather than a redundant second
+layer of single-use bookkeeping doing the same job.
+
+**Deploy-order tolerance:** `apps/web` and `apps/api` deploy from the same push as two independent
+Vercel projects, not atomically. The web side treats `stream_token` in the create-intake response
+as optional and only sends the header when present, so a web deploy landing slightly ahead of the
+API's doesn't crash -- it just doesn't send a token yet, which an older API doesn't require either.
+The reverse order (new API, old web) is the one direction that's a genuine breaking change: the
+API requires the header unconditionally, since that's the actual point of this feature.
+
+---
+
+## 15. What We'd Do With More Time
 
 
 
