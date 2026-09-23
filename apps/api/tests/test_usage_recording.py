@@ -18,12 +18,21 @@ from app.agents import pricing, providers
 from app.agents.harness import AgentRunner, _record_usage
 from app.config import settings
 from app.db import engine
-from app.models import AgentRun
+from app.models import AgentRun, Intake
+
+
+def _create_intake() -> str:
+    with Session(engine) as session:
+        intake = Intake(mode="agent", state="texas")
+        session.add(intake)
+        session.commit()
+        session.refresh(intake)
+        return intake.id
 
 
 def _create_run(provider: str = "testmodel") -> str:
     with Session(engine) as session:
-        run = AgentRun(intake_id="intake-for-usage-test", provider=provider, status="running")
+        run = AgentRun(intake_id=_create_intake(), provider=provider, status="running")
         session.add(run)
         session.commit()
         session.refresh(run)
@@ -137,8 +146,7 @@ class TestUsagePersistsOnFailureBeforeFinalAnswer:
         monkeypatch.setattr(settings, "max_agent_steps", 1)
 
         events = [
-            event
-            async for event in runner.run_stream("intake-for-failure-usage-test", "texas", "n/a")
+            event async for event in runner.run_stream(_create_intake(), "texas", "n/a")
         ]
 
         assert any(event.get("type") == "error" for event in events)
