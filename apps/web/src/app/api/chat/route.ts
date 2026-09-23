@@ -5,11 +5,22 @@
  * The client then opens a GET /api/chat/[intake_id]/stream connection to read the SSE stream.
  */
 import { randomBytes } from 'node:crypto';
+import { isSameOriginRequest } from '@/lib/checkSameOrigin';
 import { NextResponse } from 'next/server';
 
 const API_BASE = process.env.INTERNAL_API_URL ?? 'http://localhost:8000';
 
 export async function POST(req: Request): Promise<Response> {
+  // This route synthesizes a matching CSRF pair below, which always passes
+  // FastAPI's double-submit check -- that's necessary since a server-to-
+  // server call has no browser-issued token to relay, but it also means
+  // this route itself must enforce same-origin, or any third-party site's
+  // page can POST here directly and have the request forwarded with
+  // credentials that bypass the exact protection this pattern provides.
+  if (!isSameOriginRequest(req)) {
+    return NextResponse.json({ error: 'Origin not allowed' }, { status: 403 });
+  }
+
   let body: { state?: string; narrative?: string };
 
   try {
@@ -24,9 +35,6 @@ export async function POST(req: Request): Promise<Response> {
     return NextResponse.json({ error: 'state is required' }, { status: 400 });
   }
 
-  // Generate a matching CSRF token pair for server-to-server call.
-  // The double-submit cookie pattern only guards against browser-based CSRF attacks;
-  // server-to-server calls are safe to bypass by providing a matching pair.
   const csrfToken = randomBytes(32).toString('base64url');
 
   const intakeRes = await fetch(`${API_BASE}/api/intakes`, {

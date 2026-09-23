@@ -20,6 +20,12 @@ dist/
 .next/
 .turbo/
 *.tsbuildinfo
+apps/api/.vercel/
+apps/web/.vercel/
+# Auto-installed by the Vercel/Neon marketplace integration CLI, not authored here.
+apps/api/.agents/
+apps/api/.claude/
+apps/api/skills-lock.json
 
 # SQLite
 *.db

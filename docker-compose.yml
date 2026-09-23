@@ -21,10 +21,6 @@ services:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
-      args:
-        # Baked into the Next.js standalone bundle at build time.
-        # Browser-side API calls go through Caddy at https://localhost.
-        NEXT_PUBLIC_API_URL: https://localhost
     environment:
       - NODE_ENV=production
       # Server-side (Route Handlers / RSC) calls go directly to the api container.

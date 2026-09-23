@@ -49,8 +49,7 @@ export default defineConfig({
     },
     {
       // Next.js dev server pointed at the test API
-      command:
-        'cd ../apps/web && NEXT_PUBLIC_API_URL=http://localhost:8001 INTERNAL_API_URL=http://localhost:8001 pnpm run dev',
+      command: 'cd ../apps/web && INTERNAL_API_URL=http://localhost:8001 pnpm run dev',
       url: 'http://localhost:3000',
       reuseExistingServer: !isCI,
       timeout: 60_000,

@@ -30,9 +30,6 @@ RUN pnpm install --frozen-lockfile --filter web...
 # Copy app source (after install so the above layers are cached on dep-only changes)
 COPY apps/web/ ./apps/web/
 
-ARG NEXT_PUBLIC_API_URL=http://localhost:8000
-ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-
 WORKDIR /app/apps/web
 RUN pnpm build
 

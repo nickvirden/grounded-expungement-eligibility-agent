@@ -1,8 +1,8 @@
 /**
  * Typed API client for the FastAPI backend.
  *
- * All requests go through this module so CSRF handling, base URL resolution,
- * and response validation are centralized.
+ * All requests go through this module so base URL resolution and response
+ * validation are centralized.
  */
 import {
   type AssessRequest,
@@ -19,57 +19,37 @@ import {
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
+// Server-side (SSR, Route Handlers): call the API directly.
+// Client-side (browser): route through /api/backend, a same-origin proxy
+// (see apps/web/src/app/api/backend/[...path]/route.ts). The double-submit
+// CSRF cookie pattern requires the cookie to be readable via document.cookie,
+// which only works same-origin -- a cookie set by a cross-origin API
+// response is invisible to JS running on a different origin's page, even
+// though the browser stores and resends it automatically. The proxy
+// sidesteps this: the browser only ever talks to its own origin, and the
+// proxy synthesizes a matching CSRF pair server-to-server, same pattern as
+// api/chat/route.ts already uses for the agent chat flow.
 const API_BASE =
   typeof window === 'undefined'
     ? (process.env.INTERNAL_API_URL ?? 'http://api:8000')
-    : (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000');
-
-// ─── CSRF helpers ─────────────────────────────────────────────────────────────
-
-/**
- * Read the CSRF token from the cookie set by the API on GET requests.
- *
- * Production uses __Host-csrf (requires HTTPS + Secure flag).
- * Local dev/test uses plain csrf (HTTP-compatible).
- * We check both so the client works regardless of environment.
- */
-function getCsrfToken(): string {
-  if (typeof document === 'undefined') return '';
-  const secure = document.cookie.match(/(?:^|;\s*)__Host-csrf=([^;]+)/)?.[1];
-  if (secure) return secure;
-  const dev = document.cookie.match(/(?:^|;\s*)csrf=([^;]+)/);
-  return dev?.[1] ?? '';
-}
-
-/** Ensure a CSRF cookie is present, fetching one from the API if needed. */
-async function ensureCsrfToken(): Promise<void> {
-  if (getCsrfToken()) return;
-  // Fire a GET /healthz to trigger the CSRF cookie; ignore the response body.
-  await fetch(`${API_BASE}/healthz`, { credentials: 'include' });
-}
+    : '/api/backend';
 
 async function fetchJson<T>(path: string, options: RequestInit = {}): Promise<T> {
   const headers = new Headers(options.headers);
   headers.set('Content-Type', 'application/json');
 
-  const method = (options.method ?? 'GET').toUpperCase();
-  if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
-    // Lazily bootstrap the CSRF cookie if the browser doesn't have one yet.
-    // This happens on first mutation in a fresh browser session.
-    await ensureCsrfToken();
-    const token = getCsrfToken();
-    if (token) headers.set('X-CSRF-Token', token);
-  }
-
-  const res = await fetch(`${API_BASE}${path}`, {
-    ...options,
-    headers,
-    credentials: 'include', // Required to send/receive cookies cross-origin
-  });
+  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
 
   if (!res.ok) {
     const body = await res.text();
     throw new ApiError(res.status, body);
+  }
+
+  // The Fetch spec forbids a body on 204/205/304 responses -- res.json()
+  // throws "Unexpected end of JSON input" on these even though the request
+  // succeeded (e.g. DELETE /api/intakes/{id} returns 204 on success).
+  if (res.status === 204 || res.status === 205 || res.status === 304) {
+    return undefined as T;
   }
 
   return res.json() as Promise<T>;
@@ -124,12 +104,4 @@ export async function getIntake(intakeId: string): Promise<EligibilityReport> {
 
 export async function deleteIntake(intakeId: string): Promise<void> {
   await fetchJson<void>(`/api/intakes/${intakeId}`, { method: 'DELETE' });
-}
-
-/**
- * Returns a ReadableStream of Server-Sent Events for a given intake.
- * Use the browser EventSource or parse the stream manually in a Route Handler.
- */
-export function getIntakeStreamUrl(intakeId: string): string {
-  return `${API_BASE}/api/intakes/${intakeId}/stream`;
 }

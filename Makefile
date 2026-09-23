@@ -9,7 +9,7 @@ down:
 dev:
 	@echo "Starting API and Web in development mode..."
 	@(cd apps/api && uv run uvicorn app.main:app --reload --port 8000) &
-	@(cd apps/web && NEXT_PUBLIC_API_URL=http://localhost:8000 INTERNAL_API_URL=http://localhost:8000 pnpm dev) &
+	@(cd apps/web && INTERNAL_API_URL=http://localhost:8000 pnpm dev) &
 	@wait
 
 logs:

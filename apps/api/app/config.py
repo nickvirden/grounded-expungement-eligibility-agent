@@ -8,6 +8,16 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 # provider that actually works right now.
 _UNUSABLE_LLM_PROVIDERS = frozenset({"openai", "anthropic", "ollama"})
 
+# Neon (and other managed Postgres providers) inject DATABASE_URL with the
+# driver-agnostic "postgres://"/"postgresql://" scheme, but this app's engine
+# needs the explicit psycopg3 dialect to actually connect. A bare scheme
+# fails everywhere this app runs, not just on Vercel: SQLAlchemy 1.4+ has no
+# "postgres" dialect at all (ModuleNotFoundError: no module named
+# 'psycopg2'), and "postgresql://" without a driver suffix only works if
+# psycopg2 happens to be installed, which it isn't here (this app uses
+# psycopg3 exclusively).
+_BARE_POSTGRES_SCHEMES = ("postgres://", "postgresql://")
+
 
 class Settings(BaseSettings):
     # env_ignore_empty: an env var set to "" (e.g. a placeholder line left
@@ -80,6 +90,14 @@ class Settings(BaseSettings):
                 "credentials. Use 'testmodel' (the default) instead."
             )
         return normalized
+
+    @field_validator("database_url")
+    @classmethod
+    def _normalize_database_url_scheme(cls, value: str) -> str:
+        for scheme in _BARE_POSTGRES_SCHEMES:
+            if value.startswith(scheme):
+                return "postgresql+psycopg://" + value[len(scheme) :]
+        return value
 
 
 settings = Settings()

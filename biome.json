@@ -48,7 +48,8 @@
       "test-results",
       "apps/api/**",
       "**/*.tsbuildinfo",
-      "pnpm-lock.yaml"
+      "pnpm-lock.yaml",
+      ".vercel"
     ]
   }
 }
