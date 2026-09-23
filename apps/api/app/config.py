@@ -64,14 +64,25 @@ class Settings(BaseSettings):
     rate_limit_intakes_per_minute: int = 2
 
     max_agent_steps: int = 8
-    # gt=0: a planned $0-by-default spend cap is meant to infer "this
-    # request is worst-case free" from a real provider's price table, never
-    # from a token count that could be zeroed out -- but a zero limit here
-    # would still mean this field bounds nothing, which defeats the point of
-    # having a token limit at all.
+    # gt=0: the $0-by-default spend cap (see app/agents/spend_cap.py) derives
+    # a real provider's worst-case cost from this value and the price table,
+    # never treating a request as free just because a token count happens to
+    # be zero -- but a zero limit here would still mean this field bounds
+    # nothing, which defeats the point of having a token limit at all. This
+    # constraint only runs on construction, not on a later in-process
+    # attribute assignment, so spend_cap.ensure_affordable() also refuses any
+    # not-free model whose worst-case cost computes to zero, rather than
+    # trusting this field to have stayed positive.
     max_total_tokens: int = Field(default=20_000, gt=0)
     agent_timeout_seconds: int = 60
     confidence_threshold: float = 0.6
+
+    # The last of three independent layers keeping real-provider spend at $0
+    # by default (see app/agents/providers.py's docstring for the other two).
+    # Defaulting to 0.0 means a real, positively-priced model is refused
+    # unconditionally, before any request is attempted -- see
+    # app/agents/spend_cap.py.
+    daily_spend_cap_usd: float = Field(default=0.0, ge=0)
 
     state_trees_dir: str = ""
     service_catalog_path: str = ""

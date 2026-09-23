@@ -9,6 +9,8 @@ from sqlmodel import Session, select
 
 from app.agents.guardrails import GuardrailError, check_jurisdiction, sanitize_narrative
 from app.agents.harness import AgentRunner
+from app.agents.replay_guard import claim_intake_for_run
+from app.agents.spend_cap import SpendCapExceededError
 from app.db import engine, get_session
 from app.models import AgentRun, AgentStep, EligibilityResult, Intake
 from app.schemas import IntakeCreate
@@ -119,6 +121,25 @@ async def stream_intake(
             raise HTTPException(status_code=404, detail="Intake not found")
         state = intake.state
         narrative = intake.narrative_text or ""
+
+    # Checked before the atomic claim below: a request the spend cap refuses
+    # must not consume the intake's one-shot claim, or a legitimately
+    # cap-blocked intake could never be retried once the cap is raised. The
+    # actual enforcement lives inside AgentRunner.run_stream() itself (see
+    # app/agents/harness.py) so it protects every caller of the harness, not
+    # just this route -- this call surfaces the same check as a clean 503
+    # instead of an SSE error event buried inside an already-started stream.
+    try:
+        _runner.ensure_affordable()
+    except SpendCapExceededError as e:
+        raise HTTPException(status_code=503, detail=str(e)) from e
+
+    with Session(engine) as session:
+        if not claim_intake_for_run(session, intake_id):
+            raise HTTPException(
+                status_code=409,
+                detail="This intake's agent run has already started or finished",
+            )
 
     async def event_generator() -> AsyncGenerator[str]:
         async for event in _runner.run_stream(intake_id, state, narrative):

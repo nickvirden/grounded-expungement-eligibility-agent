@@ -92,10 +92,10 @@ class TestAllowRealLlmProviders:
 
 
 class TestMaxTotalTokens:
-    # A planned $0-by-default spend cap is meant to infer "this request is
-    # worst-case free" from a real provider's price table, never from a
-    # token count -- but a zero limit would still mean this field bounds
-    # nothing, so it's rejected outright rather than accepted as a no-op.
+    # The spend cap decides "this request is free" from a real provider's
+    # price table directly, never from this token count -- but a zero
+    # limit would still mean this field bounds nothing, so it's rejected
+    # outright rather than accepted as a no-op.
     def test_zero_is_rejected(self) -> None:
         with pytest.raises(ValidationError):
             Settings(max_total_tokens=0)
