@@ -1,10 +1,12 @@
-"""Settings' LLM provider default and fail-fast guard.
+"""Settings' LLM provider default and normalization.
 
-app/agents/providers.py's openai/anthropic/ollama construction is a known,
-currently-broken bug (real Provider-object construction, not credentials).
-Settings must default away from it and reject all three outright, rather
-than let a misconfigured deploy crash later with a confusing error from
-deep inside AgentRunner().
+Settings defaults llm_provider to testmodel and only normalizes the value
+(case/whitespace) -- it does not reject openai/anthropic/ollama itself; that
+check lives in app/agents/providers.py's make_model(), gated by the
+allow_real_llm_providers opt-in (see tests/test_providers.py). The app still
+fails fast at import time when a real provider is selected without the
+opt-in, since AgentRunner() is constructed at import in
+app/routers/intakes.py.
 """
 import os
 import subprocess
@@ -51,13 +53,15 @@ class TestLlmProviderDefault:
         assert Settings().llm_provider == "testmodel"
 
 
-class TestLlmProviderGuard:
+class TestLlmProviderNormalization:
     @pytest.mark.parametrize(
         "provider", ["openai", "anthropic", "ollama", "OpenAI", "ANTHROPIC", "  Ollama  "]
     )
-    def test_rejects_unusable_providers(self, provider: str) -> None:
-        with pytest.raises(ValidationError, match="not usable yet"):
-            Settings(llm_provider=provider)
+    def test_accepts_and_normalizes_any_known_provider(self, provider: str) -> None:
+        # Settings() only normalizes this value -- whether a real provider
+        # is actually usable is app/agents/providers.py's make_model()'s
+        # call, gated by the allow_real_llm_providers opt-in.
+        assert Settings(llm_provider=provider).llm_provider == provider.strip().lower()
 
     def test_accepts_testmodel(self) -> None:
         assert Settings(llm_provider="testmodel").llm_provider == "testmodel"
@@ -65,18 +69,8 @@ class TestLlmProviderGuard:
     def test_normalizes_case_and_whitespace(self) -> None:
         # harness.py compares settings.llm_provider == "testmodel" with an
         # exact match -- normalizing here means any casing/whitespace a user
-        # actually sets still resolves to the deterministic demo path,
-        # instead of silently falling through to the real (broken) agent.
+        # actually sets still resolves to the deterministic demo path.
         assert Settings(llm_provider="  TestModel  ").llm_provider == "testmodel"
-
-    def test_error_does_not_leak_sibling_secrets(self) -> None:
-        # A field_validator's error only ever includes this field's own
-        # value -- confirm a secret set alongside an unusable provider
-        # doesn't end up in the exception's string representation, which is
-        # what a container's log collector would actually capture.
-        with pytest.raises(ValidationError) as exc_info:
-            Settings(llm_provider="anthropic", anthropic_api_key="sk-ant-super-secret-value")
-        assert "super-secret" not in str(exc_info.value)
 
     def test_empty_env_value_falls_through_to_default(
         self, monkeypatch: pytest.MonkeyPatch
@@ -87,6 +81,31 @@ class TestLlmProviderGuard:
         # from, and it fails downstream in providers.py instead of here.
         monkeypatch.setenv("LLM_PROVIDER", "")
         assert Settings().llm_provider == "testmodel"
+
+
+class TestAllowRealLlmProviders:
+    def test_default_is_off(self) -> None:
+        assert Settings().allow_real_llm_providers is False
+
+    def test_can_be_turned_on(self) -> None:
+        assert Settings(allow_real_llm_providers=True).allow_real_llm_providers is True
+
+
+class TestMaxTotalTokens:
+    # A planned $0-by-default spend cap is meant to infer "this request is
+    # worst-case free" from a real provider's price table, never from a
+    # token count -- but a zero limit would still mean this field bounds
+    # nothing, so it's rejected outright rather than accepted as a no-op.
+    def test_zero_is_rejected(self) -> None:
+        with pytest.raises(ValidationError):
+            Settings(max_total_tokens=0)
+
+    def test_negative_is_rejected(self) -> None:
+        with pytest.raises(ValidationError):
+            Settings(max_total_tokens=-1)
+
+    def test_positive_is_accepted(self) -> None:
+        assert Settings(max_total_tokens=1).max_total_tokens == 1
 
 
 class TestDatabaseUrlNormalization:
@@ -116,7 +135,10 @@ class TestAppBootsUnderDefaultSettings:
         assert result.returncode == 0, result.stderr
 
     @pytest.mark.parametrize("provider", ["openai", "anthropic", "ollama"])
-    def test_unusable_provider_fails_fast_at_import(self, provider: str) -> None:
+    def test_real_provider_without_opt_in_fails_fast_at_import(self, provider: str) -> None:
+        # AgentRunner() is constructed at import time in
+        # app/routers/intakes.py, so make_model()'s opt-in check fails the
+        # app's boot immediately, with the error visible on container logs.
         result = _boot_subprocess({"LLM_PROVIDER": provider})
         assert result.returncode != 0
-        assert "not usable yet" in result.stderr
+        assert "ALLOW_REAL_LLM_PROVIDERS" in result.stderr

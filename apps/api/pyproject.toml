@@ -44,27 +44,10 @@ line-length = 100
 select = ["E", "F", "W", "I", "N", "UP", "S", "B", "A", "C4", "DTZ", "T20", "ICN", "PIE", "PT", "RSE", "RET", "SIM", "TID", "TCH", "ARG", "PLC", "PLE", "PLW", "TRY", "FLY", "PERF", "RUF"]
 ignore = ["S101", "TRY003", "RET504"]
 
-# app/agents/providers.py's openai/anthropic/ollama construction passes
-# api_key/base_url directly to model classes that reject them -- credentials
-# must go through a Provider object instead. This is a live bug, reachable
-# any time LLM_PROVIDER is set to one of those three (app/config.py's
-# Settings rejects them at startup, but that's a separate safety net, not a
-# fix to this file). Exempting lint/type checks here only defers fixing the
-# construction itself; it does not make the bug safe. Remove this exemption
-# as part of that fix.
-[tool.ruff.lint.per-file-ignores]
-"app/agents/providers.py" = ["PLC0415"]
-
 [tool.mypy]
 strict = true
 python_version = "3.13"
 plugins = ["pydantic.mypy"]
-
-# See the ruff per-file-ignores comment above -- same known-broken
-# construction, same "fix removes this exemption" expectation.
-[[tool.mypy.overrides]]
-module = "app.agents.providers"
-ignore_errors = true
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
