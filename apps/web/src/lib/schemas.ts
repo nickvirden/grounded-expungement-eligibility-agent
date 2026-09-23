@@ -56,6 +56,12 @@ export type IntakeCreate = z.infer<typeof intakeCreateSchema>;
 export const intakeCreateResponseSchema = z.object({
   intake_id: z.string(),
   status: z.string(),
+  // Only ever non-null for an agent-mode intake with SSE_SIGNING_KEY
+  // configured on the API -- quick-mode intakes get an explicit null, and
+  // .optional() covers a deploy where the API side hasn't rolled out this
+  // field yet (a missing key on an agent-mode create fails the whole
+  // request with a 503 before this schema is ever parsed).
+  stream_token: z.string().nullable().optional(),
 });
 
 export type IntakeCreateResponse = z.infer<typeof intakeCreateResponseSchema>;

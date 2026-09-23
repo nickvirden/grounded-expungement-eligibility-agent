@@ -40,6 +40,8 @@ git clone <this repo>
 cd grounded-expungement-eligibility-agent
 cp .env.example .env
 # Set POSTGRES_PASSWORD in .env (URL-safe, e.g. `openssl rand -hex 24`)
+# Set SSE_SIGNING_KEY in .env (16+ chars, e.g. `openssl rand -hex 32`) --
+# Talk to Agent returns 503 without it; everything else works regardless.
 make migrate   # starts Postgres and applies Alembic migrations
 make up
 ```
@@ -58,6 +60,9 @@ Open (Caddy fronts everything on 443/80, no port needed):
 ### Without Docker (local dev)
 Local dev defaults to a SQLite file (`apps/api/data/eligibility.db`), created
 from the models on startup — no database server or migration step needed.
+Settings load from a `.env` in the current directory, so this flow needs its
+own `apps/api/.env` (the root `.env.example` isn't read here) -- copy it in
+and set `SSE_SIGNING_KEY` there too if you want Talk to Agent to work.
 ```bash
 # Terminal 1 — API
 cd apps/api
@@ -125,7 +130,9 @@ warm at once. See DECISIONS.md §13.
 5. Observe the result page with traversed decision path
 
 ### Talk to Agent
-No API key needed -- the default `LLM_PROVIDER=testmodel` runs a
+Needs `SSE_SIGNING_KEY` set (see Quick Start above) -- without it this
+returns 503, though nothing else on the site is affected. No LLM API key
+needed: the default `LLM_PROVIDER=testmodel` runs a
 deterministic demo path: it picks a branch of the decision tree by matching
 a few keywords in your narrative (e.g. "dismissed", "convicted"), then
 walks the same rule engine the Quick Form uses, with no external LLM call.

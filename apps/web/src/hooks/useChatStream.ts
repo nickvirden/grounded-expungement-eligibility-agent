@@ -1,5 +1,6 @@
 'use client';
 
+import { describeChatError } from '@/lib/chatStreamError';
 import type { EligibilityReport, SseEvent } from '@/lib/schemas';
 import { useCallback, useRef, useState } from 'react';
 
@@ -75,19 +76,26 @@ export function useChatStream(): UseChatStreamResult {
       });
 
       if (!createRes.ok) {
-        throw new Error(`Failed to start session (${createRes.status})`);
+        throw new Error(describeChatError(createRes.status, 'create'));
       }
 
-      const { intake_id } = (await createRes.json()) as { intake_id: string };
+      const { intake_id, stream_token: streamToken } = (await createRes.json()) as {
+        intake_id: string;
+        stream_token?: string | null;
+      };
       setIntakeId(intake_id);
 
-      // Step 2: open SSE stream
+      // Step 2: open SSE stream. streamToken can be absent if this web build
+      // ships before the API build that starts returning it (the two Vercel
+      // projects don't deploy atomically) -- sending no Authorization header
+      // in that case, rather than crashing on an assumed-present field.
       const streamRes = await fetch(`/api/chat/${intake_id}/stream`, {
+        headers: streamToken ? { Authorization: `Bearer ${streamToken}` } : undefined,
         signal: abort.signal,
       });
 
       if (!streamRes.ok || !streamRes.body) {
-        throw new Error(`Stream unavailable (${streamRes.status})`);
+        throw new Error(describeChatError(streamRes.status, 'stream'));
       }
 
       const msgId = `agent-stream-${Date.now()}`;

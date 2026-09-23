@@ -14,7 +14,13 @@ from app.agents.spend_cap import SpendCapExceededError
 from app.db import engine, get_session
 from app.models import AgentRun, AgentStep, EligibilityResult, Intake
 from app.schemas import IntakeCreate
+from app.security import stream_token
 from app.security.rate_limit import intakes_per_minute, limiter
+from app.security.stream_token import (
+    IntakeMismatchTokenError,
+    SigningKeyUnavailableError,
+    StreamTokenError,
+)
 
 router = APIRouter(prefix="/api/intakes", tags=["intakes"])
 
@@ -34,6 +40,14 @@ async def create_intake(
     except GuardrailError as e:
         raise HTTPException(status_code=422, detail=str(e)) from e
 
+    # Only an agent-mode intake ever streams, so only it needs a token.
+    # Checked before any row is written: Quick Form intake creation must
+    # never fail just because the unrelated Talk-to-Agent feature's signing
+    # key is missing, and an agent-mode intake that can't be streamed
+    # shouldn't leave a row behind either.
+    if body.mode == "agent" and not stream_token.is_configured():
+        raise HTTPException(status_code=503, detail="Agent chat unavailable")
+
     narrative = None
     if body.narrative_text:
         try:
@@ -51,7 +65,18 @@ async def create_intake(
     session.commit()
     session.refresh(intake)
 
-    return {"intake_id": intake.id, "status": intake.status}
+    # is_configured() was already checked above for agent mode, so mint()
+    # here should not raise -- but if the key were somehow removed in the
+    # instant between the two checks, surfacing that as a 503 is still
+    # preferable to a 500, or to returning a row with no way to stream it.
+    stream_token_value: str | None = None
+    if intake.mode == "agent":
+        try:
+            stream_token_value = stream_token.mint(intake.id)
+        except SigningKeyUnavailableError as e:
+            raise HTTPException(status_code=503, detail="Agent chat unavailable") from e
+
+    return {"intake_id": intake.id, "status": intake.status, "stream_token": stream_token_value}
 
 
 @router.get("/{intake_id}")
@@ -101,7 +126,7 @@ async def get_intake(
 @router.get("/{intake_id}/stream")
 @limiter.limit(intakes_per_minute)
 async def stream_intake(
-    request: Request,  # noqa: ARG001 -- slowapi's decorator inspects the call signature for this exact name
+    request: Request,
     intake_id: str,
 ) -> StreamingResponse:
     """SSE stream: run the agent for this intake and stream events.
@@ -113,7 +138,30 @@ async def stream_intake(
     `Depends(...)` -- a dependency rejecting an unauthenticated request
     (401/403) runs *before* this decorator, letting an attacker send
     unlimited unauthenticated requests without ever tripping the limit.
+
+    The bearer token is checked first, before the intake is looked up: an
+    invalid token must produce the same response whether or not intake_id
+    is real, or the response itself becomes a way to probe which intake IDs
+    exist. Only once the token checks out does this route touch the
+    database at all.
     """
+    auth_header = request.headers.get("authorization") or ""
+    scheme, _, token = auth_header.partition(" ")
+    bearer_token = token if scheme.lower() == "bearer" and token else None
+
+    try:
+        stream_token.verify(bearer_token, intake_id)
+    except SigningKeyUnavailableError as e:
+        raise HTTPException(status_code=503, detail="Agent chat unavailable") from e
+    except IntakeMismatchTokenError as e:
+        raise HTTPException(status_code=403, detail=str(e)) from e
+    except StreamTokenError as e:
+        raise HTTPException(
+            status_code=401,
+            detail=str(e),
+            headers={"WWW-Authenticate": "Bearer"},
+        ) from e
+
     # Note: For the demo, we read state/narrative from the existing intake record.
     with Session(engine) as session:
         intake = session.get(Intake, intake_id)

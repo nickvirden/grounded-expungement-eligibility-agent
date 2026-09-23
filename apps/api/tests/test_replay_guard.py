@@ -40,11 +40,16 @@ class TestReplayGuardOverHttp:
         )
         assert create_resp.status_code == 201
         intake_id = create_resp.json()["intake_id"]
+        stream_token = create_resp.json()["stream_token"]
+        auth_header = {"Authorization": f"Bearer {stream_token}"}
 
-        first = c.get(f"/api/intakes/{intake_id}/stream")
+        first = c.get(f"/api/intakes/{intake_id}/stream", headers=auth_header)
         assert first.status_code == 200
 
-        second = c.get(f"/api/intakes/{intake_id}/stream")
+        # The same token is still valid the second time (it's bound to the
+        # intake and a TTL, not consumed on use) -- the replay guard, not
+        # the token, is what stops the second attempt.
+        second = c.get(f"/api/intakes/{intake_id}/stream", headers=auth_header)
         assert second.status_code == 409
 
         with Session(engine) as session:

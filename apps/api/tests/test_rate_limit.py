@@ -69,16 +69,20 @@ class TestIntakeCreationRateLimit:
 
 class TestStreamRateLimit:
     """GET /api/intakes/{id}/stream has its own 2/minute budget, separate from
-    POST /api/intakes -- there is no auth on this route, so the limit must trip
-    on request volume alone (see intakes.py for why any auth check has to live
-    inside the route body rather than a dependency).
+    POST /api/intakes -- the token check runs inside the route body (see
+    intakes.py's docstring on stream_intake for why it can't be a
+    `Depends(...)`), so a request with no/invalid token still counts toward
+    the limit; the limit must trip on request volume alone, before auth
+    even matters.
     """
 
     def test_repeated_stream_requests_are_rejected_regardless_of_auth(self) -> None:
         # No token, no session -- just hammering the endpoint. It should still trip.
         for _ in range(2):
             resp = client.get("/api/intakes/nonexistent-id/stream")
-            assert resp.status_code == 404  # under the limit: normal 404 for a missing intake
+            # Under the limit: the token check runs before the intake lookup,
+            # so a missing token always produces 401, real intake or not.
+            assert resp.status_code == 401
 
         resp = client.get("/api/intakes/nonexistent-id/stream")
         assert resp.status_code == 429
@@ -91,7 +95,7 @@ class TestStreamRateLimit:
         # instead, so distinct IDs still share one 2/minute bucket.
         for i in range(2):
             resp = client.get(f"/api/intakes/nonexistent-id-{i}/stream")
-            assert resp.status_code == 404
+            assert resp.status_code == 401
 
         resp = client.get("/api/intakes/nonexistent-id-2/stream")
         assert resp.status_code == 429
