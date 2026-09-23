@@ -1,3 +1,9 @@
+## [1.0.1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v1.0.0...v1.0.1) (2026-09-23)
+
+### Bug Fixes
+
+* **docs:** correct the backend test count in the README ([06ad219](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/06ad219e82c9dcd8eb89d43b77620680dfe5dbce))
+
 ## [0.11.1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v0.11.0...v0.11.1) (2026-09-23)
 
 ### Bug Fixes
