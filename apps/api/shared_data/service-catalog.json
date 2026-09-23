@@ -1,0 +1,69 @@
+{
+  "version": "1.0.0",
+  "services": [
+    {
+      "key": "texas_expungement",
+      "state": "texas",
+      "name": "Texas Expungement",
+      "description": "Complete removal of arrest and court records from all public databases, as if the event never occurred.",
+      "eligibility_keys": ["Texas Expungement"],
+      "base_price_usd": 1500
+    },
+    {
+      "key": "texas_juvenile_sealing",
+      "state": "texas",
+      "name": "Texas Juvenile Record Sealing",
+      "description": "Sealing of juvenile adjudication records, restricting access from background check services.",
+      "eligibility_keys": ["Texas Juvenile Record Sealing"],
+      "base_price_usd": 1200
+    },
+    {
+      "key": "texas_dwi_record_sealing",
+      "state": "texas",
+      "name": "Texas DWI Record Sealing",
+      "description": "Sealing of DWI deferred adjudication records through an order of nondisclosure.",
+      "eligibility_keys": ["Texas DWI Record Sealing"],
+      "base_price_usd": 1500
+    },
+    {
+      "key": "texas_conviction_set_aside",
+      "state": "texas",
+      "name": "Texas Conviction Set Aside",
+      "description": "Judicial set-aside of a conviction following successful completion of community supervision.",
+      "eligibility_keys": ["Texas Conviction Set Aside"],
+      "base_price_usd": 1800
+    },
+    {
+      "key": "texas_felony_record_sealing",
+      "state": "texas",
+      "name": "Texas Felony Record Sealing",
+      "description": "Nondisclosure order for eligible felony deferred adjudication records after the required waiting period.",
+      "eligibility_keys": ["Texas Felony Record Sealing"],
+      "base_price_usd": 2000
+    },
+    {
+      "key": "texas_misdemeanor_record_sealing",
+      "state": "texas",
+      "name": "Texas Misdemeanor Record Sealing",
+      "description": "Nondisclosure order for misdemeanor deferred adjudication or eligible conviction records.",
+      "eligibility_keys": ["Texas Misdemeanor Record Sealing"],
+      "base_price_usd": 1200
+    },
+    {
+      "key": "texas_automatic_record_sealing",
+      "state": "texas",
+      "name": "Texas Automatic Record Sealing",
+      "description": "Automatic nondisclosure for qualifying misdemeanor offenses after the statutory waiting period.",
+      "eligibility_keys": ["Texas Automatic Record Sealing"],
+      "base_price_usd": 0
+    },
+    {
+      "key": "texas_pardon",
+      "state": "texas",
+      "name": "Texas Pardon eBook",
+      "description": "Guidance on applying for a Governor's Pardon when other relief options are unavailable.",
+      "eligibility_keys": ["Texas Pardon eBook"],
+      "base_price_usd": 49
+    }
+  ]
+}

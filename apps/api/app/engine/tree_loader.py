@@ -15,20 +15,24 @@ def _infer_repo_root(start: Path) -> Path | None:
 
 _HERE = Path(__file__).resolve()
 _REPO_ROOT = _infer_repo_root(_HERE)
+_API_ROOT = _HERE.parent.parent.parent  # apps/api/app/engine/tree_loader.py -> apps/api/
 
-# Default location in docker-compose builds (copied into the API image)
+# apps/api/ isn't part of a full monorepo checkout in two deploy shapes:
+# Docker (Dockerfile COPYs packages/shared/ to /shared) and Vercel (build.py
+# stages it to apps/api/shared_data/, since Vercel's Python bundler only
+# includes files reachable from the project's own root directory).
 _DOCKER_SHARED = Path("/shared")
+_VERCEL_SHARED = _API_ROOT / "shared_data"
 
-_DEFAULT_TREES_DIR = (
-    (_REPO_ROOT / "packages" / "shared" / "state-trees")
-    if _REPO_ROOT
-    else (_DOCKER_SHARED / "state-trees")
-)
-_DEFAULT_CATALOG = (
-    (_REPO_ROOT / "packages" / "shared" / "service-catalog.json")
-    if _REPO_ROOT
-    else (_DOCKER_SHARED / "service-catalog.json")
-)
+if _REPO_ROOT:
+    _SHARED = _REPO_ROOT / "packages" / "shared"
+elif _VERCEL_SHARED.exists():
+    _SHARED = _VERCEL_SHARED
+else:
+    _SHARED = _DOCKER_SHARED
+
+_DEFAULT_TREES_DIR = _SHARED / "state-trees"
+_DEFAULT_CATALOG = _SHARED / "service-catalog.json"
 
 
 @lru_cache(maxsize=32)

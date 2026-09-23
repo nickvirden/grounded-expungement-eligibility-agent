@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "app/main.py": {
+      "maxDuration": 90,
+      "excludeFiles": "{tests/**,alembic/versions/**,.venv/**,.mypy_cache/**,.ruff_cache/**,.pytest_cache/**,data/**,conftest.py}"
+    }
+  }
+}

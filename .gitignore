@@ -20,6 +20,8 @@ dist/
 .next/
 .turbo/
 *.tsbuildinfo
+apps/api/.vercel/
+apps/web/.vercel/
 
 # SQLite
 *.db
