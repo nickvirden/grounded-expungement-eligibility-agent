@@ -13,9 +13,10 @@ Run this manually and commit the result whenever packages/shared/ changes:
 
     cd apps/api && uv run python sync_shared_data.py
 
-app/engine/tree_loader.py falls back to this location when it can't find a
-full monorepo checkout (local dev/tests and Docker both have one; Vercel
-doesn't) -- see its _API_ROOT/_VERCEL_SHARED handling.
+app/engine/tree_loader.py falls back to this location only when it can't
+find a full monorepo checkout AND isn't running inside the Docker image
+(which gets its own fresh copy at /shared instead) -- see its
+_REPO_ROOT/_DOCKER_SHARED/_VERCEL_SHARED handling.
 """
 import shutil
 from pathlib import Path

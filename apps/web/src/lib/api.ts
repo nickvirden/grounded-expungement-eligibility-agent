@@ -45,6 +45,13 @@ async function fetchJson<T>(path: string, options: RequestInit = {}): Promise<T>
     throw new ApiError(res.status, body);
   }
 
+  // The Fetch spec forbids a body on 204/205/304 responses -- res.json()
+  // throws "Unexpected end of JSON input" on these even though the request
+  // succeeded (e.g. DELETE /api/intakes/{id} returns 204 on success).
+  if (res.status === 204 || res.status === 205 || res.status === 304) {
+    return undefined as T;
+  }
+
   return res.json() as Promise<T>;
 }
 

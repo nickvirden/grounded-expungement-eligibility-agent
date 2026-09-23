@@ -10,11 +10,12 @@ _UNUSABLE_LLM_PROVIDERS = frozenset({"openai", "anthropic", "ollama"})
 
 # Neon (and other managed Postgres providers) inject DATABASE_URL with the
 # driver-agnostic "postgres://"/"postgresql://" scheme, but this app's engine
-# needs the explicit psycopg3 dialect to actually connect -- a bare scheme
-# imports fine locally (SQLAlchemy falls back to whatever psycopg2-compatible
-# driver happens to be installed) but fails on Vercel's Python runtime, which
-# only has psycopg3 available, with ModuleNotFoundError: no module named
-# 'psycopg2'.
+# needs the explicit psycopg3 dialect to actually connect. A bare scheme
+# fails everywhere this app runs, not just on Vercel: SQLAlchemy 1.4+ has no
+# "postgres" dialect at all (ModuleNotFoundError: no module named
+# 'psycopg2'), and "postgresql://" without a driver suffix only works if
+# psycopg2 happens to be installed, which it isn't here (this app uses
+# psycopg3 exclusively).
 _BARE_POSTGRES_SCHEMES = ("postgres://", "postgresql://")
 
 
