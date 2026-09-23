@@ -67,7 +67,7 @@ uv run uvicorn app.main:app --reload --port 8000
 # Terminal 2 — Web
 cd apps/web
 pnpm install
-NEXT_PUBLIC_API_URL=http://localhost:8000 pnpm dev
+INTERNAL_API_URL=http://localhost:8000 pnpm dev
 ```
 
 ---

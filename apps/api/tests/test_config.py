@@ -89,6 +89,21 @@ class TestLlmProviderGuard:
         assert Settings().llm_provider == "testmodel"
 
 
+class TestDatabaseUrlNormalization:
+    @pytest.mark.parametrize("scheme", ["postgres://", "postgresql://"])
+    def test_bare_postgres_scheme_gets_psycopg_driver(self, scheme: str) -> None:
+        url = f"{scheme}user:pass@host/db"
+        assert Settings(database_url=url).database_url == "postgresql+psycopg://user:pass@host/db"
+
+    def test_scheme_with_driver_already_set_is_untouched(self) -> None:
+        url = "postgresql+psycopg://user:pass@host/db"
+        assert Settings(database_url=url).database_url == url
+
+    def test_sqlite_url_is_untouched(self) -> None:
+        url = "sqlite:///./data/eligibility.db"
+        assert Settings(database_url=url).database_url == url
+
+
 class TestAppBootsUnderDefaultSettings:
     def test_default_settings_boot_cleanly(self) -> None:
         result = _boot_subprocess({})

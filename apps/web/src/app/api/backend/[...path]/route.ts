@@ -58,7 +58,13 @@ async function proxy(req: Request, path: string[]): Promise<Response> {
   });
 
   const responseBody = await upstream.text();
-  return new NextResponse(responseBody, {
+  // The Fetch spec forbids a non-null body on 204/205/304 responses, even an
+  // empty string -- DELETE /api/intakes/{id} returns 204, and passing "" here
+  // throws "Response with null body status cannot have body" despite the
+  // delete having actually succeeded upstream.
+  const isEmptyStatus =
+    upstream.status === 204 || upstream.status === 205 || upstream.status === 304;
+  return new NextResponse(isEmptyStatus ? null : responseBody, {
     status: upstream.status,
     headers: {
       'Content-Type': upstream.headers.get('content-type') ?? 'application/json',

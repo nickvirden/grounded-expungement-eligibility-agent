@@ -18,18 +18,22 @@ _REPO_ROOT = _infer_repo_root(_HERE)
 _API_ROOT = _HERE.parent.parent.parent  # apps/api/app/engine/tree_loader.py -> apps/api/
 
 # apps/api/ isn't part of a full monorepo checkout in two deploy shapes:
-# Docker (Dockerfile COPYs packages/shared/ to /shared) and Vercel (build.py
-# stages it to apps/api/shared_data/, since Vercel's Python bundler only
-# includes files reachable from the project's own root directory).
+# Docker (Dockerfile COPYs packages/shared/ to /shared) and Vercel (whose
+# Python builder only uploads files reachable from the project's own root
+# directory, so sync_shared_data.py stages a committed copy at
+# apps/api/shared_data/ ahead of time). /shared only ever exists inside the
+# Docker image -- check it first, so Docker always gets its own fresh COPY
+# rather than silently falling back to the committed (potentially stale)
+# shared_data/ that's also present there via `COPY apps/api/ .`.
 _DOCKER_SHARED = Path("/shared")
 _VERCEL_SHARED = _API_ROOT / "shared_data"
 
 if _REPO_ROOT:
     _SHARED = _REPO_ROOT / "packages" / "shared"
-elif _VERCEL_SHARED.exists():
-    _SHARED = _VERCEL_SHARED
-else:
+elif _DOCKER_SHARED.exists():
     _SHARED = _DOCKER_SHARED
+else:
+    _SHARED = _VERCEL_SHARED
 
 _DEFAULT_TREES_DIR = _SHARED / "state-trees"
 _DEFAULT_CATALOG = _SHARED / "service-catalog.json"
