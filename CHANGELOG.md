@@ -1,3 +1,9 @@
+## [2.0.2](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.1...v2.0.2) (2026-10-01)
+
+### Bug Fixes
+
+* **web:** decode decision-path codes to readable text, fix 5 a11y violations ([456514c](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/456514c6b487b57d9ccb56b96b07fa1be440c47f))
+
 ## [2.0.1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.0...v2.0.1) (2026-10-01)
 
 ### Bug Fixes
