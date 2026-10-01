@@ -1,3 +1,9 @@
+## [2.0.1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.0...v2.0.1) (2026-10-01)
+
+### Bug Fixes
+
+* **api,shared:** re-extract the Texas decision tree from its real source ([a3f6840](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/a3f6840819908373fe5aa0d1c5ef3dd055da941e))
+
 ## [2.0.0](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v1.0.1...v2.0.0) (2026-09-23)
 
 ### ⚠ BREAKING CHANGES
