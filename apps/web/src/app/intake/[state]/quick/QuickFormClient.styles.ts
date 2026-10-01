@@ -55,7 +55,7 @@ export const BackButton = styled.a`
   }
 `;
 
-export const HeaderTitle = styled.span`
+export const HeaderTitle = styled.h1`
   font-size: 0.9375rem;
   font-weight: 600;
   color: var(--color-navy-800);
@@ -95,7 +95,7 @@ export const ProgressFill = styled.div<ProgressFillProps>`
 
 // ─── Main content area ────────────────────────────────────────────────────────
 
-export const FormBody = styled.main`
+export const FormBody = styled.div`
   flex: 1;
   display: flex;
   align-items: center;
@@ -250,17 +250,29 @@ export const ErrorBanner = styled.div`
   background: var(--color-red-100);
   border: 1px solid #fca5a5;
   border-radius: var(--radius-lg);
-  color: var(--color-red-600);
+  color: var(--color-red-700);
   font-size: 0.9375rem;
   margin-top: var(--space-6);
 `;
 
 // ─── Path breadcrumbs ─────────────────────────────────────────────────────────
 
-export const PathCrumb = styled.div`
+export const PathCrumb = styled.ol`
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
   font-size: 0.75rem;
-  color: var(--color-slate-400);
+  color: var(--color-navy-600);
   margin-top: var(--space-8);
   text-align: center;
-  font-family: var(--font-mono);
+`;
+
+export const PathCrumbItem = styled.li`
+  &:not(:last-child)::after {
+    content: '→';
+    margin-left: var(--space-2);
+    color: var(--color-navy-600);
+  }
 `;

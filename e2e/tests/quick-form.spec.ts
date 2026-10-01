@@ -84,6 +84,43 @@ test.describe('Quick Form — Texas happy path', () => {
 
     // "Expungement" should appear somewhere on the page
     await expect(page.getByText(/expungement/i).first()).toBeVisible();
+
+    // The decision path region shows the actual question/answer text the user
+    // saw, not raw questionId:answerPosition codes.
+    const pathRegion = page.getByRole('region', { name: /decision path/i });
+    await expect(pathRegion).toBeVisible();
+    await expect(pathRegion).toContainText(/what best describes this texas case/i);
+    await expect(pathRegion).toContainText(/didn't end up resulting in a conviction/i);
+    const pathText = await pathRegion.innerText();
+    expect(pathText).not.toMatch(/\bq?\d+:a?\d+\b/);
+  });
+
+  test('result page loaded directly via URL (no stepper interaction) still decodes the path', async ({
+    page,
+  }) => {
+    await page.goto(
+      '/intake/texas/result?result_key=expungement&result_label=Texas+Expungement&state=texas&path=0:0,1:1',
+    );
+
+    const pathRegion = page.getByRole('region', { name: /decision path/i });
+    await expect(pathRegion).toBeVisible({ timeout: 10_000 });
+    await expect(pathRegion).toContainText(/what best describes this texas case/i);
+    await expect(pathRegion).toContainText(/didn't end up resulting in a conviction/i);
+    const pathText = await pathRegion.innerText();
+    expect(pathText).not.toMatch(/\bq?\d+:a?\d+\b/);
+  });
+
+  test('an unparseable path segment renders as literal text without breaking the rest of the path', async ({
+    page,
+  }) => {
+    await page.goto(
+      '/intake/texas/result?result_key=expungement&result_label=Texas+Expungement&state=texas&path=0:0,not-a-step',
+    );
+
+    const pathRegion = page.getByRole('region', { name: /decision path/i });
+    await expect(pathRegion).toBeVisible({ timeout: 10_000 });
+    await expect(pathRegion).toContainText(/what best describes this texas case/i);
+    await expect(pathRegion).toContainText('not-a-step');
   });
 
   test('"no charges were filed" branch reaches a correctly-paired question', async ({ page }) => {
@@ -96,6 +133,13 @@ test.describe('Quick Form — Texas happy path', () => {
     });
     await expect(notConvictedButton).toBeVisible({ timeout: 15_000 });
     await notConvictedButton.click();
+
+    // The breadcrumb is a named list showing the answer just given, not a raw code.
+    const breadcrumb = page.getByRole('list', { name: /decision path so far/i });
+    await expect(breadcrumb).toBeVisible();
+    await expect(breadcrumb).toContainText(/didn't end up resulting in a conviction/i);
+    const breadcrumbText = await breadcrumb.innerText();
+    expect(breadcrumbText).not.toMatch(/\bq?\d+:a?\d+\b/);
 
     // Answer position 2: "After being arrested, no charges were filed"
     const noChargesButton = page.getByRole('button', { name: /no charges were filed/i });

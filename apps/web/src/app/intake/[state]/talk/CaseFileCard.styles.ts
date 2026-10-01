@@ -41,7 +41,7 @@ export const CaseLabel = styled.dt`
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: var(--color-slate-400);
+  color: var(--color-navy-600);
 `;
 
 export const CaseValue = styled.dd`
@@ -73,9 +73,9 @@ export const StatusPill = styled.span<StatusPillProps>`
   }};
   color: ${({ $status }) => {
     if ($status === 'pending') return 'var(--color-navy-600)';
-    if ($status === 'running') return 'var(--color-blue-600)';
-    if ($status === 'complete') return 'var(--color-green-600)';
-    return 'var(--color-red-600)';
+    if ($status === 'running') return 'var(--color-blue-700)';
+    if ($status === 'complete') return 'var(--color-green-700)';
+    return 'var(--color-red-700)';
   }};
 `;
 
@@ -89,43 +89,9 @@ export const ResultSection = styled.section`
   animation: ${slideIn} 0.4s ease both;
 `;
 
-export const ResultKey = styled.div`
+export const ResultKey = styled.dd`
   font-size: 1rem;
   font-weight: 700;
   color: var(--color-navy-900);
   margin-bottom: var(--space-2);
-`;
-
-export const PathList = styled.ol`
-  list-style: none;
-  counter-reset: path-step;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  margin-top: var(--space-3);
-`;
-
-export const PathItem = styled.li`
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: 0.75rem;
-  font-family: var(--font-mono);
-  color: var(--color-slate-400);
-  counter-increment: path-step;
-
-  &::before {
-    content: counter(path-step);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--color-slate-200);
-    color: var(--color-navy-600);
-    font-size: 0.625rem;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
 `;

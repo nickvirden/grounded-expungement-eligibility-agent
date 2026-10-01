@@ -1,6 +1,9 @@
 'use client';
 
-import type { EligibilityReport } from '@/lib/schemas';
+import DecisionPathList from '@/components/DecisionPathList';
+import { decodeDecisionPath } from '@/lib/decisionPath';
+import type { EligibilityReport, StateTree } from '@/lib/schemas';
+import { useMemo } from 'react';
 import {
   CaseDivider,
   CaseFilePanel,
@@ -8,8 +11,6 @@ import {
   CaseLabel,
   CaseRow,
   CaseValue,
-  PathItem,
-  PathList,
   ResultKey,
   ResultSection,
   StatusPill,
@@ -22,9 +23,10 @@ interface Props {
   intakeId: string | null;
   status: AgentStatus;
   report: EligibilityReport | null;
+  decisionTree: StateTree | null;
 }
 
-export default function CaseFileCard({ state, intakeId, status, report }: Props) {
+export default function CaseFileCard({ state, intakeId, status, report, decisionTree }: Props) {
   const statusLabel: Record<AgentStatus, string> = {
     pending: 'Waiting',
     running: 'Analyzing…',
@@ -32,8 +34,16 @@ export default function CaseFileCard({ state, intakeId, status, report }: Props)
     error: 'Error',
   };
 
+  const decodedPath = useMemo(
+    () => (report ? decodeDecisionPath(report.traversed_path, decisionTree) : []),
+    [report, decisionTree],
+  );
+
   return (
-    <CaseFilePanel aria-label="Case file">
+    // tabIndex: a decoded decision path can run longer than the panel's
+    // fixed height, and a scrollable region with no focusable content of
+    // its own is otherwise unreachable by keyboard.
+    <CaseFilePanel aria-label="Case file" tabIndex={0}>
       <CaseFilePanelTitle>Case File</CaseFilePanelTitle>
 
       <dl>
@@ -66,30 +76,30 @@ export default function CaseFileCard({ state, intakeId, status, report }: Props)
         <>
           <CaseDivider />
           <ResultSection aria-label="Eligibility result">
-            <CaseRow>
-              <CaseLabel>Outcome</CaseLabel>
-              <ResultKey>{report.result_label}</ResultKey>
-            </CaseRow>
-
-            {report.recommended_services.length > 0 && (
+            <dl>
               <CaseRow>
-                <CaseLabel>Services</CaseLabel>
-                {report.recommended_services.map((svc) => (
-                  <CaseValue key={svc.key}>{svc.name}</CaseValue>
-                ))}
+                <CaseLabel>Outcome</CaseLabel>
+                <ResultKey>{report.result_label}</ResultKey>
               </CaseRow>
-            )}
 
-            {report.traversed_path.length > 0 && (
-              <CaseRow>
-                <CaseLabel>Decision path</CaseLabel>
-                <PathList>
-                  {report.traversed_path.map((step) => (
-                    <PathItem key={step}>{step}</PathItem>
+              {report.recommended_services.length > 0 && (
+                <CaseRow>
+                  <CaseLabel>Services</CaseLabel>
+                  {report.recommended_services.map((svc) => (
+                    <CaseValue key={svc.key}>{svc.name}</CaseValue>
                   ))}
-                </PathList>
-              </CaseRow>
-            )}
+                </CaseRow>
+              )}
+
+              {report.traversed_path.length > 0 && (
+                <CaseRow>
+                  <CaseLabel>Decision path</CaseLabel>
+                  <CaseValue>
+                    <DecisionPathList $density="compact" steps={decodedPath} />
+                  </CaseValue>
+                </CaseRow>
+              )}
+            </dl>
           </ResultSection>
         </>
       )}

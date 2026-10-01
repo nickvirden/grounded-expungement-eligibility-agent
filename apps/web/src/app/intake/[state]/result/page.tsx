@@ -1,5 +1,9 @@
 import { formatStateName } from '@/app/LandingClient.utils';
+import DecisionPathList from '@/components/DecisionPathList';
 import { CheckCircleIcon, XCircleIcon } from '@/components/icons/index';
+import { getStateTree } from '@/lib/api';
+import { decodeDecisionPath } from '@/lib/decisionPath';
+import type { StateTree } from '@/lib/schemas';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
@@ -7,8 +11,6 @@ import {
   Disclaimer,
   OutcomeBadge,
   PathSection,
-  PathStep,
-  PathSteps,
   PrimaryButton,
   ResultBody,
   ResultCard,
@@ -37,9 +39,15 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 /**
  * Eligibility result page.
  *
- * For Quick Form results, all data arrives via searchParams (no DB round-trip
- * needed). The Talk-to-Agent path (Phase 9) will fetch from the intakes API
- * using the intake_id param instead.
+ * This is the Quick Form's result screen -- all data arrives via searchParams
+ * (no DB round-trip needed), since the stepper encodes the full traversed
+ * path and result in the URL it navigates to. The Talk-to-Agent flow shows
+ * its own result in the Case File panel instead (see ../talk/CaseFileCard.tsx),
+ * which decodes the same kind of path through the same utility.
+ *
+ * The decision path itself is just a list of `questionId:answerPosition`
+ * codes, so this page also fetches the state's decision tree to translate
+ * those codes back into the actual question and answer text the user saw.
  */
 export default async function ResultPage({ params, searchParams }: Props) {
   const { state } = await params;
@@ -51,13 +59,27 @@ export default async function ResultPage({ params, searchParams }: Props) {
   const path = sp.path ? sp.path.split(',') : [];
   const meta = getResultMeta(resultKey);
 
+  // A direct-URL load (no stepper interaction first) must still render the
+  // result -- fall back to raw-code rendering rather than hanging the whole
+  // page (or 404ing) if the tree fetch fails or never responds.
+  let tree: StateTree | null = null;
+  try {
+    tree = await getStateTree(state, {
+      next: { revalidate: 3600 },
+      signal: AbortSignal.timeout(5_000),
+    });
+  } catch {
+    tree = null;
+  }
+  const decodedPath = decodeDecisionPath(path, tree);
+
   const OutcomeIcon = meta.outcome === 'negative' ? XCircleIcon : CheckCircleIcon;
   const outcomeColor =
     meta.outcome === 'positive'
       ? 'var(--color-green-600)'
       : meta.outcome === 'negative'
         ? 'var(--color-red-600)'
-        : 'var(--color-amber-600)';
+        : 'var(--color-amber-800)';
 
   const outcomeLabel =
     meta.outcome === 'positive'
@@ -84,13 +106,9 @@ export default async function ResultPage({ params, searchParams }: Props) {
         )}
 
         {path.length > 0 && (
-          <PathSection>
-            <SectionTitle>Decision path</SectionTitle>
-            <PathSteps>
-              {path.map((step) => (
-                <PathStep key={step}>{step}</PathStep>
-              ))}
-            </PathSteps>
+          <PathSection aria-labelledby="decision-path-heading">
+            <SectionTitle id="decision-path-heading">Decision path</SectionTitle>
+            <DecisionPathList steps={decodedPath} />
           </PathSection>
         )}
 

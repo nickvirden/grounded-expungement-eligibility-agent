@@ -232,3 +232,32 @@ A duplicate-position case is *not* in this list because it isn't a bug: two dist
 the same question can legitimately share a `position` value (the frontend disambiguates them by
 array index/text, not position, since `position` is only ever used to pick the next transition, not
 to identify an answer on screen).
+
+---
+
+## 17. Decision Path Display: Decoded at Render Time, Not Stored
+
+**Decision:** A user's decision path is persisted (in the Quick Form result URL, and in
+`traversed_path` on an `EligibilityReport`) only as a list of `questionId:answerPosition` codes --
+never as resolved question/answer text. `apps/web/src/lib/decisionPath.ts` decodes these codes into
+readable text at display time, by walking the same state tree the rule engine itself consults,
+starting from `entryNodeId` and following each step's matched transition to the next node -- a
+faithful replay of `rule_engine.step()`'s own global-first-match lookup, not an approximation of it.
+
+**Why decode at render time instead of storing resolved text:** the alternative (writing the actual
+question/answer strings into the result URL or the report at the moment a user completes the flow)
+would double the data this app persists for no real benefit, and would still need a tree lookup to
+sanitize legacy HTML in the question/help text regardless. The real cost of this choice: if
+`packages/shared/state-trees/texas.json` is ever re-extracted with different wording for the same
+`(questionId, answerPosition)` codes, an old bookmarked result URL decodes against the *current* tree
+and silently shows the new text -- there's no version pin tying a path to the tree it was recorded
+against. A genuinely malformed or unresolvable code still falls back to the raw string rather than
+guessing, so this risk is "stale but plausible-looking text," not "wrong text with no indication."
+Accepted for a demo-scale app; would need a tree version stamped onto the path if this mattered for a
+production audit trail.
+
+**The duplicate-position case** (one node has two distinct answers sharing a `position` value -- see
+§16) means a single decoded step can legitimately have more than one matching answer. The decoder
+surfaces all of them rather than guessing; the display joins them with "or" rather than picking one
+arbitrarily, since nothing in the persisted path data (code or report) distinguishes which was
+actually picked.
