@@ -185,3 +185,50 @@ API requires the header unconditionally, since that's the actual point of this f
 - Real auth (OAuth2 / passkeys)
 - Real payment integration
 - Formal SOC2-aligned audit trail with immutable event sourcing
+
+---
+
+## 16. State Tree Node Identity: (group, variant), Not a Unique Node ID
+
+**Decision:** Nodes in an extracted state tree (`packages/shared/state-trees/<state>.json`) are
+keyed by `"<group>-<variant>"`, with explicit integer `group` and `variant` fields stored on the
+node itself. The legacy questionnaire data model keys both its question text and its answer sets
+by `(questionGroupIndex, incomingAnswerPosition)` -- the same group number can host several
+distinct question variants, each with its own text and its own answer set, depending on how the
+user arrived there. Collapsing a group down to a single node (keeping only the first-seen variant)
+silently discards the other variants' real questions and answers, pairing the wrong answer set with
+whichever question happens to render. Extraction (`scripts/extract_state_tree.mjs`) discovers each
+node's true `(group, variant)` directly from the arguments the legacy handler's own `currentValue`
+lookup is called with, rather than re-deriving the handler's override/redirect chain independently.
+
+`rule_engine.step()`'s public signature still addresses by `(question_id, answer_position)` --
+plain group number and answer position, no variant. This isn't an oversight: the legacy handler
+itself has no memory of which variant produced the question the user is answering, only the group
+number and the position of the answer they picked. A transition's destination is therefore fully
+determined by `(fromGroup, answerPosition)` alone, regardless of which variant of `fromGroup` the
+user was actually looking at -- replicating the API surface by variant as well would imply a
+distinction the legacy system itself doesn't make when computing the next step.
+
+**Why not address nodes by a single unique ID end-to-end:** doing so would mean inventing a new
+notion of node identity that doesn't correspond to anything in the legacy system's own request
+contract, and would require every caller -- engine, agent tool signatures, frontend Zod schemas --
+to carry and resolve that ID instead of the two plain integers the legacy app always used. That's a
+larger, separate redesign, deferred to issue #27.
+
+**Known legacy behaviors, preserved exactly rather than "fixed":** two issues surfaced during
+extraction are faithfully reproduced, not corrected, because deciding how to handle them requires
+legal/content authority this change doesn't have:
+
+- One DWI-related override is shadowed by an earlier one with an overlapping condition, so "yes, I
+  was convicted of a DWI" at one question routes to the sex-offender-registration question instead of
+  the first-offender DWI question the legacy design otherwise reaches via a different path (the
+  first-offender question itself is reachable, just not from this specific answer). Tracked as issue
+  #25.
+- Several redirects, not just one, form a connected cycle of 16 question variants (not a single
+  isolated loop) -- a real user who keeps answering consistently through this part of the tree would
+  be asked the same questions again indefinitely with no path out. Tracked as issue #26.
+
+A duplicate-position case is *not* in this list because it isn't a bug: two distinct answers within
+the same question can legitimately share a `position` value (the frontend disambiguates them by
+array index/text, not position, since `position` is only ever used to pick the next transition, not
+to identify an answer on screen).

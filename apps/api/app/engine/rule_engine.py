@@ -79,39 +79,42 @@ def step(state: str, question_id: int, answer_position: int) -> StepResult:
             result_label=result_value,
         )
 
-    # It's a question transition
+    # It's a question transition. The node is the only source of question
+    # text/answers -- the transition only carries enough to look it up.
     next_q_id = target["questionId"]
-    node = tree["nodes"].get(str(next_q_id))
+    node_id = target["nodeId"]
+    node = tree["nodes"].get(node_id)
+    if node is None:
+        raise ValueError(
+            f"Transition for state={state}, question_id={question_id}, "
+            f"answer_position={answer_position} points at missing node '{node_id}'"
+        )
 
     return StepResult(
         is_terminal=False,
         next_question_id=next_q_id,
-        next_question_text=target.get("question") or (node["question"] if node else None),
-        next_question_help=(node["help"] if node else None),
-        next_answers=(node["answers"] if node else []),
-        questions_left=node.get("questionsLeft") if node else None,
+        next_question_text=node["question"],
+        next_question_help=node["help"],
+        next_answers=node["answers"],
+        questions_left=node["questionsLeft"],
     )
 
 
 def get_entry_question(state: str) -> StepResult:
-    """
-    Return the first question for a state (the root node).
-
-    The legacy system's first call was answered with question 0 → the tree
-    returns question 1 as the first real question. We expose node '1' directly.
-    """
+    """Return the true root question for a state."""
     tree = load_tree(state)
-    node = tree["nodes"].get("1")
+    node_id = tree["entryNodeId"]
+    node = tree["nodes"].get(node_id)
     if not node:
-        raise ValueError(f"No entry node (id=1) found for state '{state}'")
+        raise ValueError(f"No entry node '{node_id}' found for state '{state}'")
 
     return StepResult(
         is_terminal=False,
-        next_question_id=1,
+        next_question_id=node["group"],
         next_question_text=node["question"],
-        next_question_help=node.get("help"),
-        next_answers=node.get("answers", []),
-        questions_left=node.get("questionsLeft"),
+        next_question_help=node["help"],
+        next_answers=node["answers"],
+        questions_left=node["questionsLeft"],
     )
 
 

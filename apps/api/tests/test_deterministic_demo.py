@@ -7,7 +7,10 @@ from app.agents.harness import _run_deterministic_demo
     ("narrative", "expected_substring"),
     [
         ("My charges were dismissed in 2010 and nothing else happened.", "Texas"),
-        ("I was convicted of a felony in 2025.", "Does Not Qualify"),
+        # Pins this demo's deterministic answer-picking heuristic (it resolves
+        # "convicted" to a felony DWI path), not a claim about what a real
+        # felony conviction is actually eligible for.
+        ("I was convicted of a felony in 2025.", "Pardon"),
         ("This was a juvenile matter in 2012.", ""),
     ],
 )

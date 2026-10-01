@@ -4,7 +4,7 @@
   "title": "State Decision Tree",
   "description": "Schema for extracted eligibility decision trees",
   "type": "object",
-  "required": ["state", "version", "nodes", "results", "transitions"],
+  "required": ["state", "version", "entryNodeId", "nodes", "results", "transitions"],
   "properties": {
     "state": {
       "type": "string",
@@ -21,8 +21,16 @@
       "type": "string",
       "format": "date-time"
     },
+    "entryNodeId": {
+      "type": "string",
+      "pattern": "^\\d+-\\d+$",
+      "description": "Key into `nodes` for the true root question"
+    },
     "nodes": {
       "type": "object",
+      "propertyNames": {
+        "pattern": "^\\d+-\\d+$"
+      },
       "additionalProperties": {
         "$ref": "#/$defs/Node"
       },
@@ -43,11 +51,20 @@
       "minItems": 1
     }
   },
+  "additionalProperties": false,
   "$defs": {
     "Node": {
       "type": "object",
-      "required": ["question", "answers"],
+      "required": ["group", "variant", "question", "answers", "questionsLeft"],
       "properties": {
+        "group": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "variant": {
+          "type": "integer",
+          "minimum": 0
+        },
         "question": {
           "type": "string",
           "minLength": 1
@@ -64,7 +81,8 @@
         "questionsLeft": {
           "type": ["integer", "null"]
         }
-      }
+      },
+      "additionalProperties": false
     },
     "Answer": {
       "type": "object",
@@ -77,7 +95,8 @@
           "type": "integer",
           "minimum": 0
         }
-      }
+      },
+      "additionalProperties": false
     },
     "Transition": {
       "type": "object",
@@ -89,19 +108,34 @@
           "properties": {
             "questionId": { "type": "integer", "minimum": 0 },
             "answerPosition": { "type": "integer", "minimum": 0 }
-          }
+          },
+          "additionalProperties": false
         },
         "to": {
-          "type": "object",
-          "required": ["type"],
-          "properties": {
-            "type": { "enum": ["question", "result"] },
-            "questionId": { "type": "integer" },
-            "question": { "type": "string" },
-            "value": { "type": "string" }
-          }
+          "oneOf": [
+            {
+              "type": "object",
+              "required": ["type", "questionId", "nodeId"],
+              "properties": {
+                "type": { "const": "question" },
+                "questionId": { "type": "integer", "minimum": 0 },
+                "nodeId": { "type": "string", "pattern": "^\\d+-\\d+$" }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": ["type", "value"],
+              "properties": {
+                "type": { "const": "result" },
+                "value": { "type": "string" }
+              },
+              "additionalProperties": false
+            }
+          ]
         }
-      }
+      },
+      "additionalProperties": false
     }
   }
 }
