@@ -49,7 +49,7 @@ class TestStatesEndpoints:
         resp = client.get("/api/states/texas/entry")
         assert resp.status_code == 200
         data = resp.json()
-        assert data["question_id"] == 1
+        assert data["question_id"] == 0
         assert data["question"] is not None
         assert len(data["answers"]) > 0
 

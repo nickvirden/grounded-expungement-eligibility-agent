@@ -61,7 +61,7 @@ class TestRuleEngine:
     def test_entry_question_returns_first_node(self) -> None:
         result = get_entry_question("texas")
         assert result.is_terminal is False
-        assert result.next_question_id == 1
+        assert result.next_question_id == 0
         assert result.next_question_text is not None
         assert len(result.next_answers) > 0
 

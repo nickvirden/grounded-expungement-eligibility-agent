@@ -59,7 +59,12 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
   const [stepNumber, setStepNumber] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedPosition, setSelectedPosition] = useState<number | null>(null);
+  // Answer `position` is not a unique answer identifier within a question: the
+  // legacy data model allows two distinct answers in the same question to
+  // share a position value, so selection state and list keys are tracked by
+  // array index instead (safe because FormCard remounts -- via its `key` --
+  // on every question change).
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   // Guard against double-submits
   const inFlight = useRef(false);
@@ -72,10 +77,10 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
   const stepsCompleted = initialQuestionsLeft - questionsLeft;
 
   const handleAnswer = useCallback(
-    async (position: number) => {
+    async (index: number, position: number) => {
       if (inFlight.current || isLoading) return;
       inFlight.current = true;
-      setSelectedPosition(position);
+      setSelectedIndex(index);
       setIsLoading(true);
       setError(null);
 
@@ -107,10 +112,10 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
         setAnswers(next.answers);
         setQuestionsLeft(next.questionsLeft);
         setStepNumber((s) => s + 1);
-        setSelectedPosition(null);
+        setSelectedIndex(null);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
-        setSelectedPosition(null);
+        setSelectedIndex(null);
       } finally {
         setIsLoading(false);
         inFlight.current = false;
@@ -173,14 +178,18 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
             </LoadingRow>
           ) : (
             <AnswerList>
-              {answers.map((answer) => (
-                <AnswerListItem key={answer.position}>
+              {/* answer.position isn't unique within a question (two answers can share a
+                  position), and this list fully remounts on every question change via
+                  FormCard's own step key above, so an index key is safe here. */}
+              {answers.map((answer, index) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: see comment above
+                <AnswerListItem key={index}>
                   <AnswerButton
-                    onClick={() => void handleAnswer(answer.position)}
-                    $selected={selectedPosition === answer.position}
+                    onClick={() => void handleAnswer(index, answer.position)}
+                    $selected={selectedIndex === index}
                     $disabled={isLoading}
                     disabled={isLoading}
-                    aria-pressed={selectedPosition === answer.position}
+                    aria-pressed={selectedIndex === index}
                   >
                     <span
                       // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized by sanitizeLegacyHtml
@@ -188,7 +197,7 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
                         __html: sanitizeLegacyHtml(answer.label ?? answer.value ?? ''),
                       }}
                     />
-                    {selectedPosition === answer.position && (
+                    {selectedIndex === index && (
                       <ArrowRightIcon size={16} color="var(--color-blue-600)" aria-hidden="true" />
                     )}
                   </AnswerButton>
