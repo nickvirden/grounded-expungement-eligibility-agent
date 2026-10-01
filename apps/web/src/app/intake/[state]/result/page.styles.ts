@@ -51,9 +51,9 @@ export const OutcomeBadge = styled.div<OutcomeBadgeProps>`
     return 'var(--color-amber-100)';
   }};
   color: ${({ $outcome }) => {
-    if ($outcome === 'positive') return 'var(--color-green-600)';
-    if ($outcome === 'negative') return 'var(--color-red-600)';
-    return 'var(--color-amber-600)';
+    if ($outcome === 'positive') return 'var(--color-green-700)';
+    if ($outcome === 'negative') return 'var(--color-red-700)';
+    return 'var(--color-amber-800)';
   }};
 `;
 
@@ -86,38 +86,6 @@ export const SectionTitle = styled.h2`
   letter-spacing: 0.07em;
   color: var(--color-navy-600);
   margin-bottom: var(--space-3);
-`;
-
-export const PathSteps = styled.ol`
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-`;
-
-export const PathStep = styled.li`
-  font-size: 0.875rem;
-  font-family: var(--font-mono);
-  color: var(--color-slate-400);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-
-  &::before {
-    content: counter(step);
-    counter-increment: step;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--color-slate-200);
-    color: var(--color-navy-600);
-    font-size: 0.6875rem;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
 `;
 
 export const ActionRow = styled.div`
@@ -179,7 +147,7 @@ export const SecondaryButton = styled.a`
 export const Disclaimer = styled.p`
   margin-top: var(--space-8);
   font-size: 0.8125rem;
-  color: var(--color-slate-400);
+  color: var(--color-navy-600);
   line-height: 1.6;
   border-top: 1px solid var(--color-slate-200);
   padding-top: var(--space-6);

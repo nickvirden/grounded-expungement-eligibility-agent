@@ -2,6 +2,7 @@
 
 import { ArrowRightIcon } from '@/components/icons';
 import { useChatStream } from '@/hooks/useChatStream';
+import type { StateTree } from '@/lib/schemas';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import CaseFileCard from './CaseFileCard';
@@ -24,12 +25,13 @@ import {
 interface Props {
   state: string;
   stateName: string;
+  decisionTree: StateTree | null;
 }
 
 const WELCOME = (stateName: string) =>
   `Hi! I'm the ClearSlate eligibility assistant. I'll help you find out if your record qualifies for relief in ${stateName}.\n\nTo get started, please describe your situation in as much detail as you're comfortable sharing — for example: what you were charged with, whether you were convicted, approximately when this happened, and whether you served any sentence.`;
 
-export default function TalkClient({ state, stateName }: Props) {
+export default function TalkClient({ state, stateName, decisionTree }: Props) {
   const { messages, intakeId, report, isLoading, error, send } = useChatStream();
   const [draft, setDraft] = useState('');
   const listRef = useRef<HTMLDivElement>(null);
@@ -120,7 +122,13 @@ export default function TalkClient({ state, stateName }: Props) {
         </InputArea>
       </ChatColumn>
 
-      <CaseFileCard state={state} intakeId={intakeId} status={agentStatus} report={report} />
+      <CaseFileCard
+        state={state}
+        intakeId={intakeId}
+        status={agentStatus}
+        report={report}
+        decisionTree={decisionTree}
+      />
     </TalkShell>
   );
 }

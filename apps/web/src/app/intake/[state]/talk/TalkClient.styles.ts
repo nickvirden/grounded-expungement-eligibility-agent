@@ -66,7 +66,7 @@ export const BackLink = styled.a`
   }
 `;
 
-export const TalkHeaderTitle = styled.span`
+export const TalkHeaderTitle = styled.h1`
   flex: 1;
   text-align: center;
   font-size: 0.9375rem;
@@ -241,6 +241,6 @@ export const ErrorBannerChat = styled.div`
   background: var(--color-red-100);
   border: 1px solid #fca5a5;
   border-radius: var(--radius-lg);
-  color: var(--color-red-600);
+  color: var(--color-red-700);
   font-size: 0.875rem;
 `;

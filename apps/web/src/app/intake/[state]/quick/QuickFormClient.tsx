@@ -22,6 +22,7 @@ import {
   LoadingRow,
   PageShell,
   PathCrumb,
+  PathCrumbItem,
   ProgressFill,
   ProgressTrack,
   QuestionText,
@@ -55,7 +56,12 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
   const [questionHelp, setQuestionHelp] = useState<string | null>(entry.help);
   const [answers, setAnswers] = useState(entry.answers);
   const [questionsLeft, setQuestionsLeft] = useState(entry.questions_left);
-  const [traversedPath, setTraversedPath] = useState<string[]>([]);
+  // Single source of truth for the traversed path: the URL-encoded entry code
+  // and the answer text shown in the breadcrumb are derived from the same
+  // array, instead of being tracked in two parallel arrays that could drift.
+  const [answeredSteps, setAnsweredSteps] = useState<Array<{ entry: string; answerLabel: string }>>(
+    [],
+  );
   const [stepNumber, setStepNumber] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -77,7 +83,7 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
   const stepsCompleted = initialQuestionsLeft - questionsLeft;
 
   const handleAnswer = useCallback(
-    async (index: number, position: number) => {
+    async (index: number, position: number, answerLabel: string) => {
       if (inFlight.current || isLoading) return;
       inFlight.current = true;
       setSelectedIndex(index);
@@ -91,15 +97,18 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
           answer_position: position,
         });
 
-        const newPath = [...traversedPath, stepToPathEntry(questionId, position)];
-        setTraversedPath(newPath);
+        const newSteps = [
+          ...answeredSteps,
+          { entry: stepToPathEntry(questionId, position), answerLabel },
+        ];
+        setAnsweredSteps(newSteps);
 
         if (result.is_terminal) {
           const params = new URLSearchParams({
             result_key: result.result_key ?? '',
             result_label: result.result_label ?? '',
             state,
-            path: newPath.join(','),
+            path: newSteps.map((s) => s.entry).join(','),
           });
           router.push(`/intake/${state}/result?${params.toString()}`);
           return;
@@ -121,7 +130,7 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
         inFlight.current = false;
       }
     },
-    [isLoading, questionId, state, traversedPath, router],
+    [isLoading, questionId, state, answeredSteps, router],
   );
 
   const safeQuestionHtml = useMemo(() => sanitizeLegacyHtml(questionText), [questionText]);
@@ -146,9 +155,11 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
 
       <ProgressTrack
         role="progressbar"
+        aria-label="Eligibility check progress"
         aria-valuenow={Math.round(progress * 100)}
         aria-valuemin={0}
         aria-valuemax={100}
+        aria-valuetext={`${answeredSteps.length} answered, about ${questionsLeft} remaining`}
       >
         <ProgressFill $pct={progress} />
       </ProgressTrack>
@@ -185,7 +196,9 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
                 // biome-ignore lint/suspicious/noArrayIndexKey: see comment above
                 <AnswerListItem key={index}>
                   <AnswerButton
-                    onClick={() => void handleAnswer(index, answer.position)}
+                    onClick={() =>
+                      void handleAnswer(index, answer.position, answer.label ?? answer.value ?? '')
+                    }
                     $selected={selectedIndex === index}
                     $disabled={isLoading}
                     disabled={isLoading}
@@ -208,8 +221,20 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
 
           {error && <ErrorBanner role="alert">{error}</ErrorBanner>}
 
-          {traversedPath.length > 0 && (
-            <PathCrumb aria-label="Decision path so far">{traversedPath.join(' → ')}</PathCrumb>
+          {answeredSteps.length > 0 && (
+            <PathCrumb aria-label="Decision path so far">
+              {/* Only the answer text is shown here, not the question -- the user just
+                  read the question, so restating it would be redundant. */}
+              {answeredSteps.map((step, index) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: steps are an immutable, ordered snapshot and an answer label can repeat, so the index is the only stable key available
+                <PathCrumbItem key={index}>
+                  <span
+                    // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized by sanitizeLegacyHtml
+                    dangerouslySetInnerHTML={{ __html: sanitizeLegacyHtml(step.answerLabel) }}
+                  />
+                </PathCrumbItem>
+              ))}
+            </PathCrumb>
           )}
         </FormCard>
       </FormBody>

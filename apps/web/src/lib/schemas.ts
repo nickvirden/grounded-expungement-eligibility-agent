@@ -103,6 +103,43 @@ export const stateInfoSchema = z.object({
 
 export type StateInfo = z.infer<typeof stateInfoSchema>;
 
+// ─── State tree (decision path decoding) ──────────────────────────────────────
+
+// Mirrors packages/shared/state-trees/<state>.json, trimmed to only the fields
+// the decision-path decoder needs. `help`, `variant` and `questionsLeft` are
+// deliberately omitted -- Zod strips unknown-to-this-schema fields by default,
+// which keeps tree-sourced help HTML out of client props and keeps the SSR
+// payload small.
+export const stateTreeNodeSchema = z.object({
+  group: z.number().int(),
+  question: z.string(),
+  answers: z.array(
+    z.object({
+      value: z.string(),
+      position: z.number().int(),
+    }),
+  ),
+});
+
+export const stateTreeTransitionSchema = z.object({
+  from: z.object({
+    questionId: z.number().int(),
+    answerPosition: z.number().int(),
+  }),
+  to: z.discriminatedUnion('type', [
+    z.object({ type: z.literal('question'), questionId: z.number().int(), nodeId: z.string() }),
+    z.object({ type: z.literal('result'), value: z.string() }),
+  ]),
+});
+
+export const stateTreeSchema = z.object({
+  entryNodeId: z.string(),
+  nodes: z.record(z.string(), stateTreeNodeSchema),
+  transitions: z.array(stateTreeTransitionSchema),
+});
+
+export type StateTree = z.infer<typeof stateTreeSchema>;
+
 // ─── Agent SSE events ─────────────────────────────────────────────────────────
 
 export const sseRunStartedSchema = z.object({ type: z.literal('run_started'), run_id: z.string() });

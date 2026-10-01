@@ -36,6 +36,13 @@ test.describe('Talk to Agent — Texas happy path', () => {
     await expect(result).toBeVisible({ timeout: 15_000 });
     await expect(result).toContainText('Texas');
 
+    // The decision path shows decoded question/answer text, not raw
+    // qN:aM codes -- the harness's dismissal branch starts at the root
+    // "What best describes this Texas case?" question.
+    await expect(result).toContainText(/what best describes this texas case/i);
+    const resultText = await result.innerText();
+    expect(resultText).not.toMatch(/\bq?\d+:a?\d+\b/);
+
     await expect(page.getByText('Complete')).toBeVisible();
   });
 });
