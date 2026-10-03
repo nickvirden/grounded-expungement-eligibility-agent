@@ -94,6 +94,25 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      # A second, throwaway instance for the tests that manage their own
+      # schema (test_health_readiness drops and recreates every table) or
+      # that need a real server for concurrency (test_replay_guard's
+      # 32-thread claim race). Those tests default to this host and
+      # credentials, so they run here instead of silently skipping; keeping
+      # them off the migrated instance above stops them from wiping the
+      # schema the rest of the suite depends on.
+      postgres-isolated:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: readyztest
+          POSTGRES_DB: readyztest
+        ports:
+          - 5557:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     env:
       DATABASE_URL: postgresql+psycopg://postgres:ci-test-password@localhost:5432/ci_test
     steps:
@@ -121,9 +140,11 @@ jobs:
           uv run alembic upgrade head
           uv run alembic check
 
+      # -rs lists every skip with its reason, so a Postgres-dependent test
+      # that quietly stops running shows up in the log.
       - name: Unit tests
         working-directory: apps/api
-        run: uv run pytest -q
+        run: uv run pytest -q -rs
 
   e2e:
     runs-on: ubuntu-latest
