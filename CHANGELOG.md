@@ -1,3 +1,9 @@
+## [2.0.5](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.4...v2.0.5) (2026-10-03)
+
+### Bug Fixes
+
+* **api:** document the spend-cap requirement in the smoke script usage ([99e5fc7](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/99e5fc7fa1b3074bbdca676468e048f7f08563ee))
+
 ## [2.0.4](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.3...v2.0.4) (2026-10-03)
 
 ### Bug Fixes
