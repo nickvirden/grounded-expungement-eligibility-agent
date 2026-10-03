@@ -16,7 +16,10 @@ if config.config_file_name is not None:
 
 # DATABASE_URL (via app settings) is the single source of truth, so
 # `alembic upgrade` always targets the same database the app connects to.
-config.set_main_option("sqlalchemy.url", settings.database_url)
+# set_main_option stores the value in a ConfigParser, which treats `%` as
+# interpolation syntax, so a percent-encoded password (`p%40ss`) must be
+# escaped here; reading the option back unescapes it.
+config.set_main_option("sqlalchemy.url", settings.database_url.replace("%", "%%"))
 
 target_metadata = SQLModel.metadata
 
