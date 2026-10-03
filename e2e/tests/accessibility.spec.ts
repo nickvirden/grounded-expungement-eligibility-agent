@@ -95,9 +95,14 @@ test.describe('Accessibility — Result page', () => {
   });
 
   test('conditional-outcome load has no violations', async ({ page }) => {
-    // "does_not_qualify" isn't one of getResultMeta's special-cased keys, so
-    // it falls through to the "conditional" outcome styling -- the variant
-    // most real result keys from the engine actually hit.
+    await page.goto(
+      '/intake/texas/result?result_key=does_not_qualify_yet&result_label=Does+Not+Qualify+Yet&state=texas&path=0:0,1:1',
+    );
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 10_000 });
+    expectNoViolations(await runAxe(page));
+  });
+
+  test('negative-outcome load has no violations', async ({ page }) => {
     await page.goto(
       '/intake/texas/result?result_key=does_not_qualify&result_label=Does+Not+Qualify&state=texas&path=0:0,1:1',
     );
