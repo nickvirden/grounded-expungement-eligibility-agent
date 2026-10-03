@@ -61,9 +61,6 @@ services:
       # after any change that adds a migration. The API never migrates itself.
       - DATABASE_URL=postgresql+psycopg://eligibility:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@postgres:5432/eligibility
       - ALLOWED_ORIGINS=https://localhost
-      # Tell the tree loader where the shared knowledge base was copied to.
-      - STATE_TREES_DIR=/shared/state-trees
-      - SERVICE_CATALOG_PATH=/shared/service-catalog.json
     # Load remaining vars (LLM_PROVIDER, CSRF_SECRET, SESSION_SECRET, etc.) from .env.
     env_file:
       - .env
