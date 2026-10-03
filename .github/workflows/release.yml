@@ -23,9 +23,24 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      # semantic-release pushes a chore(release) commit and tag straight to
+      # main. With main protected by a branch ruleset, the default
+      # GITHUB_TOKEN (github-actions[bot]) cannot bypass it, so releases run
+      # as a GitHub App installation that the ruleset lists as a bypass actor.
+      # The token is scoped to this repository only and expires after the job.
+      - name: Create release app token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+
+      # The checkout credential is what `git push` uses, so it must be the app
+      # token too, not the default GITHUB_TOKEN.
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
 
       - uses: actions/setup-node@v4
         with:
@@ -43,7 +58,7 @@ jobs:
       # mid-release instead of failing the recognizable way.
       - name: Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: >
           npx
           --package semantic-release
