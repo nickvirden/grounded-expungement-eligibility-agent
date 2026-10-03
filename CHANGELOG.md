@@ -1,3 +1,9 @@
+## [2.0.4](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.3...v2.0.4) (2026-10-03)
+
+### Bug Fixes
+
+* **ci:** use the GitHub App client ID for the release token ([3781a86](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/3781a86d10a50c52d71f435f14b6b7a9ff199944))
+
 ## [2.0.3](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.2...v2.0.3) (2026-10-03)
 
 ### Bug Fixes
