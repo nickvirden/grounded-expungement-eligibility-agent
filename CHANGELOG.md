@@ -1,3 +1,10 @@
+## [2.0.9](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.8...v2.0.9) (2026-10-03)
+
+### Bug Fixes
+
+* **api:** canonicalize the origin allowlist once for CORS and the origin check ([8792bba](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/8792bbafe0c1acdafb9fc80c96a8e699219e91f7))
+* **api:** compare request origins exactly instead of by string prefix ([fd8228e](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/fd8228e00bb06f8fac3cb2d7fba83ef542af28cc)), closes [#35](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/35)
+
 ## [2.0.8](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.7...v2.0.8) (2026-10-03)
 
 ### Bug Fixes
