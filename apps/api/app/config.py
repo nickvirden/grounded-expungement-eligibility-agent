@@ -84,9 +84,6 @@ class Settings(BaseSettings):
     # app/agents/spend_cap.py.
     daily_spend_cap_usd: float = Field(default=0.0, ge=0)
 
-    state_trees_dir: str = ""
-    service_catalog_path: str = ""
-
     logfire_token: str = ""
     debug: bool = False
 
