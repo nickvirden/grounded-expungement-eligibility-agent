@@ -10,8 +10,12 @@ Never run in CI, never against a shared/production database: this makes a
 real, billable API call whenever LLM_PROVIDER is a real provider, so it
 refuses to run at all unless CI is unset and the database is SQLite.
 
+DAILY_SPEND_CAP_USD must also be set above zero: the $0 default refuses
+every real provider before any request is made, by design.
+
 Usage (from apps/api/):
-    ALLOW_REAL_LLM_PROVIDERS=true LLM_PROVIDER=openai OPENAI_API_KEY=sk-... \\
+    ALLOW_REAL_LLM_PROVIDERS=true DAILY_SPEND_CAP_USD=1 \\
+        LLM_PROVIDER=openai OPENAI_API_KEY=sk-... \\
         uv run python -m app.scripts.smoke_test_real_provider
 """
 import asyncio
