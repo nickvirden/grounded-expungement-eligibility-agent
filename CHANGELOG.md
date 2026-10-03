@@ -1,3 +1,9 @@
+## [2.0.7](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.6...v2.0.7) (2026-10-03)
+
+### Bug Fixes
+
+* **api:** remove settings and compose entries nothing reads ([d8008d9](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/d8008d9f4ddcbd5f03359d5b01d7f09eaa47f1e0)), closes [#31](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/31)
+
 ## [2.0.6](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.5...v2.0.6) (2026-10-03)
 
 ### Bug Fixes
