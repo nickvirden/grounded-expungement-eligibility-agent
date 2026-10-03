@@ -1,3 +1,9 @@
+## [2.0.6](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.5...v2.0.6) (2026-10-03)
+
+### Bug Fixes
+
+* **api:** escape % in the database URL handed to alembic ([22dd663](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/22dd6633b02c39746926c95bde8af0de830b7e63)), closes [#36](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/36)
+
 ## [2.0.5](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.4...v2.0.5) (2026-10-03)
 
 ### Bug Fixes
