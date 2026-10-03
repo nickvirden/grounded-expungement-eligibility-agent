@@ -1,3 +1,9 @@
+## [2.0.10](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.9...v2.0.10) (2026-10-03)
+
+### Bug Fixes
+
+* **web:** describe Quick Form progress as answered steps plus an estimate ([d5d7907](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/d5d790755efea413e8c3690fcd55b4467af1fee0)), closes [#32](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/32)
+
 ## [2.0.9](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.8...v2.0.9) (2026-10-03)
 
 ### Bug Fixes
