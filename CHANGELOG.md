@@ -1,3 +1,9 @@
+## [2.0.8](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.7...v2.0.8) (2026-10-03)
+
+### Bug Fixes
+
+* **web:** show the real outcome for every result the engine can emit ([abff98b](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/abff98b488fd534b1c2199a5a96ab6ba60f68f6f)), closes [#33](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/33)
+
 ## [2.0.7](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.6...v2.0.7) (2026-10-03)
 
 ### Bug Fixes
