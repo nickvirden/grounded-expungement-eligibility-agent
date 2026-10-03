@@ -4,6 +4,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
 from app.config import settings
+from app.origins import is_origin_allowed
 
 _MUTATING = {"POST", "PUT", "PATCH", "DELETE"}
 
@@ -22,9 +23,7 @@ class StrictOriginMiddleware(BaseHTTPMiddleware):
                 )
 
             # When Origin header is present, it must match the allowlist
-            if origin and not any(
-                origin.startswith(allowed) for allowed in settings.allowed_origins_list
-            ):
+            if origin and not is_origin_allowed(origin, settings.allowed_origins_list):
                 return JSONResponse(
                     {"detail": "Origin not allowed"},
                     status_code=403,
