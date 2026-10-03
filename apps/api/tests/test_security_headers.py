@@ -1,9 +1,13 @@
 """Security middleware tests: headers, CSRF, origin enforcement, rate limiting."""
+from typing import ClassVar
+
 import httpx
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
 from app.security.csrf import CSRF_COOKIE, CSRF_HEADER, generate_csrf_token
+from app.security.origin import is_origin_allowed
 from app.security.redaction import redact_pii
 
 client = TestClient(app, raise_server_exceptions=True)
@@ -110,6 +114,58 @@ class TestStrictOriginMiddleware:
             "https://localhost:3000", sec_fetch_site="same-origin"
         )
         assert resp.status_code == 200
+
+    def test_allowlisted_origin_accepted(self) -> None:
+        assert self._post_with_origin("https://localhost:3000").status_code == 200
+
+    @pytest.mark.parametrize(
+        "origin",
+        [
+            "https://localhost:3000.evil.test",
+            "https://localhost:30001",
+            "https://localhost:3000@evil.test",
+            "https://localhost:3000/path",
+            "http://localhost:3000",
+            "null",
+        ],
+    )
+    def test_lookalike_origins_rejected(self, origin: str) -> None:
+        assert self._post_with_origin(origin).status_code == 403
+
+
+class TestOriginMatching:
+    ALLOWED: ClassVar[list[str]] = ["https://app.example.com", "http://localhost:3000"]
+
+    @pytest.mark.parametrize(
+        "origin",
+        [
+            "https://app.example.com",
+            "https://app.example.com:443",
+            "HTTPS://APP.EXAMPLE.COM",
+            "http://localhost:3000",
+        ],
+    )
+    def test_equivalent_origins_match(self, origin: str) -> None:
+        assert is_origin_allowed(origin, self.ALLOWED)
+
+    @pytest.mark.parametrize(
+        "origin",
+        [
+            "https://app.example.com.evil.test",
+            "https://evil-app.example.com",
+            "https://app.example.com:8443",
+            "http://app.example.com",
+            "https://localhost:3000",
+            "https://app.example.com/x",
+            "app.example.com",
+            "",
+        ],
+    )
+    def test_non_matching_origins_rejected(self, origin: str) -> None:
+        assert not is_origin_allowed(origin, self.ALLOWED)
+
+    def test_trailing_slash_in_allowlist_entry_still_matches(self) -> None:
+        assert is_origin_allowed("https://app.example.com", ["https://app.example.com/"])
 
 
 class TestPIIRedaction:
