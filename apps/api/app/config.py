@@ -1,6 +1,8 @@
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from app.origins import canonical_origin
+
 # Neon (and other managed Postgres providers) inject DATABASE_URL with the
 # driver-agnostic "postgres://"/"postgresql://" scheme, but this app's engine
 # needs the explicit psycopg3 dialect to actually connect. A bare scheme
@@ -92,7 +94,12 @@ class Settings(BaseSettings):
 
     @property
     def allowed_origins_list(self) -> list[str]:
-        return [s.strip() for s in self.allowed_origins.split(",") if s.strip()]
+        # Valid origins are canonicalized to the exact string a browser sends,
+        # because CORSMiddleware compares them as plain strings. A malformed
+        # entry is kept as written: it then matches no real Origin header
+        # anywhere, rather than being silently dropped.
+        entries = [s.strip() for s in self.allowed_origins.split(",") if s.strip()]
+        return [canonical_origin(entry) or entry for entry in entries]
 
     @field_validator("llm_provider")
     @classmethod
