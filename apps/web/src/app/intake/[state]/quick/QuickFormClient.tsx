@@ -28,7 +28,12 @@ import {
   QuestionText,
   StepCounter,
 } from './QuickFormClient.styles';
-import { computeProgress, responseToStep, stepToPathEntry } from './QuickFormClient.utils';
+import {
+  computeProgress,
+  describeProgress,
+  responseToStep,
+  stepToPathEntry,
+} from './QuickFormClient.utils';
 
 interface EntryQuestion {
   question_id: number;
@@ -48,8 +53,6 @@ interface Props {
 export default function QuickFormClient({ state, stateName, entry }: Props) {
   const router = useRouter();
   const headingId = useId();
-
-  const initialQuestionsLeft = entry.questions_left;
 
   const [questionId, setQuestionId] = useState(entry.question_id);
   const [questionText, setQuestionText] = useState(entry.question);
@@ -75,12 +78,15 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
   // Guard against double-submits
   const inFlight = useRef(false);
 
+  const answeredCount = answeredSteps.length;
   const progress = useMemo(
-    () => computeProgress(initialQuestionsLeft, questionsLeft),
-    [initialQuestionsLeft, questionsLeft],
+    () => computeProgress(answeredCount, questionsLeft),
+    [answeredCount, questionsLeft],
   );
-
-  const stepsCompleted = initialQuestionsLeft - questionsLeft;
+  const progressDescription = useMemo(
+    () => describeProgress(answeredCount, questionsLeft),
+    [answeredCount, questionsLeft],
+  );
 
   const handleAnswer = useCallback(
     async (index: number, position: number, answerLabel: string) => {
@@ -148,9 +154,7 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
 
         <HeaderTitle id={headingId}>Eligibility Check — {stateName}</HeaderTitle>
 
-        <StepCounter aria-live="polite">
-          {stepsCompleted} / {initialQuestionsLeft}
-        </StepCounter>
+        <StepCounter aria-live="polite">{progressDescription.summary}</StepCounter>
       </FormHeader>
 
       <ProgressTrack
@@ -159,7 +163,7 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
         aria-valuenow={Math.round(progress * 100)}
         aria-valuemin={0}
         aria-valuemax={100}
-        aria-valuetext={`${answeredSteps.length} answered, about ${questionsLeft} remaining`}
+        aria-valuetext={progressDescription.valueText}
       >
         <ProgressFill $pct={progress} />
       </ProgressTrack>

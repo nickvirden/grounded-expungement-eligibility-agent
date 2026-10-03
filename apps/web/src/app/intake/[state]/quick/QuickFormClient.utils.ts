@@ -18,11 +18,41 @@ export interface StepperState {
   error: string | null;
 }
 
-/** Compute 0-based progress (0–1) from the initial total and current remaining. */
-export function computeProgress(initial: number, remaining: number): number {
-  if (initial <= 0) return 0;
-  const answered = initial - remaining;
-  return Math.min(answered / initial, 1);
+/**
+ * Fraction of the form completed, from steps answered so far and the engine's
+ * current estimate of questions still to come.
+ *
+ * Branches differ in depth, so the total isn't known up front: the estimate is
+ * re-read from each response and the fraction is recomputed against it. The
+ * bar can therefore move backwards when a branch turns out longer than the
+ * previous estimate, which is truthful; a fixed total taken from the first
+ * question would instead overshoot or stall.
+ */
+export function computeProgress(answered: number, remaining: number): number {
+  const total = answered + Math.max(remaining, 0);
+  if (total <= 0) return 0;
+  return Math.min(answered / total, 1);
+}
+
+export interface ProgressDescription {
+  /** Compact text for the visible counter. */
+  summary: string;
+  /** Full sentence for the progress bar's aria-valuetext. */
+  valueText: string;
+}
+
+/** Describe progress as answered steps plus an explicitly estimated remainder. */
+export function describeProgress(answered: number, remaining: number): ProgressDescription {
+  if (remaining <= 1) {
+    return {
+      summary: `${answered} answered · last question`,
+      valueText: `${answered} answered, last question`,
+    };
+  }
+  return {
+    summary: `${answered} answered · about ${remaining} left`,
+    valueText: `${answered} answered, about ${remaining} remaining`,
+  };
 }
 
 /** Build a new step from an assess API response (non-terminal). */
