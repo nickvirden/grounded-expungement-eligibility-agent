@@ -1,3 +1,9 @@
+## [2.0.3](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.2...v2.0.3) (2026-10-03)
+
+### Bug Fixes
+
+* **ci:** run semantic-release as a GitHub App so main can be protected ([328c6fb](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/328c6fb48bde9187c396f781f38ce19a9b6dee2e))
+
 ## [2.0.2](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.1...v2.0.2) (2026-10-01)
 
 ### Bug Fixes
