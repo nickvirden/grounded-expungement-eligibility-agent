@@ -261,3 +261,36 @@ production audit trail.
 surfaces all of them rather than guessing; the display joins them with "or" rather than picking one
 arbitrarily, since nothing in the persisted path data (code or report) distinguishes which was
 actually picked.
+
+---
+
+## 18. Reading and Deleting an Intake: The ID Is the Credential
+
+**Decision:** `GET /api/intakes/{id}` and `DELETE /api/intakes/{id}` take no authorization beyond
+knowing the intake ID. Intake IDs are ULIDs, whose 80 random bits (from the OS CSPRNG) make them
+infeasible to guess or enumerate, and a 404 is returned identically for an ID that never existed.
+Tracked in #34.
+
+**What is exposed:** `GET` returns the state, mode, status, result key(s), the traversed decision
+path and run metadata (provider, status, start time). It does not return the free-text narrative,
+which is the most sensitive field the app stores. `DELETE` removes the intake and every record
+attached to it; it is the right-to-erasure endpoint, so being callable by whoever holds the ID is
+consistent with what it is for.
+
+**Where the ID can leak:** it appears in the path of the Talk-to-Agent stream proxy
+(`/api/chat/<id>/stream`), so it can end up in hosting request logs, and a person can share it
+deliberately. Anyone who obtains it can read that one intake's metadata or delete it. They gain no
+access to any other intake.
+
+**Why not a capability token on these routes:** the stream token (§14) lives 120 seconds, so
+protecting GET and DELETE would need a second, longer-lived credential. A stateless signed token
+can't be revoked; a stored, hashed token needs a schema migration. Either way it touches the API
+schemas, the Next.js proxy, the web client and the tests, and it is a breaking API change. The
+web app never calls either endpoint today, so the new credential would guard routes with no caller
+while moving the same bearer-secret risk from the ID to the token. The cost outweighs the benefit
+at this data sensitivity.
+
+**When to revisit:** add a capability token (stored hash, returned once at creation, sent as a
+bearer header) if any of these become true: `GET` starts returning narrative text or anything else
+identifying; the web app starts reading intakes back; intake IDs begin appearing in user-visible
+URLs or shared links; or the app is used with real, non-demo data.
