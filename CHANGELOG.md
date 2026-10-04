@@ -1,3 +1,9 @@
+## [2.0.11](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.10...v2.0.11) (2026-10-04)
+
+### Bug Fixes
+
+* **api:** drop invalid ALLOWED_ORIGINS entries instead of passing them to CORS ([8bc3ea4](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/8bc3ea455be79ed3dbb6442276a91dbdaf57f420)), closes [#47](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/47)
+
 ## [2.0.10](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.9...v2.0.10) (2026-10-03)
 
 ### Bug Fixes
