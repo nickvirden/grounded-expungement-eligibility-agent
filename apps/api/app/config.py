@@ -1,7 +1,11 @@
+import logging
+
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from app.origins import canonical_origin
+
+logger = logging.getLogger(__name__)
 
 # Neon (and other managed Postgres providers) inject DATABASE_URL with the
 # driver-agnostic "postgres://"/"postgresql://" scheme, but this app's engine
@@ -92,11 +96,23 @@ class Settings(BaseSettings):
     @property
     def allowed_origins_list(self) -> list[str]:
         # Valid origins are canonicalized to the exact string a browser sends,
-        # because CORSMiddleware compares them as plain strings. A malformed
-        # entry is kept as written: it then matches no real Origin header
-        # anywhere, rather than being silently dropped.
+        # because CORSMiddleware compares them as plain strings. Anything that
+        # isn't a bare scheme://host[:port] origin is dropped: keeping "*" would
+        # make CORSMiddleware echo any origin back on credentialed requests.
         entries = [s.strip() for s in self.allowed_origins.split(",") if s.strip()]
-        return [canonical_origin(entry) or entry for entry in entries]
+        canonical = (canonical_origin(entry) for entry in entries)
+        return [origin for origin in canonical if origin is not None]
+
+    @field_validator("allowed_origins")
+    @classmethod
+    def _warn_on_ignored_origins(cls, value: str) -> str:
+        # Ignoring an entry fails closed, but a typo would otherwise look like
+        # a CORS bug at runtime, so say which entries were dropped. Origins
+        # are not secrets, unlike the sibling settings this class holds.
+        for entry in (s.strip() for s in value.split(",") if s.strip()):
+            if canonical_origin(entry) is None:
+                logger.warning("Ignoring invalid ALLOWED_ORIGINS entry %r", entry)
+        return value
 
     @field_validator("llm_provider")
     @classmethod

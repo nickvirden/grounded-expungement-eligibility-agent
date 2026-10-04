@@ -3,6 +3,8 @@ from typing import ClassVar
 
 import httpx
 import pytest
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.testclient import TestClient
 
 from app.config import Settings
@@ -205,9 +207,28 @@ class TestAllowlistIsCanonicalForCors:
         cfg = Settings(allowed_origins=loose)
         assert cfg.allowed_origins_list == ["https://app.example.com", "http://localhost:3000"]
 
-    def test_malformed_entries_are_kept_so_they_match_nothing(self) -> None:
-        cfg = Settings(allowed_origins="https://app.example.com,*")
-        assert cfg.allowed_origins_list == ["https://app.example.com", "*"]
+    def test_invalid_entries_are_dropped_and_reported(
+        self, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        with caplog.at_level("WARNING", logger="app.config"):
+            cfg = Settings(allowed_origins="https://app.example.com,*,https://a.test/x")
+        assert cfg.allowed_origins_list == ["https://app.example.com"]
+        assert "'*'" in caplog.text
+        assert "https://a.test/x" in caplog.text
+
+    def test_wildcard_setting_does_not_make_cors_echo_arbitrary_origins(self) -> None:
+        cors_app = FastAPI()
+        cors_app.add_middleware(
+            CORSMiddleware,
+            allow_origins=Settings(allowed_origins="*").allowed_origins_list,
+            allow_credentials=True,
+            allow_methods=["POST"],
+        )
+        preflight = TestClient(cors_app).options(
+            "/",
+            headers={"Origin": "https://evil.test", "Access-Control-Request-Method": "POST"},
+        )
+        assert "access-control-allow-origin" not in preflight.headers
 
 
 class TestPIIRedaction:
