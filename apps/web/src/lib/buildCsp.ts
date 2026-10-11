@@ -6,8 +6,8 @@
  * lets nonced bootstrap scripts load the chunks they depend on.
  *
  * Development differs because React's dev tooling needs `eval` and the dev
- * server injects inline styles it cannot nonce, so styles are allowed inline; `upgrade-insecure-requests`
- * is dropped so plain-http localhost keeps working.
+ * server injects inline styles it cannot nonce, so styles are allowed inline;
+ * `upgrade-insecure-requests` is dropped so plain-http localhost keeps working.
  */
 export function buildCsp(nonce: string, isDev: boolean): string {
   const directives: string[] = [

@@ -93,6 +93,11 @@ test.describe('Security headers', () => {
     expect(first).not.toBe(second);
   });
 
+  test('a Purpose: prefetch page request still gets a CSP', async ({ request }) => {
+    const res = await request.get('/', { headers: { Purpose: 'prefetch' } });
+    expect(res.headers()['content-security-policy']).toContain("script-src 'self' 'nonce-");
+  });
+
   test('landing page has COOP and CORP same-origin', async ({ request }) => {
     const headers = (await request.get('/')).headers();
     expect(headers['cross-origin-opener-policy']).toBe('same-origin');

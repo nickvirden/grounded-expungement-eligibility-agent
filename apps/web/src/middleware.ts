@@ -23,12 +23,12 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     {
-      // /api responses are JSON/SSE and get a static CSP from next.config.ts.
-      source: '/((?!api|_next/static|_next/image|favicon.ico).*)',
-      missing: [
-        { type: 'header', key: 'next-router-prefetch' },
-        { type: 'header', key: 'purpose', value: 'prefetch' },
-      ],
+      // /api/ responses are JSON/SSE and get a static CSP from next.config.ts.
+      // Anchoring on `api/` keeps paths like /apifoo inside the matcher.
+      source: '/((?!api/|_next/static|_next/image|favicon.ico).*)',
+      // Router prefetches carry no rendered HTML. A browser `Purpose: prefetch`
+      // request can still be rendered and used, so it must get a CSP.
+      missing: [{ type: 'header', key: 'next-router-prefetch' }],
     },
   ],
 };
