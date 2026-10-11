@@ -1,8 +1,8 @@
 """Response-header security middleware.
 
 Sets: HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy,
-Permissions-Policy, COOP, CORP, a locked-down Content-Security-Policy (everything
-except the interactive API docs), removes Server/X-Powered-By.
+Permissions-Policy, COOP, CORP, a locked-down Content-Security-Policy (on app and
+router responses, except the interactive API docs), removes Server/X-Powered-By.
 """
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request

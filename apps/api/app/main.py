@@ -64,8 +64,11 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # type: ignore[arg-type]
 
-# Middleware order: outermost runs LAST on request, FIRST on response.
-# We want security headers on every response → add first so they apply last.
+# Starlette wraps each added middleware around the previous ones, so the last one
+# added is outermost: it sees the request first and the response last. Security
+# headers are added first and are therefore innermost: they cover responses from
+# the app and its routers, but not rejections produced by the middleware below
+# (CSRF, origin, CORS preflight, rate limit) or unhandled 500s.
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(StrictOriginMiddleware)
 app.add_middleware(CSRFMiddleware)
