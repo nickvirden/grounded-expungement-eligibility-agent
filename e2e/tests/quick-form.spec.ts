@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '../cspGuard';
 
 /**
  * Quick Form happy-path E2E test.
