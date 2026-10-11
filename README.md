@@ -2,6 +2,8 @@
 
 **ClearSlate** is a modern rewrite of a legacy eligibility questionnaire, demonstrating agentic AI architecture, security-first design, and production-grade engineering.
 
+**Live demo:** https://clear-slate-agent-demo.nickvirden.com
+
 It's a fictional product, modeled on a real-world record-clearing workflow (WipeRecord) — not affiliated with, endorsed by, or a rebuild of any real company's actual system.
 
 ---
@@ -151,8 +153,9 @@ the layered defenses that keep a real provider from firing by accident.
 ## Running Tests
 
 ```bash
-# Backend: all 92 tests (pytest lives in the dev extra)
+# Backend: full pytest suite (pytest lives in the dev extra)
 cd apps/api
+# Current test count (run from apps/api): uv run --extra dev pytest --collect-only -q | tail -1
 uv run --extra dev pytest tests/ -v
 
 # Frontend: node:test unit tests
