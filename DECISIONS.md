@@ -76,7 +76,7 @@ This document records every significant architectural and technical decision mad
 
 ## 8. Frontend Conventions
 
-**Decision:** No inline styles (lint-enforced + e2e-asserted), per-component co-location, lift-when-shared rule, styled-components SSR with CSP nonce.
+**Decision:** No inline styles (lint-enforced + e2e-asserted), per-component co-location, lift-when-shared rule, styled-components SSR with a per-request CSP nonce (§19).
 
 **Why `node:test` over Vitest:** Zero additional dependencies, native to Node 22, faster cold start, simpler CI. For a showcase project, fewer deps = smaller attack surface and clearer intent.
 
@@ -88,7 +88,7 @@ This document records every significant architectural and technical decision mad
 
 **Threat model:** Criminal-history PII (past offenses, dispositions, dates) — weaponizable for employment, housing, and immigration discrimination.
 
-**Layered defenses:** TLS at Caddy → CSP nonce → CSRF + Origin enforcement → Pydantic strict validation → prompt-injection delimiters → deterministic tool boundary → PII-redacting logs → minimized at-rest data.
+**Layered defenses:** TLS at Caddy → nonce CSP on web pages, locked-down CSP on API responses (§19) → CSRF + Origin enforcement → Pydantic strict validation → prompt-injection delimiters → deterministic tool boundary → PII-redacting logs → minimized at-rest data.
 
 **Deferred (documented):** Full KMS envelope encryption, SOC2 controls, formal penetration testing, SIEM integration.
 
@@ -294,3 +294,49 @@ at this data sensitivity.
 bearer header) if any of these become true: `GET` starts returning narrative text or anything else
 identifying; the web app starts reading intakes back; intake IDs begin appearing in user-visible
 URLs or shared links; or the app is used with real, non-demo data.
+
+---
+
+## 19. Content-Security-Policy: Nonce Over 'unsafe-inline'
+
+**Decision:** `apps/web/src/middleware.ts` generates a nonce per request and sets
+`script-src 'self' 'nonce-X' 'strict-dynamic'` and `style-src 'self' 'nonce-X'` (built by
+`src/lib/buildCsp.ts`), plus `connect-src 'self'`, `object-src 'none'`, `base-uri 'self'`,
+`form-action 'self'`, `frame-ancestors 'none'` and `upgrade-insecure-requests`. `connect-src` omits
+the API origin because the browser only calls same-origin `/api/*` route handlers; the server
+proxies to the backend. `next.config.ts` adds `Cross-Origin-Opener-Policy` and
+`Cross-Origin-Resource-Policy` (`same-origin`) and a `default-src 'none'` CSP on `/api/*` responses,
+which the middleware skips. The FastAPI app sends the same locked-down CSP on every response except
+`/api/docs` and `/api/redoc`, which load Swagger/ReDoc assets from a CDN.
+
+**Why:** the app handles sensitive criminal-history data, and an inline-script allowance would let
+any injected markup execute. A nonce makes the policy meaningful against XSS.
+
+**Costs:**
+- Every HTML response is rendered per request. `/` loses static generation/ISR (its only data is
+  the cached `/api/states` fetch), and HTML cannot be cached by a CDN. `/intake/*` was already
+  dynamic and `no-store`.
+- Style nonces need plumbing: the root layout reads `x-nonce` from the request headers, passes it to
+  the styled-components registry (`ServerStyleSheet({ nonce })`, `StyleSheetManager`) and renders
+  `<meta property="csp-nonce">`, which styled-components reads for style tags injected in the
+  browser. The no-inline-styles rule (§8) is what lets `style-src` stay nonce-only. styled-components
+  emits un-nonced `<style>` elements when a component renders in a Server Component, so every
+  `*.styles.ts` file that server-rendered pages import carries `'use client'`; client components are
+  rendered through the nonced registry instead. A new styled file used from a Server Component needs
+  the same directive. Next's built-in 404 page also inlines an un-nonced `<style>`.
+- The development policy differs: `script-src` adds `'unsafe-eval'` (React dev tooling), `style-src`
+  swaps the nonce for `'unsafe-inline'` (a nonce makes browsers ignore `'unsafe-inline'`), and `upgrade-insecure-requests` is dropped so http://localhost works. The
+  Playwright suite runs against the dev server, so the production policy is exercised by running it
+  against `next build && next start`.
+
+**Alternatives rejected:**
+- `'unsafe-inline'` for scripts via static `headers()`: keeps `/` static and is a one-line change,
+  but permits inline script execution, so it gives little protection against injected script.
+- Experimental Subresource Integrity hashes (`experimental.sri`): webpack-only (dev uses Turbopack)
+  and does not cover Next's inline bootstrap scripts.
+- Adding the API origin to `connect-src`: widens the policy for requests the browser never makes.
+- Cross-Origin-Embedder-Policy: nothing needs isolating and it risks breaking embeds.
+
+**When to revisit:** if page-load cost from losing static HTML matters, or Next ships first-class
+hash-based CSP for inline scripts; if the browser starts calling the API origin directly (add it to
+`connect-src`); if the interactive API docs are disabled or self-hosted (drop the CSP exemption).
