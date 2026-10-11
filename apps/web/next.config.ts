@@ -9,7 +9,8 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   // Security: do not expose X-Powered-By header
   poweredByHeader: false,
-  // Content-Security-Policy handled at the Caddy / API layer
+  // The page Content-Security-Policy is set per request in src/middleware.ts
+  // because its nonce cannot be a static header. /api responses get theirs below.
   async headers() {
     return [
       {
@@ -21,6 +22,16 @@ const nextConfig: NextConfig = {
           // Caddy sets this for the Docker Compose deploy; Vercel has no
           // equivalent reverse-proxy layer, so it must be set here too.
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+          // No popups, iframes or cross-origin embeds exist, so full isolation is free.
+          { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
+          { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
+        ],
+      },
+      {
+        // Middleware skips /api; these are JSON/SSE responses that never render.
+        source: '/api/:path*',
+        headers: [
+          { key: 'Content-Security-Policy', value: "default-src 'none'; frame-ancestors 'none'" },
         ],
       },
       {
