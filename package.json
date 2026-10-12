@@ -11,6 +11,7 @@
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
+    "check:styles": "pnpm --filter web check:styles",
     "test": "pnpm --filter web test",
     "e2e": "pnpm --filter e2e test"
   },

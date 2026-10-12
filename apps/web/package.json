@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "biome check src/",
     "lint:fix": "biome check --write src/",
-    "test": "find src -name '*.test.ts' | sed 's/[][]/?/g' | xargs node --import tsx/esm --test"
+    "check:styles": "node --import tsx/esm scripts/checkStyleConventions.ts",
+    "test": "find src scripts -name '*.test.ts' | sed 's/[][]/?/g' | xargs node --import tsx/esm --test"
   },
   "dependencies": {
     "@ai-sdk/react": "^1.2.11",
