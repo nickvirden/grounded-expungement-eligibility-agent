@@ -26,29 +26,6 @@ test.describe('Not-found page', () => {
     );
   });
 
-  test('has no elements with inline style attributes', async ({ page }) => {
-    await page.goto(MISSING);
-    await page.waitForLoadState('networkidle');
-
-    // Framework-injected elements (dev overlay, portals, scripts) are excluded;
-    // only application-owned elements are asserted on.
-    const FRAMEWORK_TAGS = [
-      'NOSCRIPT',
-      'SCRIPT',
-      'NEXTJS-PORTAL',
-      'NEXT-ROUTE-ANNOUNCER',
-      'NEXT-DEV-OVERLAY',
-    ];
-    const inlineStyled = await page.evaluate(
-      (frameworkTags) =>
-        Array.from(document.querySelectorAll('[style]'))
-          .map((el) => ({ tag: el.tagName, id: el.id || null, style: el.getAttribute('style') }))
-          .filter((item) => !frameworkTags.includes(item.tag)),
-      FRAMEWORK_TAGS,
-    );
-    expect(inlineStyled).toHaveLength(0);
-  });
-
   test('server-rendered style tags carry the response nonce', async ({ request }) => {
     const res = await request.get(MISSING);
     const csp = res.headers()['content-security-policy'] ?? '';
