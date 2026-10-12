@@ -12,6 +12,18 @@ from app.security.rate_limit import limiter
 client = TestClient(app, raise_server_exceptions=True)
 
 
+@pytest.fixture
+def strict_default_limit() -> Generator[None]:
+    """Installs a 1/minute global default limit on the shared limiter."""
+    # slowapi has no public API to set this after construction.
+    original_defaults = limiter._default_limits
+    limiter._default_limits = [
+        LimitGroup("1/minute", limiter._key_func, None, False, None, None, None, 1, False)
+    ]
+    yield
+    limiter._default_limits = original_defaults
+
+
 @pytest.fixture(autouse=True)
 def _enable_limiter() -> Generator[None]:
     """The suite runs with RATE_LIMIT_ENABLED=false (conftest.py) so the rest of
@@ -115,6 +127,7 @@ class TestUnrelatedRoutesUnaffected:
             assert resp.status_code == 200
 
 
+@pytest.mark.usefixtures("strict_default_limit")
 class TestHealthProbesExempt:
     """/healthz and /readyz are @limiter.exempt so uptime probes never 429.
 
@@ -123,16 +136,6 @@ class TestHealthProbesExempt:
     global default limit to be exempted *from*, so removing @limiter.exempt
     would make these tests fail.
     """
-
-    @pytest.fixture(autouse=True)
-    def _strict_default_limit(self) -> Generator[None]:
-        # slowapi has no public API to set this after construction.
-        original_defaults = limiter._default_limits
-        limiter._default_limits = [
-            LimitGroup("1/minute", limiter._key_func, None, False, None, None, None, 1, False)
-        ]
-        yield
-        limiter._default_limits = original_defaults
 
     def test_healthz_never_429s_under_load(self) -> None:
         for _ in range(20):
@@ -152,3 +155,29 @@ class TestHealthProbesExempt:
         assert resp.status_code == 200
         resp = client.get("/api/states")
         assert resp.status_code == 429
+
+
+class TestRateLimitRejectionHeaders:
+    """429s must carry the security headers whichever layer produces them."""
+
+    @pytest.mark.usefixtures("strict_default_limit")
+    def test_middleware_429_carries_security_headers(self) -> None:
+        assert client.get("/api/states").status_code == 200
+        resp = client.get("/api/states")
+        assert resp.status_code == 429
+        assert resp.json() == {"error": "Rate limit exceeded: 1 per 1 minute"}
+        assert resp.headers.get("content-security-policy") == (
+            "default-src 'none'; frame-ancestors 'none'"
+        )
+        assert resp.headers.get("x-content-type-options") == "nosniff"
+
+    def test_route_level_429_carries_security_headers(self) -> None:
+        for _ in range(2):
+            assert client.get("/api/intakes/x/stream").status_code == 401
+        resp = client.get("/api/intakes/x/stream")
+        assert resp.status_code == 429
+        assert resp.json() == {"error": "Rate limit exceeded: 2 per 1 minute"}
+        assert resp.headers.get("content-security-policy") == (
+            "default-src 'none'; frame-ancestors 'none'"
+        )
+        assert resp.headers.get("x-content-type-options") == "nosniff"
