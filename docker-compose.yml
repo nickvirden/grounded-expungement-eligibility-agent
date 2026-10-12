@@ -61,6 +61,9 @@ services:
       # after any change that adds a migration. The API never migrates itself.
       - DATABASE_URL=postgresql+psycopg://eligibility:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@postgres:5432/eligibility
       - ALLOWED_ORIGINS=https://localhost
+      # Compose is the local quickstart, so interactive docs are on unless
+      # API_DOCS_ENABLED=false.
+      - API_DOCS_ENABLED=${API_DOCS_ENABLED:-true}
     # Load remaining vars (LLM_PROVIDER, CSRF_SECRET, SESSION_SECRET, etc.) from .env.
     env_file:
       - .env

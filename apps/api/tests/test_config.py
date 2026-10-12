@@ -91,6 +91,20 @@ class TestAllowRealLlmProviders:
         assert Settings(allow_real_llm_providers=True).allow_real_llm_providers is True
 
 
+class TestApiDocsEnabled:
+    def test_default_is_off(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.delenv("API_DOCS_ENABLED", raising=False)
+        assert Settings(_env_file=None).api_docs_enabled is False
+
+    def test_can_be_turned_on(self) -> None:
+        assert Settings(api_docs_enabled=True).api_docs_enabled is True
+
+    def test_blank_env_value_stays_off(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        # .env.example ships API_DOCS_ENABLED= (present, empty).
+        monkeypatch.setenv("API_DOCS_ENABLED", "")
+        assert Settings(_env_file=None).api_docs_enabled is False
+
+
 class TestMaxTotalTokens:
     # The spend cap decides "this request is free" from a real provider's
     # price table directly, never from this token count -- but a zero

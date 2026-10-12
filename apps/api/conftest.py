@@ -20,6 +20,10 @@ os.environ.setdefault("SSE_SIGNING_KEY", "test-sse-signing-key-32-chars-min!")
 # limiter itself (test_rate_limit.py) re-enable it locally.
 os.environ.setdefault("RATE_LIMIT_ENABLED", "false")
 
+# A developer's .env must not flip the default-behavior tests: docs and the
+# schema are off unless a test opts in (test_api_docs.py does so in a subprocess).
+os.environ.setdefault("API_DOCS_ENABLED", "false")
+
 import pytest
 
 from app.db import create_db_and_tables

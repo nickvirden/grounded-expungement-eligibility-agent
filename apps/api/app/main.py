@@ -56,8 +56,11 @@ app = FastAPI(
     title="ClearSlate Eligibility API",
     version="2.0.0",
     lifespan=lifespan,
-    docs_url="/api/docs",
-    redoc_url="/api/redoc",
+    docs_url="/api/docs" if settings.api_docs_enabled else None,
+    redoc_url="/api/redoc" if settings.api_docs_enabled else None,
+    # Under /api so the reverse proxy routes it to this service.
+    openapi_url="/api/openapi.json" if settings.api_docs_enabled else None,
+    swagger_ui_oauth2_redirect_url=None,
 )
 
 # State for slowapi
@@ -80,7 +83,12 @@ app.add_middleware(
     allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "X-CSRF-Token", "X-Request-Id"],
 )
-app.add_middleware(SecurityHeadersMiddleware)
+# The CDN-loaded docs pages are blank under the strict CSP; the exempt set is
+# empty unless the docs are enabled.
+app.add_middleware(
+    SecurityHeadersMiddleware,
+    csp_exempt_paths=frozenset(p for p in (app.docs_url, app.redoc_url) if p),
+)
 
 app.include_router(health.router)
 app.include_router(eligibility.router)
