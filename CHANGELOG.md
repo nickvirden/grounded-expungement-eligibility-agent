@@ -1,3 +1,13 @@
+## [2.2.0](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.1.3...v2.2.0) (2026-10-12)
+
+### Features
+
+* **web:** add a styled not-found page that renders under the nonce CSP ([984df47](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/984df476a51043e71cf2d368b94f12759461b466))
+
+### Bug Fixes
+
+* **web:** give styled-components a nonce before any client-rendered style insertion ([64d25a1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/64d25a1a4bf52a850e3abeec1e85e63ef461a98e))
+
 ## [2.1.3](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.1.2...v2.1.3) (2026-10-12)
 
 ### Bug Fixes
