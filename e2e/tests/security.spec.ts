@@ -96,6 +96,12 @@ test.describe('Security headers', () => {
   });
 
   test('production build serves the nonce-only policy', async ({ request }) => {
+    // CI must serve the production build; a skip there would hide a lost
+    // E2E_WEB_MODE setting behind a green run.
+    expect(
+      !process.env.CI || webMode === 'production',
+      'CI must run with E2E_WEB_MODE=production',
+    ).toBe(true);
     test.skip(webMode !== 'production', 'the dev policy is intentionally relaxed');
     const csp = (await request.get('/')).headers()['content-security-policy'] ?? '';
     const directive = (name: string) =>
