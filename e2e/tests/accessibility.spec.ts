@@ -12,6 +12,9 @@ import { expect, test } from '@playwright/test';
  * tests exist to enforce.
  */
 
+// axe is injected as an inline script, which the page's CSP would block.
+test.use({ bypassCSP: true });
+
 const RULES = [
   'color-contrast',
   'aria-progressbar-name',

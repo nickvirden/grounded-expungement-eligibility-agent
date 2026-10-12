@@ -80,6 +80,39 @@ test.describe('Security headers', () => {
     expect(res.headers()['x-content-type-options']).toBe('nosniff');
   });
 
+  test('landing page has a nonce CSP whose nonce differs per request', async ({ request }) => {
+    const nonceOf = async () => {
+      const csp = (await request.get('/')).headers()['content-security-policy'] ?? '';
+      expect(csp).toContain("script-src 'self' 'nonce-");
+      expect(csp).toContain("frame-ancestors 'none'");
+      return csp.match(/'nonce-([^']+)'/)?.[1];
+    };
+    const first = await nonceOf();
+    const second = await nonceOf();
+    expect(first).toBeTruthy();
+    expect(first).not.toBe(second);
+  });
+
+  test('a Purpose: prefetch page request still gets a CSP', async ({ request }) => {
+    const res = await request.get('/', { headers: { Purpose: 'prefetch' } });
+    expect(res.headers()['content-security-policy']).toContain("script-src 'self' 'nonce-");
+  });
+
+  test('landing page has COOP and CORP same-origin', async ({ request }) => {
+    const headers = (await request.get('/')).headers();
+    expect(headers['cross-origin-opener-policy']).toBe('same-origin');
+    expect(headers['cross-origin-resource-policy']).toBe('same-origin');
+  });
+
+  test('API endpoints have a locked-down CSP', async ({ request }) => {
+    for (const url of ['http://localhost:8001/', 'http://localhost:8001/healthz']) {
+      const res = await request.get(url);
+      expect(res.headers()['content-security-policy']).toBe(
+        "default-src 'none'; frame-ancestors 'none'",
+      );
+    }
+  });
+
   test('API health endpoint has security headers', async ({ request }) => {
     const res = await request.get('http://localhost:8001/healthz');
     expect(res.headers()['x-content-type-options']).toBe('nosniff');

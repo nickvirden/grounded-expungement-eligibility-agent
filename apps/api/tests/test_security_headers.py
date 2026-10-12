@@ -44,6 +44,23 @@ class TestSecurityHeaders:
         resp = client.get("/healthz")
         assert resp.headers.get("cross-origin-opener-policy") == "same-origin"
 
+    def test_corp_header(self) -> None:
+        resp = client.get("/healthz")
+        assert resp.headers.get("cross-origin-resource-policy") == "same-origin"
+
+    @pytest.mark.parametrize("path", ["/healthz", "/api/states", "/openapi.json"])
+    def test_csp_is_locked_down_for_api_responses(self, path: str) -> None:
+        resp = client.get(path)
+        assert resp.headers.get("content-security-policy") == (
+            "default-src 'none'; frame-ancestors 'none'"
+        )
+
+    @pytest.mark.parametrize("path", ["/api/docs", "/api/redoc"])
+    def test_interactive_docs_are_exempt_from_csp(self, path: str) -> None:
+        resp = client.get(path)
+        assert resp.status_code == 200
+        assert "content-security-policy" not in resp.headers
+
 
 class TestCSRFMiddleware:
     """Mutating endpoints require matching cookie+header CSRF tokens."""
