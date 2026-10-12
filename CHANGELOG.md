@@ -1,3 +1,9 @@
+## [2.1.2](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.1.1...v2.1.2) (2026-10-12)
+
+### Bug Fixes
+
+* **api:** register SecurityHeadersMiddleware outermost so rejections carry security headers ([c805edb](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/c805edbc1cf60b1c2675eeb1432d54269b36246c))
+
 ## [2.1.1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.1.0...v2.1.1) (2026-10-12)
 
 ### Bug Fixes
