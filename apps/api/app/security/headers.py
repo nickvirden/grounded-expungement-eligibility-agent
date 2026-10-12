@@ -2,8 +2,8 @@
 
 Sets: HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy,
 Permissions-Policy, COOP, CORP, a locked-down Content-Security-Policy (on app and
-router responses, except any docs pages the app is configured
-to serve), removes Server/X-Powered-By.
+router responses, except any docs pages the app is configured to serve), removes
+Server/X-Powered-By.
 """
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request

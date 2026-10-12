@@ -65,7 +65,16 @@ class TestSecurityHeaders:
 
     @pytest.mark.parametrize(
         "path",
-        ["/api/docs", "/api/redoc", "/api/openapi.json", "/openapi.json", "/docs", "/redoc"],
+        [
+            "/api/docs",
+            "/api/redoc",
+            "/api/openapi.json",
+            "/openapi.json",
+            "/docs",
+            "/redoc",
+            "/docs/oauth2-redirect",
+            "/api/docs/oauth2-redirect",
+        ],
     )
     def test_api_docs_and_schema_are_not_served_by_default(self, path: str) -> None:
         resp = client.get(path)
