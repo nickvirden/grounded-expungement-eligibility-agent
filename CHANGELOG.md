@@ -1,3 +1,9 @@
+## [2.1.1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.1.0...v2.1.1) (2026-10-12)
+
+### Bug Fixes
+
+* **web:** document the directive pattern, accept trailing comments and share the styles-file predicate ([3befbfe](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/3befbfebb82abfe61f3fba556bdc638c09f1bec7))
+
 ## [2.1.0](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.11...v2.1.0) (2026-10-12)
 
 ### Features
