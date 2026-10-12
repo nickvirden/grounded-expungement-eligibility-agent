@@ -1,4 +1,5 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '../cspGuard';
+import { webMode } from '../webMode';
 
 /**
  * Frontend security specification tests.
@@ -92,6 +93,22 @@ test.describe('Security headers', () => {
     const second = await nonceOf();
     expect(first).toBeTruthy();
     expect(first).not.toBe(second);
+  });
+
+  test('production build serves the nonce-only policy', async ({ request }) => {
+    test.skip(webMode !== 'production', 'the dev policy is intentionally relaxed');
+    const csp = (await request.get('/')).headers()['content-security-policy'] ?? '';
+    const directive = (name: string) =>
+      csp
+        .split(';')
+        .map((d) => d.trim())
+        .find((d) => d.startsWith(`${name} `)) ?? '';
+    const nonce = directive('script-src').match(/'nonce-([^']+)'/)?.[1];
+    expect(nonce).toBeTruthy();
+    expect(directive('style-src')).toContain(`'nonce-${nonce}'`);
+    expect(csp).not.toContain("'unsafe-inline'");
+    expect(csp).not.toContain("'unsafe-eval'");
+    expect(csp).toContain('upgrade-insecure-requests');
   });
 
   test('a Purpose: prefetch page request still gets a CSP', async ({ request }) => {
