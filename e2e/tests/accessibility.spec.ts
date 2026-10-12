@@ -132,3 +132,22 @@ test.describe('Accessibility — Talk to Agent', () => {
     expectNoViolations(await runAxe(page));
   });
 });
+
+test.describe('Accessibility — Not-found page', () => {
+  test('has no violations', async ({ page }) => {
+    await page.goto('/does-not-exist');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 10_000 });
+    expectNoViolations(await runAxe(page));
+  });
+
+  test('home link is reachable by keyboard with a visible focus ring', async ({ page }) => {
+    await page.goto('/does-not-exist');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 10_000 });
+    // First stop is the skip link, second is the home link.
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Tab');
+    const link = page.getByRole('link', { name: 'Go to the home page' });
+    await expect(link).toBeFocused();
+    await expect(link).toHaveCSS('outline-style', 'solid');
+  });
+});

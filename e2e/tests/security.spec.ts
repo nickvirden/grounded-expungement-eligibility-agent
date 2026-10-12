@@ -15,6 +15,7 @@ import { expect, test } from '@playwright/test';
 const PAGES = [
   { path: '/', label: 'Landing page' },
   { path: '/intake/texas/quick', label: 'Quick Form' },
+  { path: '/does-not-exist', label: 'Not-found page' },
 ];
 
 const PII_PAGES = [
