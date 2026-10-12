@@ -114,7 +114,7 @@ phase 02 next, and so on — rather than the whole stack landing as one merge at
 - [x] Playwright config and quick-form happy path (5 scenarios)
 - [ ] (Droppable) Talk-to-agent happy path with stubbed LLM — deferred
 - [x] Security spec (no inline styles runtime check, Cache-Control: no-store on PII pages, security headers)
-- [x] Static inline-style scanner (`scripts/check-no-inline-styles.mjs`)
+- [x] Static inline-style scanner (`apps/web/scripts/checkStyleConventions.ts`)
 - [x] Container hardening: `read_only`, `cap_drop: ALL`, `security_opt: no-new-privileges`, `pids_limit`, `mem_limit` in docker-compose.yml
 
 ---

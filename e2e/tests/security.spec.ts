@@ -8,8 +8,8 @@ import { expect, test } from '@playwright/test';
  *  2. PII pages (under /intake) carry Cache-Control: no-store
  *  3. Security headers are present on all responses
  *
- * NOTE: The static counterpart (scanning source for `style={{`) runs via
- * `node scripts/check-no-inline-styles.mjs` — see security test script below.
+ * NOTE: The static counterpart runs as `pnpm check:styles`
+ * (`apps/web/scripts/checkStyleConventions.ts`).
  */
 
 const PAGES = [

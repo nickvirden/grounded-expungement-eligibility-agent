@@ -1,4 +1,4 @@
-.PHONY: up down dev logs lint test e2e seed extract-trees audit format migrate
+.PHONY: up down dev logs lint test e2e check-styles seed extract-trees audit format migrate
 
 up:
 	docker compose up -d
@@ -43,7 +43,7 @@ e2e-headed:
 	cd e2e && npx playwright test --headed
 
 check-styles:
-	node scripts/check-no-inline-styles.mjs
+	pnpm check:styles
 
 seed:
 	cd apps/api && uv run python -m app.scripts.seed_services
