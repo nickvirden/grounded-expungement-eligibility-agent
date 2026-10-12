@@ -69,6 +69,10 @@ class Settings(BaseSettings):
     rate_limit_per_minute: int = 30
     rate_limit_intakes_per_minute: int = 2
 
+    # Off by default so a deployment that never sets it serves no interactive
+    # docs and no OpenAPI schema. Opt in for local development.
+    api_docs_enabled: bool = False
+
     max_agent_steps: int = 8
     # gt=0: the $0-by-default spend cap (see app/agents/spend_cap.py) derives
     # a real provider's worst-case cost from this value and the price table,

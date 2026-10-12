@@ -56,18 +56,23 @@ class TestSecurityHeaders:
         resp = client.get("/healthz")
         assert resp.headers.get("cross-origin-resource-policy") == "same-origin"
 
-    @pytest.mark.parametrize("path", ["/healthz", "/api/states", "/openapi.json"])
+    @pytest.mark.parametrize("path", ["/healthz", "/api/states"])
     def test_csp_is_locked_down_for_api_responses(self, path: str) -> None:
         resp = client.get(path)
         assert resp.headers.get("content-security-policy") == (
             "default-src 'none'; frame-ancestors 'none'"
         )
 
-    @pytest.mark.parametrize("path", ["/api/docs", "/api/redoc"])
-    def test_interactive_docs_are_exempt_from_csp(self, path: str) -> None:
+    @pytest.mark.parametrize(
+        "path",
+        ["/api/docs", "/api/redoc", "/api/openapi.json", "/openapi.json", "/docs", "/redoc"],
+    )
+    def test_api_docs_and_schema_are_not_served_by_default(self, path: str) -> None:
         resp = client.get(path)
-        assert resp.status_code == 200
-        assert "content-security-policy" not in resp.headers
+        assert resp.status_code == 404
+        assert resp.headers.get("content-security-policy") == (
+            "default-src 'none'; frame-ancestors 'none'"
+        )
 
 
 class TestCSRFMiddleware:
