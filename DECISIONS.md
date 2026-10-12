@@ -334,7 +334,8 @@ any injected markup execute. A nonce makes the policy meaningful against XSS.
   `pnpm check:styles` catches a missing directive before production. The directive turns every
   export of a styles file into a client reference, which is safe for styled components; a Server
   Component that imported a `css` or `keyframes` value from one would receive that reference, not
-  the value. Next's built-in 404 page also inlines an un-nonced `<style>`.
+  the value. `apps/web/src/app/not-found.tsx` replaces Next's built-in 404, whose inline `<style>`
+  and `style` attributes cannot carry a nonce and would be blocked.
 - The development policy differs: `script-src` adds `'unsafe-eval'` (React dev tooling), `style-src`
   swaps the nonce for `'unsafe-inline'` (a nonce makes browsers ignore `'unsafe-inline'`), and
   `upgrade-insecure-requests` is dropped so http://localhost works. The Playwright suite runs against the dev server, so the production policy is exercised by running it
