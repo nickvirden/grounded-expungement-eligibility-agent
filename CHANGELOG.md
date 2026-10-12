@@ -1,3 +1,15 @@
+## [2.1.0](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.11...v2.1.0) (2026-10-12)
+
+### Features
+
+* **api:** send a locked-down CSP on all responses except the API docs ([c343a62](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/c343a628675a469fdd84958465f6dd4bb75f8b84))
+* **web:** set a per-request nonce CSP and COOP/CORP headers ([1fdcbb2](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/1fdcbb29ac23137bfd0d08cac4775a0f85654198))
+
+### Bug Fixes
+
+* **e2e:** read in-page CSP violations at teardown so final-action violations fail the test ([5ad4fe9](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/5ad4fe96ba3b07ad7c3be19b406e7683cb13d3ff))
+* **web:** give Purpose: prefetch requests a CSP and anchor the api/ matcher exclusion ([6a454d0](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/6a454d0977dc51291eb172bb4fc32f6cf169c06c))
+
 ## [2.0.11](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.0.10...v2.0.11) (2026-10-04)
 
 ### Bug Fixes
