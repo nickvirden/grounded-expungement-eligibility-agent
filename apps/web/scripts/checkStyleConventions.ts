@@ -1,12 +1,11 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, relative } from 'node:path';
-import { findStyleViolations } from './styleConventions.js';
+import { findStyleViolations, isStylesFile } from './styleConventions.js';
 
 const WEB_ROOT = join(import.meta.dirname, '..');
 const SOURCE_ROOT = join(WEB_ROOT, 'src');
 const SOURCE_FILE = /\.tsx?$/;
 const DECLARATION_FILE = /\.d\.ts$/;
-const STYLES_FILE = /\.styles\.ts$/;
 
 function listSourceFiles(dir: string): string[] {
   const files: string[] = [];
@@ -33,8 +32,8 @@ for (const file of files) {
 }
 
 // A wrong root path would scan nothing and pass vacuously.
-if (!files.some((file) => STYLES_FILE.test(file))) {
-  console.error(`No *.styles.ts files found under ${SOURCE_ROOT}; the scan root is wrong.`);
+if (!files.some((file) => isStylesFile(file))) {
+  console.error(`No *.styles.ts(x) files found under ${SOURCE_ROOT}; the scan root is wrong.`);
   process.exit(1);
 }
 

@@ -24,12 +24,19 @@ export interface StyleViolation {
 
 const STYLES_FILE = /\.styles\.tsx?$/;
 const DECLARATION_FILE = /\.d\.ts$/;
-// A directive is only honoured as the first statement, so it must end at `;`, a newline or EOF.
-const USE_CLIENT_DIRECTIVE = /^(['"])use client\1\s*(;|\n|$)/;
+// The directive must be the first statement. After the closing quote the regex accepts `;`, a
+// newline, EOF, or the start of a trailing comment. A newline is accepted without inspecting the
+// next line, so `'use client'` followed by a line starting with `(` (one expression under ASI)
+// still passes; styles files are not written that way and a real parse is not worth a dependency.
+const USE_CLIENT_DIRECTIVE = /^(['"])use client\1\s*(;|\n|\/\/|\/\*|$)/;
 const INLINE_STYLE_PROP = /\bstyle\s*=\s*\{/;
 const INLINE_STYLE_TAG = /<style[\s>/]/;
 // A BOM, whitespace, `//` comments and `/* */` comments may precede the directive.
-const LEADING_TRIVIA = /^(?:﻿|\s+|\/\/[^\n]*|\/\*[\s\S]*?\*\/)+/;
+const LEADING_TRIVIA = /^(?:\uFEFF|\s+|\/\/[^\n]*|\/\*[\s\S]*?\*\/)+/;
+
+export function isStylesFile(path: string): boolean {
+  return STYLES_FILE.test(path);
+}
 
 function hasLeadingUseClient(source: string): boolean {
   return USE_CLIENT_DIRECTIVE.test(source.replace(LEADING_TRIVIA, ''));
@@ -40,7 +47,7 @@ export function findStyleViolations(path: string, source: string): StyleViolatio
 
   const violations: StyleViolation[] = [];
 
-  if (STYLES_FILE.test(path) && !hasLeadingUseClient(source)) {
+  if (isStylesFile(path) && !hasLeadingUseClient(source)) {
     violations.push({
       rule: 'missing-use-client',
       line: 1,

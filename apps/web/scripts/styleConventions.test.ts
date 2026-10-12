@@ -13,7 +13,9 @@ describe('missing-use-client', () => {
     ['no semicolon', "'use client'\nimport x from 'y'\n"],
     ['after a license block comment', "/* License */\n'use client';\nimport x from 'y';\n"],
     ['after a line comment', "// header\n'use client';\n"],
-    ['after a BOM', "﻿'use client';\n"],
+    ['after a BOM', "\uFEFF'use client';\n"],
+    ['followed by a trailing line comment', "'use client' // nonce registry\nimport x from 'y'\n"],
+    ['followed by a trailing block comment', "'use client' /* nonce registry */\n"],
   ];
   for (const [name, source] of passing) {
     it(`accepts a styles file with the directive: ${name}`, () => {

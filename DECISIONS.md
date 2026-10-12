@@ -325,11 +325,12 @@ any injected markup execute. A nonce makes the policy meaningful against XSS.
   browser. The no-inline-styles rule (§8) is what lets `style-src` stay nonce-only. styled-components
   emits un-nonced `<style>` elements when a component renders in a Server Component, so every
   `*.styles.ts` carries `'use client'` and client components render through the nonced registry. The
-  directive is required even on files only client components import today: the next importer may be
+  directive is required even on files only client components import: the next importer may be
   a Server Component, and the dev-server policy CI runs under allows inline styles, so only
-  `pnpm check:styles` catches a missing directive before production. Styles files export only styled
-  components; a Server Component that imported a `css` or `keyframes` value from one would receive a
-  client reference, not the value. Next's built-in 404 page also inlines an un-nonced `<style>`.
+  `pnpm check:styles` catches a missing directive before production. The directive turns every
+  export of a styles file into a client reference, which is safe for styled components; a Server
+  Component that imported a `css` or `keyframes` value from one would receive that reference, not
+  the value. Next's built-in 404 page also inlines an un-nonced `<style>`.
 - The development policy differs: `script-src` adds `'unsafe-eval'` (React dev tooling), `style-src`
   swaps the nonce for `'unsafe-inline'` (a nonce makes browsers ignore `'unsafe-inline'`), and
   `upgrade-insecure-requests` is dropped so http://localhost works. The Playwright suite runs against the dev server, so the production policy is exercised by running it
