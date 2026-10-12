@@ -8,7 +8,7 @@ name: CI
 #
 # The web and api gates run independently since they're separate toolchains;
 # e2e needs both, since Playwright's webServer config boots the real FastAPI
-# + Next.js dev servers directly (not Docker).
+# + the production Next.js build directly (not Docker).
 on:
   pull_request:
 
@@ -175,6 +175,13 @@ jobs:
         working-directory: apps/api
         run: uv sync --locked
 
+      # The suite serves the build that ships, so the browser enforces the
+      # production CSP (nonce-only styles, no unsafe-eval).
+      - name: Build web (production)
+        run: pnpm --filter web build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+
       # Playwright's own guidance is to install fresh rather than cache the
       # browser binaries: the download is fast enough that a cache restore
       # doesn't reliably beat it, and a stale cached binary silently drifts
@@ -185,10 +192,12 @@ jobs:
 
       # playwright.config.ts's webServer block boots FastAPI (uv run, port
       # 8001, ephemeral test SQLite DB, LLM_PROVIDER=testmodel) and Next.js
-      # (pnpm dev, port 3000, pointed at the test API) itself — no Docker
-      # Compose involved here, matching how the suite already runs locally.
+      # (standalone build, port 3000, pointed at the test API) itself — no
+      # Docker Compose involved here.
       - name: E2E tests
         run: pnpm e2e
+        env:
+          E2E_WEB_MODE: production
 
       - name: Upload Playwright report
         if: failure()

@@ -330,8 +330,9 @@ any injected markup execute. A nonce makes the policy meaningful against XSS.
   emits un-nonced `<style>` elements when a component renders in a Server Component, so every
   `*.styles.ts` carries `'use client'` and client components render through the nonced registry. The
   directive is required even on files only client components import: the next importer may be
-  a Server Component, and the dev-server policy CI runs under allows inline styles, so only
-  `pnpm check:styles` catches a missing directive before production. The directive turns every
+  a Server Component. CI serves the standalone production build, so a missing directive fails the
+  production e2e run; `pnpm check:styles` catches it earlier and without a browser, and local
+  `pnpm e2e` uses the dev server, whose policy allows inline styles. The directive turns every
   export of a styles file into a client reference, which is safe for styled components; a Server
   Component that imported a `css` or `keyframes` value from one would receive that reference, not
   the value. `apps/web/src/app/not-found.tsx` replaces Next's built-in 404, whose inline `<style>`
@@ -343,11 +344,14 @@ any injected markup execute. A nonce makes the policy meaningful against XSS.
   `__webpack_nonce__` from the first nonced script before any application module loads. The
   assignment is guarded because Turbopack (dev) does not define the global, and the dev
   `style-src` allows inline styles anyway. Deleting that file breaks styles on that path in
-  production, and CI that runs the dev server would not catch it.
+  production, which the production e2e run in CI catches.
 - The development policy differs: `script-src` adds `'unsafe-eval'` (React dev tooling), `style-src`
   swaps the nonce for `'unsafe-inline'` (a nonce makes browsers ignore `'unsafe-inline'`), and
-  `upgrade-insecure-requests` is dropped so http://localhost works. The Playwright suite runs against the dev server, so the production policy is exercised by running it
-  against `next build && next start`.
+  `upgrade-insecure-requests` is dropped so http://localhost works. CI runs the Playwright suite
+  against the standalone production build (`E2E_WEB_MODE=production`, the same `server.js` layout
+  the Dockerfile runs), and local `pnpm e2e` uses the dev server, with `pnpm e2e:prod` to opt in.
+  CI therefore no longer runs the Turbopack dev server, so dev-only breakage shows up only for
+  developers running `pnpm dev`; a CI matrix over both modes would cover it.
 
 **Alternatives rejected:**
 - `'unsafe-inline'` for scripts via static `headers()`: keeps `/` static and is a one-line change,

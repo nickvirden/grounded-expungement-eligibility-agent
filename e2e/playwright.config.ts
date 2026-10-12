@@ -1,6 +1,34 @@
 import { defineConfig, devices } from '@playwright/test';
+import { webMode } from './webMode';
 
 const isCI = !!process.env.CI;
+
+const webServerByMode = {
+  dev: {
+    // Next.js dev server pointed at the test API
+    command: 'cd ../apps/web && INTERNAL_API_URL=http://localhost:8001 pnpm run dev',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !isCI,
+    timeout: 60_000,
+    stdout: 'pipe',
+    stderr: 'pipe',
+  },
+  production: {
+    // Runs the same server.js layout the Dockerfile runs (see start:standalone).
+    // HOSTNAME is explicit because the standalone server binds to process.env.HOSTNAME,
+    // which on many machines is the machine name rather than a loopback address.
+    // Reuse is always off so a dev server left on port 3000 can never be mistaken for
+    // the production build. The build is a prerequisite, and `next build` rewrites .next,
+    // so stop any `next dev` running from the same checkout before building.
+    command:
+      'cd ../apps/web && INTERNAL_API_URL=http://localhost:8001 PORT=3000 HOSTNAME=127.0.0.1 NEXT_TELEMETRY_DISABLED=1 pnpm run start:standalone',
+    url: 'http://localhost:3000',
+    reuseExistingServer: false,
+    timeout: 30_000,
+    stdout: 'pipe',
+    stderr: 'pipe',
+  },
+} as const;
 
 /**
  * Playwright configuration.
@@ -11,6 +39,11 @@ const isCI = !!process.env.CI;
  *
  * In local dev, `reuseExistingServer: true` lets you pre-start the servers
  * with `make dev` and skip the startup overhead between runs.
+ *
+ * The web server runs in one of two modes (`E2E_WEB_MODE`, see webMode.ts):
+ *   - `dev` (default): `next dev`, whose relaxed CSP differs from production.
+ *   - `production`: the standalone build that ships. CI uses this, and
+ *     `pnpm e2e:prod` opts in locally. It requires `pnpm --filter web build` first.
  */
 export default defineConfig({
   testDir: './tests',
@@ -53,14 +86,6 @@ export default defineConfig({
       stdout: 'pipe',
       stderr: 'pipe',
     },
-    {
-      // Next.js dev server pointed at the test API
-      command: 'cd ../apps/web && INTERNAL_API_URL=http://localhost:8001 pnpm run dev',
-      url: 'http://localhost:3000',
-      reuseExistingServer: !isCI,
-      timeout: 60_000,
-      stdout: 'pipe',
-      stderr: 'pipe',
-    },
+    webServerByMode[webMode],
   ],
 });
