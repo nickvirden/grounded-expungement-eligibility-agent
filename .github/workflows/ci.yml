@@ -41,6 +41,9 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Style conventions
+        run: pnpm check:styles
+
       - name: Unit tests
         run: pnpm test
 
