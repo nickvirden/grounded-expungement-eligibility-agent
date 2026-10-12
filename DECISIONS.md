@@ -336,6 +336,14 @@ any injected markup execute. A nonce makes the policy meaningful against XSS.
   Component that imported a `css` or `keyframes` value from one would receive that reference, not
   the value. `apps/web/src/app/not-found.tsx` replaces Next's built-in 404, whose inline `<style>`
   and `style` attributes cannot carry a nonce and would be blocked.
+- The `csp-nonce` meta tag is not always in the DOM when styled-components first inserts a style.
+  When `notFound()` is thrown after an `await`, Next serves an error shell with an empty `<head>`
+  and renders the layout in the browser, and styled-components caches the nonce it resolves at
+  that first insertion. `apps/web/src/instrumentation-client.ts` therefore sets
+  `__webpack_nonce__` from the first nonced script before any application module loads. The
+  assignment is guarded because Turbopack (dev) does not define the global, and the dev
+  `style-src` allows inline styles anyway. Deleting that file breaks styles on that path in
+  production, and CI that runs the dev server would not catch it.
 - The development policy differs: `script-src` adds `'unsafe-eval'` (React dev tooling), `style-src`
   swaps the nonce for `'unsafe-inline'` (a nonce makes browsers ignore `'unsafe-inline'`), and
   `upgrade-insecure-requests` is dropped so http://localhost works. The Playwright suite runs against the dev server, so the production policy is exercised by running it
@@ -357,4 +365,5 @@ any injected markup execute. A nonce makes the policy meaningful against XSS.
 hash-based CSP for inline scripts; if the browser starts calling the API origin directly (add it to
 `connect-src`); if the docs must be served publicly (self-host the assets under a docs-scoped CSP);
 if unhandled 500s must carry security headers (an Exception handler installed on
-`ServerErrorMiddleware` can apply them).
+`ServerErrorMiddleware` can apply them); if a production build moves to Turbopack, which does not
+define `__webpack_nonce__`, it needs an equivalent of `instrumentation-client.ts`.
