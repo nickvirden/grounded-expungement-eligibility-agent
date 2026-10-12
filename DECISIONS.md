@@ -346,8 +346,9 @@ any injected markup execute. A nonce makes the policy meaningful against XSS.
   production, and CI that runs the dev server would not catch it.
 - The development policy differs: `script-src` adds `'unsafe-eval'` (React dev tooling), `style-src`
   swaps the nonce for `'unsafe-inline'` (a nonce makes browsers ignore `'unsafe-inline'`), and
-  `upgrade-insecure-requests` is dropped so http://localhost works. The Playwright suite runs against the dev server, so the production policy is exercised by running it
-  against `next build && next start`.
+  `upgrade-insecure-requests` is dropped so http://localhost works. CI runs the Playwright suite
+  against the standalone production build (`E2E_WEB_MODE=production`, the same `server.js` layout
+  the Dockerfile runs), and local `pnpm e2e` uses the dev server, with `pnpm e2e:prod` to opt in.
 
 **Alternatives rejected:**
 - `'unsafe-inline'` for scripts via static `headers()`: keeps `/` static and is a one-line change,
