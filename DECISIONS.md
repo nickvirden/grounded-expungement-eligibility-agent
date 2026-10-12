@@ -76,7 +76,7 @@ This document records every significant architectural and technical decision mad
 
 ## 8. Frontend Conventions
 
-**Decision:** No inline styles (lint-enforced + e2e-asserted), per-component co-location, lift-when-shared rule, styled-components SSR with a per-request CSP nonce (§19).
+**Decision:** No inline styles and a leading `'use client'` on every `*.styles.ts` (both enforced in CI by `pnpm check:styles`; inline styles also e2e-asserted), per-component co-location, lift-when-shared rule, styled-components SSR with a per-request CSP nonce (§19).
 
 **Why `node:test` over Vitest:** Zero additional dependencies, native to Node 22, faster cold start, simpler CI. For a showcase project, fewer deps = smaller attack surface and clearer intent.
 
@@ -324,9 +324,12 @@ any injected markup execute. A nonce makes the policy meaningful against XSS.
   `<meta property="csp-nonce">`, which styled-components reads for style tags injected in the
   browser. The no-inline-styles rule (§8) is what lets `style-src` stay nonce-only. styled-components
   emits un-nonced `<style>` elements when a component renders in a Server Component, so every
-  `*.styles.ts` file that server-rendered pages import carries `'use client'`; client components are
-  rendered through the nonced registry instead. A new styled file used from a Server Component needs
-  the same directive. Next's built-in 404 page also inlines an un-nonced `<style>`.
+  `*.styles.ts` carries `'use client'` and client components render through the nonced registry. The
+  directive is required even on files only client components import today: the next importer may be
+  a Server Component, and the dev-server policy CI runs under allows inline styles, so only
+  `pnpm check:styles` catches a missing directive before production. Styles files export only styled
+  components; a Server Component that imported a `css` or `keyframes` value from one would receive a
+  client reference, not the value. Next's built-in 404 page also inlines an un-nonced `<style>`.
 - The development policy differs: `script-src` adds `'unsafe-eval'` (React dev tooling), `style-src`
   swaps the nonce for `'unsafe-inline'` (a nonce makes browsers ignore `'unsafe-inline'`), and
   `upgrade-insecure-requests` is dropped so http://localhost works. The Playwright suite runs against the dev server, so the production policy is exercised by running it
