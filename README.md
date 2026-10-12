@@ -109,8 +109,8 @@ Persistence (Postgres via Docker Compose, Alembic-migrated; SQLite for local dev
   ├─ agentrun
   └─ agentstep
 
-Security layers: Caddy TLS → SecurityHeaders → CSRF (double-submit) → StrictOrigin
-→ CORS → Pydantic strict validation → PII-redacting structured logs
+Security layers: Caddy TLS → SecurityHeaders → CORS → SlowAPI → CSRF (double-submit)
+→ StrictOrigin → Pydantic strict validation → PII-redacting structured logs
 
 Rate limiting (slowapi, in-memory) applies only to the two routes that create
 LLM/DB cost -- POST /api/intakes and GET /api/intakes/{id}/stream -- not as a

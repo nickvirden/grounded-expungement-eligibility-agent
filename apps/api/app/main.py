@@ -68,7 +68,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # ty
 # added is outermost: it sees the request first and the response last. Security
 # headers are added last so they also cover rejections the other middleware
 # produce (CSRF and origin 403s, CORS preflights, rate-limit 429s). Unhandled
-# exceptions still bypass them: Starlette's ServerErrorMiddleware wraps all user
+# exceptions bypass them: Starlette's ServerErrorMiddleware wraps all user
 # middleware and answers with a fixed plain-text 500.
 app.add_middleware(StrictOriginMiddleware)
 app.add_middleware(CSRFMiddleware)

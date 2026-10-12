@@ -169,7 +169,6 @@ class TestStrictOriginMiddleware:
     def test_lookalike_origins_rejected(self, origin: str) -> None:
         assert self._post_with_origin(origin).status_code == 403
 
-
     def test_origin_rejection_carries_security_headers(self) -> None:
         resp = self._post_with_origin("https://attacker.example.com")
         assert resp.status_code == 403
@@ -210,6 +209,7 @@ class TestCorsPreflight:
             },
         )
         assert resp.status_code == 400
+        assert resp.text == "Disallowed CORS origin"
         assert "access-control-allow-origin" not in resp.headers
         _assert_security_headers(resp)
 

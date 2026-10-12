@@ -165,6 +165,7 @@ class TestRateLimitRejectionHeaders:
         assert client.get("/api/states").status_code == 200
         resp = client.get("/api/states")
         assert resp.status_code == 429
+        assert resp.json() == {"error": "Rate limit exceeded: 1 per 1 minute"}
         assert resp.headers.get("content-security-policy") == (
             "default-src 'none'; frame-ancestors 'none'"
         )
@@ -175,6 +176,8 @@ class TestRateLimitRejectionHeaders:
             assert client.get("/api/intakes/x/stream").status_code == 401
         resp = client.get("/api/intakes/x/stream")
         assert resp.status_code == 429
+        assert resp.json() == {"error": "Rate limit exceeded: 2 per 1 minute"}
         assert resp.headers.get("content-security-policy") == (
             "default-src 'none'; frame-ancestors 'none'"
         )
+        assert resp.headers.get("x-content-type-options") == "nosniff"
