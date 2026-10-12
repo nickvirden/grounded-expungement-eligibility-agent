@@ -1,3 +1,9 @@
+## [2.1.3](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.1.2...v2.1.3) (2026-10-12)
+
+### Bug Fixes
+
+* **api:** serve interactive docs and the OpenAPI schema only when API_DOCS_ENABLED is set ([f4b3d34](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/f4b3d3476c5b9b8bc234e13463dbf957647b099e))
+
 ## [2.1.2](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.1.1...v2.1.2) (2026-10-12)
 
 ### Bug Fixes
