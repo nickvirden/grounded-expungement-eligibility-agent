@@ -59,6 +59,9 @@ Open (Caddy fronts everything on 443/80, no port needed):
 - **API Docs:** https://localhost/api/docs
 - **Health:** https://localhost/healthz
 
+Compose turns the API docs (and `/api/openapi.json`) on; set `API_DOCS_ENABLED=false`
+in `.env` to turn them off.
+
 ### Without Docker (local dev)
 Local dev defaults to a SQLite file (`apps/api/data/eligibility.db`), created
 from the models on startup — no database server or migration step needed.
@@ -75,6 +78,14 @@ uv run uvicorn app.main:app --reload --port 8000
 cd apps/web
 pnpm install
 INTERNAL_API_URL=http://localhost:8000 pnpm dev
+```
+
+The interactive docs are off unless `API_DOCS_ENABLED=true` is set in `apps/api/.env`;
+with it set they are at http://localhost:8000/api/docs. The OpenAPI schema can be
+dumped without the flag:
+```bash
+cd apps/api
+uv run python -c "import json; from app.main import app; print(json.dumps(app.openapi()))"
 ```
 
 ---
