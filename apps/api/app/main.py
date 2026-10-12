@@ -66,10 +66,10 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # ty
 
 # Starlette wraps each added middleware around the previous ones, so the last one
 # added is outermost: it sees the request first and the response last. Security
-# headers are added first and are therefore innermost: they cover responses from
-# the app and its routers, but not rejections produced by the middleware below
-# (CSRF, origin, CORS preflight, rate limit) or unhandled 500s.
-app.add_middleware(SecurityHeadersMiddleware)
+# headers are added last so they also cover rejections the other middleware
+# produce (CSRF and origin 403s, CORS preflights, rate-limit 429s). Unhandled
+# exceptions still bypass them: Starlette's ServerErrorMiddleware wraps all user
+# middleware and answers with a fixed plain-text 500.
 app.add_middleware(StrictOriginMiddleware)
 app.add_middleware(CSRFMiddleware)
 app.add_middleware(SlowAPIMiddleware)
@@ -80,6 +80,7 @@ app.add_middleware(
     allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "X-CSRF-Token", "X-Request-Id"],
 )
+app.add_middleware(SecurityHeadersMiddleware)
 
 app.include_router(health.router)
 app.include_router(eligibility.router)

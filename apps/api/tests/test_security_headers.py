@@ -16,6 +16,14 @@ from app.security.redaction import redact_pii
 client = TestClient(app, raise_server_exceptions=True)
 
 
+def _assert_security_headers(resp: httpx.Response) -> None:
+    assert resp.headers.get("content-security-policy") == (
+        "default-src 'none'; frame-ancestors 'none'"
+    )
+    assert resp.headers.get("x-content-type-options") == "nosniff"
+    assert resp.headers.get("x-frame-options") == "DENY"
+
+
 class TestSecurityHeaders:
     """Every response should carry the required security headers."""
 
@@ -78,6 +86,15 @@ class TestCSRFMiddleware:
             json={"state": "texas", "question_id": 0, "answer_position": 0},
         )
         assert resp.status_code == 403
+
+    def test_csrf_rejection_carries_security_headers(self) -> None:
+        resp = client.post(
+            "/api/eligibility/assess",
+            json={"state": "texas", "question_id": 0, "answer_position": 0},
+        )
+        assert resp.status_code == 403
+        assert resp.json()["detail"] == "CSRF token missing"
+        _assert_security_headers(resp)
 
     def test_post_with_mismatched_csrf_returns_403(self) -> None:
         token = generate_csrf_token()
@@ -151,6 +168,58 @@ class TestStrictOriginMiddleware:
     )
     def test_lookalike_origins_rejected(self, origin: str) -> None:
         assert self._post_with_origin(origin).status_code == 403
+
+
+    def test_origin_rejection_carries_security_headers(self) -> None:
+        resp = self._post_with_origin("https://attacker.example.com")
+        assert resp.status_code == 403
+        assert resp.json()["detail"] == "Origin not allowed"
+        _assert_security_headers(resp)
+
+    def test_cross_site_rejection_carries_security_headers(self) -> None:
+        resp = self._post_with_origin("https://localhost:3000", sec_fetch_site="cross-site")
+        assert resp.status_code == 403
+        assert resp.json()["detail"] == "Cross-origin requests not allowed"
+        _assert_security_headers(resp)
+
+
+class TestCorsPreflight:
+    """CORS answers preflights itself, so its responses must still carry the headers."""
+
+    def test_allowed_preflight_carries_security_headers(self) -> None:
+        resp = client.options(
+            "/api/intakes",
+            headers={
+                "Origin": "https://localhost:3000",
+                "Access-Control-Request-Method": "POST",
+                "Access-Control-Request-Headers": "content-type,x-csrf-token",
+            },
+        )
+        assert resp.status_code == 200
+        assert resp.headers["access-control-allow-origin"] == "https://localhost:3000"
+        assert resp.headers["access-control-allow-credentials"] == "true"
+        assert "origin" in resp.headers["vary"].lower()
+        _assert_security_headers(resp)
+
+    def test_disallowed_preflight_carries_security_headers(self) -> None:
+        resp = client.options(
+            "/api/intakes",
+            headers={
+                "Origin": "https://evil.test",
+                "Access-Control-Request-Method": "POST",
+            },
+        )
+        assert resp.status_code == 400
+        assert "access-control-allow-origin" not in resp.headers
+        _assert_security_headers(resp)
+
+    def test_cors_response_to_simple_request_carries_security_headers(self) -> None:
+        resp = client.get("/api/states", headers={"Origin": "https://localhost:3000"})
+        assert resp.status_code == 200
+        assert resp.headers["access-control-allow-origin"] == "https://localhost:3000"
+        assert resp.headers["access-control-allow-credentials"] == "true"
+        assert "origin" in resp.headers["vary"].lower()
+        _assert_security_headers(resp)
 
 
 class TestOriginMatching:

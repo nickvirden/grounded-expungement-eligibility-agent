@@ -132,6 +132,22 @@ class TestStreamEndpointAuth:
         assert resp.status_code == 201
         assert resp.json()["stream_token"] is None
 
+    def test_valid_token_streams_events_to_completion(self) -> None:
+        client, intake_id, token = self._create_agent_intake()
+        with client.stream(
+            "GET",
+            f"/api/intakes/{intake_id}/stream",
+            headers={"Authorization": f"Bearer {token}"},
+        ) as resp:
+            assert resp.status_code == 200
+            assert resp.headers["content-type"].startswith("text/event-stream")
+            assert resp.headers["cache-control"] == "no-cache"
+            assert resp.headers["content-security-policy"] == (
+                "default-src 'none'; frame-ancestors 'none'"
+            )
+            body = "".join(resp.iter_text())
+        assert body.rstrip().endswith('data: {"type": "done"}')
+
     def test_missing_token_returns_401_with_www_authenticate(self) -> None:
         client, intake_id, _token = self._create_agent_intake()
         resp = client.get(f"/api/intakes/{intake_id}/stream")
