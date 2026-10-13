@@ -246,6 +246,8 @@ Each branch is clean and self-contained. See `DECISIONS.md` for the full archite
 
 All major decisions are documented with alternatives and trade-offs in **`DECISIONS.md`**.
 
+Issues are prioritized P0–P3; see **`.github/TRIAGE.md`** for the definitions and workflow.
+
 ---
 
 ## License
