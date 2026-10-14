@@ -110,7 +110,7 @@ This document records every significant architectural and technical decision mad
 
 **Talk-to-Agent architecture:** A Next.js Route Handler at `/api/chat` creates the intake (server-to-server call with matching CSRF token pair — safe because CSRF protects browsers, not server proxies). A second Route Handler at `/api/chat/[id]/stream` transparently proxies FastAPI's SSE stream. The `useChatStream` hook consumes the stream, accumulates text chunks into a single growing agent bubble, and sets the final `EligibilityReport` on the `final` SSE event.
 
-**Why separate hooks over `useChat` from Vercel AI SDK:** The FastAPI SSE format (`{type, text/report/error}`) doesn't map cleanly to AI SDK message format. A bespoke `useChatStream` is 80 lines and fully transparent — preferable over an opaque SDK adapter in a showcase context where reviewers want to see the streaming mechanics.
+**Why separate hooks over `useChat` from Vercel AI SDK:** The FastAPI SSE format (`{type, text/report/error}`) doesn't map cleanly to AI SDK message format. A bespoke `useChatStream` is 80 lines and fully transparent — preferable over an opaque SDK adapter in a showcase context where reviewers want to see the streaming mechanics. The stream is a project-specific event format read with `fetch` and a `ReadableStream`, so the app does not depend on the AI SDK packages (`ai`, `@ai-sdk/react`). Its UI hooks (`useChat` and friends) are the option to add if streaming moves to an AI-SDK-style agent protocol.
 
 ---
 
