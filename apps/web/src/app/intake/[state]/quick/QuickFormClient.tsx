@@ -1,7 +1,10 @@
 'use client';
 
+import { HelpDialog, HowToAnswerBox } from '@/components/HelpDialog';
+import { hasHelpContent } from '@/components/HelpDialog.utils';
 import { ArrowRightIcon } from '@/components/icons/index';
 import { assessEligibility } from '@/lib/api';
+import { decideHelp } from '@/lib/helpRuleLedger';
 import { sanitizeLegacyHtml } from '@/lib/sanitizeLegacyHtml';
 import type { AssessResponse } from '@/lib/schemas';
 import Link from 'next/link';
@@ -17,7 +20,6 @@ import {
   FormCard,
   FormHeader,
   HeaderTitle,
-  HelpText,
   LoadingDot,
   LoadingRow,
   PageShell,
@@ -140,9 +142,14 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
   );
 
   const safeQuestionHtml = useMemo(() => sanitizeLegacyHtml(questionText), [questionText]);
-  const safeHelpHtml = useMemo(
-    () => (questionHelp ? sanitizeLegacyHtml(questionHelp) : ''),
-    [questionHelp],
+  // The ledger hash is computed from the strings the answer buttons render, so `answers` is
+  // passed as-is.
+  const help = useMemo(
+    () =>
+      questionHelp?.trim()
+        ? decideHelp({ state, question: questionText, help: questionHelp, answers })
+        : null,
+    [state, questionText, questionHelp, answers],
   );
 
   return (
@@ -170,9 +177,10 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
 
       <FormBody>
         <FormCard aria-labelledby={headingId} key={`step-${stepNumber}`}>
-          {/* Tree questions, help text and answers carry legacy inline markup (bold, lists,
-              line breaks). Each string passes through sanitizeLegacyHtml, an attribute-free
-              tag allowlist, before it reaches dangerouslySetInnerHTML. */}
+          {/* Tree questions and answers carry legacy inline markup (bold, lists, line breaks).
+              Each string passes through sanitizeLegacyHtml, an attribute-free tag allowlist,
+              before it reaches dangerouslySetInnerHTML. Help text has its own transform and
+              sanitizer profile (see HelpDialog). */}
           <QuestionText
             role="heading"
             aria-level={2}
@@ -180,9 +188,13 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
             dangerouslySetInnerHTML={{ __html: safeQuestionHtml }}
           />
 
-          {questionHelp && (
-            // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized by sanitizeLegacyHtml
-            <HelpText dangerouslySetInnerHTML={{ __html: safeHelpHtml }} />
+          {help && hasHelpContent(help.content) && (
+            <>
+              {help.promoted && help.content.directive && (
+                <HowToAnswerBox directive={help.content.directive} />
+              )}
+              <HelpDialog content={help.content} />
+            </>
           )}
 
           {isLoading ? (

@@ -371,3 +371,64 @@ hash-based CSP for inline scripts; if the browser starts calling the API origin 
 if unhandled 500s must carry security headers (an Exception handler installed on
 `ServerErrorMiddleware` can apply them); if a production build moves to Turbopack, which does not
 define `__webpack_nonce__`, it needs an equivalent of `instrumentation-client.ts`.
+
+---
+
+## 20. Help presentation: dialog, reviewed rule ledger, separate sanitizer profile
+
+**Decision:** Question help text is shown behind a "Help: <title>" button that opens a native
+`<dialog>` (a bottom sheet at 640px and below, a centred dialog above that). Nodes with no help
+render no button. A rule sentence is promoted into a "How to answer" box above the button only when
+a person has reviewed it: `apps/web/src/lib/helpRuleLedger.json` records, per reviewed node, a
+SHA-256 over the state, the question, the rule sentence, the whole help text and the answer labels,
+and `decideHelp` promotes a rule only when the current content hashes to a recorded entry. Everything
+else keeps its sentence as the first bold paragraph of the dialog body, never hidden or reworded.
+`apps/web/src/lib/helpTransform.ts` turns the legacy help HTML into a title, an optional rule
+sentence and render blocks using its own sanitizer profiles; `sanitizeLegacyHtml` is unchanged and
+still serves questions, answers and the decision path (§17). Statute and index lists come back as
+data and are rendered by React (labels and entries as text nodes). Content problems found in the
+help text itself (#67, and the statute spike #74) are not rewritten here (the trees are pinned by parity
+tests, so everything is render-time).
+
+**Why:**
+- The legacy titles are `<h5><u>…</u></h5>`; the existing allowlist strips `h5`, which left a bare
+  underlined line. Widening that one allowlist would also widen it for questions and answers, so
+  help has a separate input profile (adds `h5` and `div`) and a separate output profile (adds
+  attribute-free `h3`/`h4`).
+- The global reset zeroes margins and padding, so list and paragraph rhythm has to be rebuilt where
+  the help is rendered.
+- Inline help pushed the answer buttons 900 to 2,300px down the page on a phone. Behind a button the
+  answers stay in view and the dialog scrolls on its own.
+- Legacy help can contradict its question (for example a node whose question asks about deferred
+  adjudication and whose rule sentence says "convicted"; #67). Code cannot judge whether a sentence
+  agrees with its question, so promoting a rule into the app's own voice requires a recorded human
+  review. The review covers the whole help text because no list of phrasings can
+  recognise every way a body could gain a contradicting instruction.
+- The client knows the question group but not the node variant (§16), so lookup is by content hash;
+  the `<state>:<nodeId>` keys are for reviewers and for the test that ties each entry to the tree.
+- The dialog is native: `showModal()` makes the page inert and Esc closes it, with no focus-trap
+  code. Four browser differences are handled explicitly: focus is returned to the button on close
+  (WebKit does not restore it after a pointer open), initial focus goes to the heading so WebKit does
+  not outline the whole sheet, the dialog and its buttons carry a transparent 1px border so
+  forced-colors mode can draw their edges, and a `vh` fallback precedes `dvh` with a
+  pointer-down-guarded backdrop click for engines without `closedby`.
+
+**Costs:**
+- A human review step before a rule can be shown in the box, and a ledger file to maintain.
+- Because the hash covers the whole help text, any change to its words withdraws a reviewed box
+  until it is reviewed again. Formatting changes that leave the words unchanged do not. Re-review
+  only happens on a deliberate re-extraction of the tree, so the cost is small.
+- The help needs JavaScript to open, and a closed dialog is neither found by find-in-page nor
+  printed.
+- Known gaps in the transform and the review hash are tracked: the title guard recognises only
+  literal rule phrases (#115), and the review hash ignores block structure and formatting (#116).
+- A reviewed entry also covers any other node with identical wording; the review sheet from
+  `pnpm --filter web help:review` lists them.
+
+**Alternatives rejected:**
+- Keeping the inline callout: it is the source of the answers-off-screen problem.
+- One global sanitizer allowlist with `h5` added: it would change what questions and answers can
+  contain, which are rendered by a different, security-reviewed profile.
+- A keyword check for "the sentence agrees with the question": it passes rules that are wider than
+  their question, and failing closed on the keywords withholds rules that are correct.
+- CSS-only fixes: styling cannot restore the stripped `h5`, and it leaves the answers off screen.

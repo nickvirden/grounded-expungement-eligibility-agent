@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { gotoNode } from '../helpTree';
 
 /**
  * Accessibility specification tests, driven by axe-core.
@@ -25,7 +26,7 @@ const RULES = [
   'scrollable-region-focusable',
 ];
 
-async function runAxe(page: import('@playwright/test').Page) {
+async function runAxe(page: import('@playwright/test').Page, rules: string[] = RULES) {
   await page.addScriptTag({ path: require.resolve('axe-core/axe.min.js') });
 
   // Let finite CSS animations (card fade-ins, slide-ins) settle before
@@ -45,7 +46,7 @@ async function runAxe(page: import('@playwright/test').Page) {
     (runOnly) =>
       // @ts-expect-error -- axe is attached to window by the injected script
       window.axe.run(document, { runOnly }),
-    RULES,
+    rules,
   );
 }
 
@@ -63,15 +64,15 @@ function expectNoViolations(results: { violations: Array<{ id: string; nodes: un
 test.describe('Accessibility — Quick Form', () => {
   test('initial load has no violations', async ({ page }) => {
     await page.goto('/intake/texas/quick');
-    await expect(page.locator('h2')).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole('heading', { level: 2 })).toBeVisible({ timeout: 10_000 });
     expectNoViolations(await runAxe(page));
   });
 
   test('after one answer (breadcrumb visible) has no violations', async ({ page }) => {
     await page.goto('/intake/texas/quick');
-    await expect(page.locator('h2')).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole('heading', { level: 2 })).toBeVisible({ timeout: 10_000 });
 
-    const firstButton = page.getByRole('button').first();
+    const firstButton = page.locator('button[aria-pressed]').first();
     await expect(firstButton).toBeEnabled({ timeout: 10_000 });
     await firstButton.click();
 
@@ -86,6 +87,39 @@ test.describe('Accessibility — Quick Form', () => {
     });
     expectNoViolations(await runAxe(page));
   });
+});
+
+// Added for the help dialog scans only, so the other pages keep their existing scope.
+const HELP_RULES = [
+  ...RULES,
+  'aria-dialog-name',
+  'button-name',
+  'heading-order',
+  'landmark-one-main',
+];
+
+test.describe('Accessibility — Quick Form help', () => {
+  const viewports = [
+    { name: 'desktop', size: { width: 1280, height: 800 } },
+    { name: 'mobile', size: { width: 375, height: 812 } },
+  ];
+  // 0-0 short help, 11-11 a rule, 7-10 the long county list, 7-14 a quoted statute.
+  for (const id of ['0-0', '11-11', '7-10', '7-14']) {
+    for (const { name, size } of viewports) {
+      test(`node ${id} at ${name} has no violations with help closed and open`, async ({
+        page,
+      }) => {
+        await page.setViewportSize(size);
+        await gotoNode(page, id);
+        await expect(page.getByRole('button', { name: /^Help/ })).toBeVisible();
+        expectNoViolations(await runAxe(page, HELP_RULES));
+
+        await page.getByRole('button', { name: /^Help/ }).click();
+        await expect(page.getByRole('dialog')).toBeVisible();
+        expectNoViolations(await runAxe(page, HELP_RULES));
+      });
+    }
+  }
 });
 
 test.describe('Accessibility — Result page', () => {
