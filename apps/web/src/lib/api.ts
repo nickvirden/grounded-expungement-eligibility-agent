@@ -1,10 +1,10 @@
-import { internalApiUrl } from './internalApiUrl';
 /**
  * Typed API client for the FastAPI backend.
  *
  * All requests go through this module so base URL resolution and response
  * validation are centralized.
  */
+import { internalApiUrl } from './internalApiUrl';
 import {
   type AssessRequest,
   type AssessResponse,
