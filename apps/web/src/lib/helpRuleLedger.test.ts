@@ -46,6 +46,28 @@ const inputFor = (id: string, state = 'texas') => {
   return { state, question: n.question, help: n.help, answers: n.answers };
 };
 
+/**
+ * Nodes whose rule would render as ordinary bold text. A node counts as reviewed when its
+ * content hash is approved, which also covers nodes with identical wording under another id.
+ */
+function unreviewedRules(tree: Tree, ledger: unknown): string[] {
+  const approved = approvedHashes(ledger);
+  return Object.entries(tree.nodes)
+    .filter(([, n]) => {
+      const rule = n.help ? candidateRule(n.help) : null;
+      if (rule === null || !n.help) return false;
+      const { hash } = fingerprint({
+        state: tree.state,
+        question: n.question,
+        rule,
+        help: n.help,
+        answers: answerLabels(n.answers),
+      });
+      return !approved.has(hash);
+    })
+    .map(([id, n]) => `${tree.state}:${id} "${plainText(n.question).slice(0, 70)}"`);
+}
+
 /** A ledger entry for the node's current content, as a reviewer would have recorded it. */
 function entryFor(id: string): LedgerEntry {
   const i = inputFor(id);
@@ -906,13 +928,46 @@ describe('committed help rule ledger', () => {
   });
 
   it('lists the unreviewed rules (advisory: they render as ordinary bold text)', (t) => {
-    const reviewed = new Set(Object.keys((committed as Ledger).entries));
-    const unreviewed = Object.entries(texas.nodes)
-      .filter(([id, n]) => n.help && candidateRule(n.help) !== null && !reviewed.has(`texas:${id}`))
-      .map(([id, n]) => `texas:${id} "${plainText(n.question).slice(0, 70)}"`);
+    assert.ok(texas);
+    const unreviewed = unreviewedRules(texas, committed);
     t.diagnostic(
       `unreviewed rules (${unreviewed.length}), shown as ordinary bold text until reviewed:`,
     );
     for (const line of unreviewed) t.diagnostic(`  ${line}`);
+  });
+});
+
+describe('unreviewedRules', () => {
+  const ledger = { version: 1, entries: { 'texas:11-11': entryFor('11-11') } };
+
+  it('does not list a node that an approval covers through identical content', () => {
+    assert.ok(texas);
+    // The ledger is keyed by content hash, so a node with the same words as an approved one
+    // renders the box and is not unreviewed, whatever its id.
+    const withTwin: Tree = {
+      state: 'texas',
+      nodes: { ...texas.nodes, '99-1': { ...node('11-11') } },
+    };
+    const listed = unreviewedRules(withTwin, ledger).join('\n');
+    assert.doesNotMatch(listed, /texas:11-11 /);
+    assert.doesNotMatch(listed, /texas:99-1 /);
+  });
+
+  it('lists nodes the approval does not cover', () => {
+    assert.ok(texas);
+    const listed = unreviewedRules(texas, ledger).join('\n');
+    assert.match(listed, /texas:12-3 /);
+  });
+
+  it('lists a node whose wording differs from the approved one', () => {
+    assert.ok(texas);
+    const edited: Tree = {
+      state: 'texas',
+      nodes: {
+        ...texas.nodes,
+        '99-2': { ...node('11-11'), question: `${node('11-11').question}!` },
+      },
+    };
+    assert.match(unreviewedRules(edited, ledger).join('\n'), /texas:99-2 /);
   });
 });
