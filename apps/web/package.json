@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "biome check src/",
     "lint:fix": "biome check --write src/",
+    "help:review": "node --import tsx/esm scripts/reviewHelpRule.ts",
     "check:styles": "node --import tsx/esm scripts/checkStyleConventions.ts",
     "test": "find src scripts -name '*.test.ts' | sed 's/[][]/?/g' | xargs node --import tsx/esm --test"
   },
