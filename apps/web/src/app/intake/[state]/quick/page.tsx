@@ -1,4 +1,5 @@
 import { formatStateName } from '@/app/LandingClient.utils';
+import { internalApiUrl } from '@/lib/internalApiUrl';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import QuickFormClient from './QuickFormClient';
@@ -23,7 +24,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function QuickFormPage({ params }: Props) {
   const { state } = await params;
   const stateName = formatStateName(state);
-  const apiBase = process.env.INTERNAL_API_URL ?? 'http://localhost:8000';
 
   let entry: {
     question_id: number;
@@ -35,7 +35,7 @@ export default async function QuickFormPage({ params }: Props) {
   } | null = null;
 
   try {
-    const res = await fetch(`${apiBase}/api/states/${state}/entry`, {
+    const res = await fetch(`${internalApiUrl()}/api/states/${state}/entry`, {
       next: { revalidate: 3600 },
     });
 
