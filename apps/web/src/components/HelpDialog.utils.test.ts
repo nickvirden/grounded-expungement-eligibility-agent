@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { decideHelp } from '@/lib/helpRuleLedger';
+import { answerLabels, candidateRule, decideHelp, fingerprint } from '@/lib/helpRuleLedger';
 import type { PlainText } from '@/lib/helpTransform';
 import { UNTITLED_HEADING, dialogHeading, hasHelpContent, triggerParts } from './HelpDialog.utils';
 
@@ -43,5 +43,44 @@ describe('hasHelpContent', () => {
 
   it('is true when the help is only a title', () => {
     assert.equal(hasHelpContent(content('<h5><u>Only a title</u></h5>')), true);
+  });
+});
+
+describe('hasHelpContent with a promoted rule', () => {
+  const question = 'Were you convicted?';
+  const answers = [{ value: 'Yes' }, { value: 'No' }];
+  const promote = (help: string) => {
+    const rule = candidateRule(help);
+    assert.ok(rule, 'the fixture has a rule sentence');
+    const { hash } = fingerprint({
+      state: 'texas',
+      question,
+      rule,
+      help,
+      answers: answerLabels(answers),
+    });
+    return decideHelp({ state: 'texas', question, help, answers }, new Set([hash]));
+  };
+
+  it('has no dialog when the promoted rule is the only help, since the box already shows it', () => {
+    const decision = promote('<p><b>Answer YES to this question if you were convicted.</b></p>');
+    assert.equal(decision.promoted, true);
+    assert.equal(hasHelpContent(decision.content), false);
+  });
+
+  it('keeps the dialog when the promoted rule is followed by more help', () => {
+    const decision = promote(
+      '<p><b>Answer YES to this question if you were convicted.</b></p><p>Convicted means found guilty.</p>',
+    );
+    assert.equal(decision.promoted, true);
+    assert.equal(hasHelpContent(decision.content), true);
+  });
+
+  it('keeps the dialog for a title with a promoted rule', () => {
+    const decision = promote(
+      '<h5><u>Convictions</u></h5><p><b>Answer YES to this question if you were convicted.</b></p>',
+    );
+    assert.equal(decision.promoted, true);
+    assert.equal(hasHelpContent(decision.content), true);
   });
 });

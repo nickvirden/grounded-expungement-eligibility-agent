@@ -11,9 +11,9 @@ export function triggerParts(title: PlainText | null): { lead: string; title: Pl
 export const dialogHeading = (title: PlainText | null): string => title ?? UNTITLED_HEADING;
 
 /**
- * Whether there is anything to show behind the Help button. A help string that is empty or
- * markup with no text yields no title, no rule and no blocks; a button that opens an empty
- * dialog would be worse than no button.
+ * Whether there is anything to show behind the Help button. A promoted rule sentence is shown in
+ * the box instead and is not part of the content blocks, so it does not count: a node whose help
+ * is only that sentence has no dialog. Help that is empty, or markup with no text, yields no
+ * title and no blocks as well.
  */
-export const hasHelpContent = (c: HelpContent): boolean =>
-  c.title !== null || c.directive !== null || c.blocks.length > 0;
+export const hasHelpContent = (c: HelpContent): boolean => c.title !== null || c.blocks.length > 0;

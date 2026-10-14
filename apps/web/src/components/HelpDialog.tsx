@@ -1,8 +1,9 @@
 'use client';
 
 import { HelpCircleIcon } from '@/components/icons/index';
+import { type AnswerShape, approvedHashes, decideHelp } from '@/lib/helpRuleLedger';
 import type { HelpBlock, HelpContent, PlainText, StatuteItem } from '@/lib/helpTransform';
-import { useId, useRef } from 'react';
+import { useId, useMemo, useRef } from 'react';
 import {
   AnswerBox,
   AnswerBoxLabel,
@@ -25,7 +26,7 @@ import {
   Trigger,
   TriggerLabel,
 } from './HelpDialog.styles';
-import { dialogHeading, triggerParts } from './HelpDialog.utils';
+import { dialogHeading, hasHelpContent, triggerParts } from './HelpDialog.utils';
 
 /**
  * The rule sentence a person has reviewed, shown above the Help button. `directive` is decoded
@@ -91,7 +92,14 @@ function Block({ block }: { block: HelpBlock }) {
  * on phones, a centred dialog above that. `showModal()` makes the page behind inert, so the
  * answer buttons cannot be reached while it is open, and Esc closes it.
  */
-export function HelpDialog({ content }: { content: HelpContent }) {
+export function HelpDialog({
+  content,
+  disabled = false,
+}: {
+  content: HelpContent;
+  /** True while an answer is being submitted: the question is about to be replaced. */
+  disabled?: boolean;
+}) {
   const headingId = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -119,7 +127,13 @@ export function HelpDialog({ content }: { content: HelpContent }) {
 
   return (
     <>
-      <Trigger ref={triggerRef} type="button" aria-haspopup="dialog" onClick={open}>
+      <Trigger
+        ref={triggerRef}
+        type="button"
+        aria-haspopup="dialog"
+        disabled={disabled}
+        onClick={open}
+      >
         <HelpCircleIcon size={20} />
         <TriggerLabel>
           <b>{lead}</b>
@@ -130,16 +144,24 @@ export function HelpDialog({ content }: { content: HelpContent }) {
       <Dialog
         ref={dialogRef}
         aria-labelledby={headingId}
-        closedby="any"
         onClose={returnFocusToTrigger}
         onPointerDown={(event) => {
           pressBeganOnBackdrop.current = event.target === event.currentTarget;
         }}
         onClick={(event) => {
-          if (event.target === event.currentTarget && pressBeganOnBackdrop.current) {
-            dialogRef.current?.close();
-          }
+          const pressBegan = pressBeganOnBackdrop.current;
           pressBeganOnBackdrop.current = false;
+          if (event.target !== event.currentTarget || !pressBegan) return;
+          // The dialog's own edge and padding also report the dialog as the target, so the
+          // point must lie outside its box. Closing here, while the dialog is still in the top
+          // layer, keeps the tap's click from reaching the page behind it.
+          const box = event.currentTarget.getBoundingClientRect();
+          const outside =
+            event.clientX < box.left ||
+            event.clientX > box.right ||
+            event.clientY < box.top ||
+            event.clientY > box.bottom;
+          if (outside) event.currentTarget.close();
         }}
       >
         <DialogHeader>
@@ -168,6 +190,47 @@ export function HelpDialog({ content }: { content: HelpContent }) {
           </BackForm>
         </DialogFooter>
       </Dialog>
+    </>
+  );
+}
+
+/**
+ * Everything the Quick Form shows for a question's help: the reviewed "How to answer" box (only
+ * when the ledger promotes the rule) above the Help button. Renders nothing when there is no help
+ * to show. `ledger` is a ledger file value and defaults to the committed ledger.
+ */
+export function HelpSection({
+  state,
+  question,
+  help,
+  answers,
+  disabled,
+  ledger,
+}: {
+  state: string;
+  question: string;
+  help: string | null;
+  answers: readonly AnswerShape[];
+  disabled?: boolean;
+  ledger?: unknown;
+}) {
+  // The hash is computed from the same answer objects the buttons render.
+  const decision = useMemo(
+    () =>
+      help?.trim()
+        ? decideHelp(
+            { state, question, help, answers },
+            ledger === undefined ? undefined : approvedHashes(ledger),
+          )
+        : null,
+    [state, question, help, answers, ledger],
+  );
+  if (!decision) return null;
+  const { content, promoted } = decision;
+  return (
+    <>
+      {promoted && content.directive && <HowToAnswerBox directive={content.directive} />}
+      {hasHelpContent(content) && <HelpDialog content={content} disabled={disabled} />}
     </>
   );
 }

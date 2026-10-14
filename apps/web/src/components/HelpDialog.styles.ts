@@ -91,6 +91,17 @@ export const Dialog = styled.dialog`
   max-height: min(720px, 100dvh - var(--space-16));
   margin: auto;
   border-radius: var(--radius-xl);
+  /* The body is the scroller. A modal dialog defaults to overflow: auto, which WebKit and Firefox
+     treat as a keyboard-focusable scroll container, drawing a focus ring around the whole sheet. */
+  overflow: hidden;
+
+  /* WebKit and Firefox move focus onto the dialog itself when Tab wraps past its last or first
+     control. The frame is not a control, so it draws no ring; the sheet-sized outline it would
+     get from the global focus style reads as a defect. */
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
 
   /* Only the open state sets display, so a closed dialog stays hidden. */
   &[open] {
@@ -237,6 +248,11 @@ export const DialogBody = styled.div`
   color: var(--color-navy-700);
 
   /* The reset zeroes margins and padding, so rhythm is rebuilt here. */
+  /* An inset ring: an outset one is clipped by the scroller's edges. */
+  &:focus-visible {
+    outline-offset: -2px;
+  }
+
   & > * + *,
   & ${HtmlBlock} > * + * {
     margin-top: var(--space-3);

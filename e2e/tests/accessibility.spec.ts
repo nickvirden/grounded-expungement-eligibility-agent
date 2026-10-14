@@ -89,7 +89,8 @@ test.describe('Accessibility — Quick Form', () => {
   });
 });
 
-// Added for the help dialog scans only, so the other pages keep their existing scope.
+// The help dialog scans add the dialog, button and heading-order rules and the one-main check,
+// which the shared set does not run on the other pages.
 const HELP_RULES = [
   ...RULES,
   'aria-dialog-name',

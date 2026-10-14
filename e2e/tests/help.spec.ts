@@ -1,8 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Locator, Page } from '@playwright/test';
+import { decideHelp } from '../../apps/web/src/lib/helpRuleLedger';
 import { expect, test } from '../cspGuard';
-import { gotoNode, nodeHasHelp } from '../helpTree';
+import { gotoNode, nodeHasHelp, reachableNodesWithHelp } from '../helpTree';
 
 /**
  * Help dialog and "How to answer" box, driven through the real Quick Form.
@@ -18,11 +19,6 @@ const DESKTOP = { width: 1280, height: 800 };
 const LANDSCAPE_PHONE = { width: 667, height: 375 };
 
 const LEDGER_PATH = join(__dirname, '../../apps/web/src/lib/helpRuleLedger.json');
-const ledgerKeys = (): string[] =>
-  Object.keys(JSON.parse(readFileSync(LEDGER_PATH, 'utf8')).entries ?? {});
-const reviewedNodeIds = ledgerKeys()
-  .filter((key) => key.startsWith('texas:'))
-  .map((key) => key.slice('texas:'.length));
 
 const trigger = (page: Page) => page.getByRole('button', { name: /^Help/ });
 const dialog = (page: Page) => page.getByRole('dialog');
@@ -147,7 +143,56 @@ test.describe('Help dialog: closing and focus', () => {
     await page.mouse.down();
     await page.mouse.move(8, 8, { steps: 5 });
     await page.mouse.up();
-    await expect(dialog(page)).toBeVisible();
+    // The `open` attribute, not visibility: a closing dialog stays visible while its exit
+    // transition runs, which would let a wrongly closed dialog pass a visibility check.
+    await page.waitForTimeout(400);
+    await expect(page.locator('dialog')).toHaveAttribute('open', '');
+  });
+
+  test('a press and release that both land on the backdrop closes it', async ({ page }) => {
+    await gotoNode(page, '11-11');
+    await openByClick(page);
+    await page.mouse.click(8, 8);
+    await expect(page.locator('dialog')).not.toHaveAttribute('open', '');
+  });
+
+  test('a click on the dialog edge or inside it does not close it', async ({ page }) => {
+    await gotoNode(page, '11-11');
+    await openByClick(page);
+    const box = await dialog(page).boundingBox();
+    if (!box) throw new Error('dialog has no box');
+    // The transparent border and the content are part of the dialog, not the backdrop.
+    await page.mouse.click(box.x + 0.5, box.y + box.height / 2);
+    await page.mouse.click(box.x + box.width / 2, box.y + 60);
+    await page.waitForTimeout(400);
+    await expect(page.locator('dialog')).toHaveAttribute('open', '');
+  });
+
+  test('closing returns focus to the Help button even when the browser has nothing to restore', async ({
+    page,
+  }) => {
+    await gotoNode(page, '11-11');
+    // A synthetic click opens the dialog without pointer events, so the browser records no
+    // previously focused element; this is the situation WebKit is in after a tap or click.
+    await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+    await trigger(page).dispatchEvent('click');
+    await expect(page.locator('dialog')).toHaveAttribute('open', '');
+    await page.keyboard.press('Escape');
+    await expect(page.locator('dialog')).not.toHaveAttribute('open', '');
+    await expect(trigger(page)).toBeFocused();
+  });
+
+  test('the dialog frame is not a scroll container and never takes keyboard focus', async ({
+    page,
+  }) => {
+    await gotoNode(page, '7-10');
+    await openByClick(page);
+    await expect(dialog(page)).toHaveCSS('overflow', 'hidden');
+    for (const key of ['Tab', 'Tab', 'Tab', 'Tab', 'Shift+Tab', 'Shift+Tab', 'Shift+Tab']) {
+      await page.keyboard.press(key);
+      const tag = await page.evaluate(() => document.activeElement?.tagName);
+      expect(tag, key).not.toBe('DIALOG');
+    }
   });
 
   test('the answer buttons cannot be reached by keyboard while it is open', async ({ page }) => {
@@ -258,13 +303,91 @@ test.describe('Help dialog: page scroll and fit', () => {
       expect(await d.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
 
       await expect(d.getByRole('button', { name: 'Close' })).toBeInViewport({ ratio: 1 });
+      const back = d.getByRole('button', { name: 'Back to the question' });
       if (viewport.height > 480) {
-        await expect(d.getByRole('button', { name: 'Back to the question' })).toBeInViewport({
-          ratio: 1,
-        });
+        await expect(back).toBeInViewport({ ratio: 1 });
+      } else {
+        // Short viewports (landscape phones, 200% and 400% zoom) give the height to the body;
+        // Close and Esc still dismiss.
+        await expect(back).toBeHidden();
       }
     });
   }
+});
+
+test.describe('Help dialog: touch and in-flight requests', () => {
+  test.use({ viewport: MOBILE, hasTouch: true });
+
+  // A tap on the dimmed backdrop must only dismiss the sheet. If the dialog left the top layer
+  // before the tap's click was dispatched, the click would land on whatever sits behind it.
+  test('a tap on the backdrop over an answer closes the dialog and activates nothing behind it', async ({
+    page,
+  }) => {
+    const assessRequests: string[] = [];
+    page.on('request', (request) => {
+      if (request.method() === 'POST' && request.url().includes('/eligibility/assess')) {
+        assessRequests.push(request.url());
+      }
+    });
+    await gotoNode(page, '5-8');
+    const questionBefore = await page.getByRole('heading', { level: 2 }).textContent();
+    assessRequests.length = 0;
+
+    await page.locator('button[aria-pressed]').first().scrollIntoViewIfNeeded();
+    await trigger(page).tap();
+    await expect(page.locator('dialog')).toHaveAttribute('open', '');
+    const point = await page.evaluate(() => {
+      const sheet = document.querySelector('dialog')?.getBoundingClientRect();
+      const answer = document.querySelector('button[aria-pressed]')?.getBoundingClientRect();
+      if (!sheet || !answer) return null;
+      return {
+        x: answer.left + answer.width / 2,
+        y: answer.top + answer.height / 2,
+        sheetTop: sheet.top,
+      };
+    });
+    if (!point) throw new Error('missing dialog or answer');
+    // The point must be on the backdrop, over an answer button, for the test to mean anything.
+    expect(point.y).toBeLessThan(point.sheetTop - 2);
+    expect(point.y).toBeGreaterThan(0);
+
+    await page.touchscreen.tap(point.x, point.y);
+    await expect(page.locator('dialog')).not.toHaveAttribute('open', '');
+    await page.waitForTimeout(800);
+    expect(assessRequests).toEqual([]);
+    await expect(page.getByRole('heading', { level: 2 })).toHaveText(questionBefore ?? '');
+  });
+
+  test('a tap on the backdrop over the Back link closes the dialog and stays on the form', async ({
+    page,
+  }) => {
+    await gotoNode(page, '5-8');
+    await trigger(page).tap();
+    await expect(page.locator('dialog')).toHaveAttribute('open', '');
+    const link = await page.getByRole('link', { name: 'Back to home' }).boundingBox();
+    if (!link) throw new Error('no Back link');
+    await page.touchscreen.tap(link.x + link.width / 2, link.y + link.height / 2);
+    await expect(page.locator('dialog')).not.toHaveAttribute('open', '');
+    await page.waitForTimeout(800);
+    expect(new URL(page.url()).pathname).toBe('/intake/texas/quick');
+  });
+
+  test('the Help button is disabled while an answer is being submitted', async ({ page }) => {
+    await gotoNode(page, '11-11');
+    let release: () => void = () => {};
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    await page.route('**/eligibility/assess', async (route) => {
+      await gate;
+      await route.continue();
+    });
+    await page.locator('button[aria-pressed]').first().click();
+    await expect(page.getByLabel('Loading next question')).toBeVisible();
+    await expect(trigger(page)).toBeDisabled();
+    await expect(page.locator('dialog')).not.toHaveAttribute('open', '');
+    release();
+  });
 });
 
 test.describe('Help content', () => {
@@ -330,11 +453,18 @@ test.describe('Help content', () => {
 });
 
 // The reviewed-rule ledger decides which rules are promoted into the "How to answer" box. The
-// expectations come from the committed ledger file, so adding an entry adds a positive test and
-// the negative checks keep covering everything that has not been reviewed. A ledger approval also
-// covers any node with identical wording (the review sheet lists them); if an entry is added for
-// such a node, remove the twin from this list.
-const UNREVIEWED_CANDIDATES = ['0-0', '2-0', '2-3', '4-11', '7-10', '7-14', '12-3', '14-5', '16-1'];
+// expected result for every node with help is computed with the same library the page uses and
+// the committed ledger, so approving a node (and any node with identical wording, which the
+// review sheet lists) is covered without editing this file.
+const withHelp = reachableNodesWithHelp().map(({ id, node }) => ({
+  id,
+  decision: decideHelp({
+    state: 'texas',
+    question: node.question,
+    help: node.help ?? '',
+    answers: node.answers,
+  }),
+}));
 
 test.describe('"How to answer" box', () => {
   test.use({ viewport: MOBILE });
@@ -345,12 +475,20 @@ test.describe('"How to answer" box', () => {
     expect(typeof ledger.entries).toBe('object');
   });
 
-  for (const id of reviewedNodeIds) {
-    test(`texas:${id} is in the ledger, so its rule shows in the box above the Help button`, async ({
+  test('every tree node with help is covered by the data-driven box checks', () => {
+    expect(withHelp.length).toBeGreaterThan(20);
+  });
+
+  for (const { id, decision } of withHelp) {
+    test(`texas:${id} shows the box ${decision.promoted ? 'because it is reviewed' : 'only when reviewed (it is not)'}`, async ({
       page,
     }) => {
       await gotoNode(page, id);
       const box = answerBox(page);
+      if (!decision.promoted) {
+        await expect(box).toHaveCount(0);
+        return;
+      }
       await expect(box).toBeVisible();
       // Order in the card: question, box, Help button, answers.
       const boxY = (await box.boundingBox())?.y ?? Number.NaN;
@@ -358,16 +496,30 @@ test.describe('"How to answer" box', () => {
       const answerY = (await answerButtons(page).first().boundingBox())?.y ?? Number.NaN;
       expect(boxY).toBeLessThan(helpY);
       expect(helpY).toBeLessThan(answerY);
-
+      await expect(box.locator('xpath=following-sibling::p').first()).toHaveText(
+        decision.content.directive ?? '',
+      );
       // The sentence is not repeated as a bold paragraph inside the dialog.
-      const sentence = await box.locator('xpath=following-sibling::p').first().innerText();
       const d = await openByClick(page);
-      await expect(d.getByText(sentence, { exact: true })).toHaveCount(0);
+      await expect(d.getByText(decision.content.directive ?? '', { exact: true })).toHaveCount(0);
     });
   }
 
-  for (const id of UNREVIEWED_CANDIDATES.filter((n) => !reviewedNodeIds.includes(n))) {
-    test(`texas:${id} is not in the ledger, so it shows no box`, async ({ page }) => {
+  // Controls that must never show a box, whatever the ledger holds. 0-0, 2-0 and 2-3 have no
+  // single rule sentence in a promotable position, so no entry can promote them. 12-3, 14-5 and
+  // 16-1 have a rule that contradicts its own question and are deliberately not approvable.
+  for (const id of ['0-0', '2-0', '2-3']) {
+    test(`texas:${id} cannot be promoted by any ledger entry`, async ({ page }) => {
+      const reason = withHelp.find((n) => n.id === id)?.decision.reason;
+      expect(['no-rule', 'more-than-one-rule', 'rule-not-in-first-paragraph']).toContain(reason);
+      await gotoNode(page, id);
+      await expect(answerBox(page)).toHaveCount(0);
+    });
+  }
+
+  for (const id of ['12-3', '14-5', '16-1']) {
+    test(`texas:${id} stays unapproved and shows no box`, async ({ page }) => {
+      expect(withHelp.find((n) => n.id === id)?.decision.promoted).toBe(false);
       await gotoNode(page, id);
       await expect(answerBox(page)).toHaveCount(0);
     });

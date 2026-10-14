@@ -58,6 +58,18 @@ export function answerPaths(tree: Tree): Record<string, number[]> {
 const tree = loadTree();
 const paths = answerPaths(tree);
 
+/** Every node the UI can reach that has help text, with the strings the API delivers. */
+export const reachableNodesWithHelp = () =>
+  Object.entries(tree.nodes)
+    .filter(([id, node]) => id in paths && node.help?.trim())
+    .map(([id, node]) => ({ id, node }));
+
+export const treeNode = (id: string): TreeNode => {
+  const node = tree.nodes[id];
+  if (!node) throw new Error(`No node ${id} in the Texas tree`);
+  return node;
+};
+
 export const nodeHasHelp = (id: string): boolean => Boolean(tree.nodes[id]?.help?.trim());
 
 /** Opens the Quick Form and clicks through to the node. */

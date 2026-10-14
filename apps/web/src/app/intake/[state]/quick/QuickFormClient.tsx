@@ -1,10 +1,8 @@
 'use client';
 
-import { HelpDialog, HowToAnswerBox } from '@/components/HelpDialog';
-import { hasHelpContent } from '@/components/HelpDialog.utils';
+import { HelpSection } from '@/components/HelpDialog';
 import { ArrowRightIcon } from '@/components/icons/index';
 import { assessEligibility } from '@/lib/api';
-import { decideHelp } from '@/lib/helpRuleLedger';
 import { sanitizeLegacyHtml } from '@/lib/sanitizeLegacyHtml';
 import type { AssessResponse } from '@/lib/schemas';
 import Link from 'next/link';
@@ -142,15 +140,6 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
   );
 
   const safeQuestionHtml = useMemo(() => sanitizeLegacyHtml(questionText), [questionText]);
-  // The ledger hash is computed from the strings the answer buttons render, so `answers` is
-  // passed as-is.
-  const help = useMemo(
-    () =>
-      questionHelp?.trim()
-        ? decideHelp({ state, question: questionText, help: questionHelp, answers })
-        : null,
-    [state, questionText, questionHelp, answers],
-  );
 
   return (
     <PageShell>
@@ -188,14 +177,13 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
             dangerouslySetInnerHTML={{ __html: safeQuestionHtml }}
           />
 
-          {help && hasHelpContent(help.content) && (
-            <>
-              {help.promoted && help.content.directive && (
-                <HowToAnswerBox directive={help.content.directive} />
-              )}
-              <HelpDialog content={help.content} />
-            </>
-          )}
+          <HelpSection
+            state={state}
+            question={questionText}
+            help={questionHelp}
+            answers={answers}
+            disabled={isLoading}
+          />
 
           {isLoading ? (
             <LoadingRow aria-label="Loading next question">

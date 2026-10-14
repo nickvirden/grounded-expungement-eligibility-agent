@@ -374,7 +374,7 @@ define `__webpack_nonce__`, it needs an equivalent of `instrumentation-client.ts
 
 ---
 
-## 20. Help presentation: dialog, reviewed rule ledger, separate sanitizer profile
+## 20. Help Presentation: Dialog, Reviewed Rule Ledger, Separate Sanitizer Profile
 
 **Decision:** Question help text is shown behind a "Help: <title>" button that opens a native
 `<dialog>` (a bottom sheet at 640px and below, a centred dialog above that). Nodes with no help
@@ -382,7 +382,9 @@ render no button. A rule sentence is promoted into a "How to answer" box above t
 a person has reviewed it: `apps/web/src/lib/helpRuleLedger.json` records, per reviewed node, a
 SHA-256 over the state, the question, the rule sentence, the whole help text and the answer labels,
 and `decideHelp` promotes a rule only when the current content hashes to a recorded entry. Everything
-else keeps its sentence as the first bold paragraph of the dialog body, never hidden or reworded.
+else stays in the dialog body, never hidden or reworded: a rule that is the single "answer yes/no"
+sentence in a promotable position (the first paragraph) is an ordinary bold paragraph there, and
+any other sentences are left where the help text puts them.
 `apps/web/src/lib/helpTransform.ts` turns the legacy help HTML into a title, an optional rule
 sentence and render blocks using its own sanitizer profiles; `sanitizeLegacyHtml` is unchanged and
 still serves questions, answers and the decision path (§17). Statute and index lists come back as
@@ -406,12 +408,28 @@ tests, so everything is render-time).
   recognise every way a body could gain a contradicting instruction.
 - The client knows the question group but not the node variant (§16), so lookup is by content hash;
   the `<state>:<nodeId>` keys are for reviewers and for the test that ties each entry to the tree.
-- The dialog is native: `showModal()` makes the page inert and Esc closes it, with no focus-trap
-  code. Four browser differences are handled explicitly: focus is returned to the button on close
-  (WebKit does not restore it after a pointer open), initial focus goes to the heading so WebKit does
-  not outline the whole sheet, the dialog and its buttons carry a transparent 1px border so
-  forced-colors mode can draw their edges, and a `vh` fallback precedes `dvh` with a
-  pointer-down-guarded backdrop click for engines without `closedby`.
+- The dialog is native: `showModal()` makes the page inert and Esc closes it through the native
+  `cancel`/`close`, with no focus-trap code. Four browser differences are handled explicitly:
+  - Focus is returned to the button on close, because WebKit does not restore it after a pointer
+    open.
+  - Initial focus goes to the heading, so WebKit does not outline the whole sheet after a tap.
+  - The dialog, Close and Back carry a transparent 1px border so forced-colors mode can draw their
+    edges. The dialog frame is not a scroll container (`overflow: hidden`, the body scrolls) and
+    draws no focus ring: WebKit and Firefox move focus onto the frame itself when Tab wraps past
+    the first or last control, and a sheet-sized ring there reads as a defect.
+  - A `vh` line precedes `dvh` for the maximum height.
+- The backdrop closes the dialog from a JS `click` handler, not native light dismiss
+  (`closedby="any"`). Native light dismiss closes on pointer-up, so on touch the tap's follow-up
+  click was dispatched to the page after the dialog had left the top layer and activated whatever
+  sat beneath the backdrop, such as an answer button. The `click` is dispatched while the dialog is
+  still in the top layer, so nothing behind it receives it. The handler closes only when the press
+  also began on the backdrop (a drag that starts inside and ends outside must not close it) and the
+  point lies outside the dialog's box (its own edge and padding also report the dialog as the
+  target).
+- The Back to the question button is hidden at heights of 480px and below (a phone in landscape,
+  200% and 400% zoom) so the body keeps the height; Close and Esc remain.
+- The Help button is disabled while an answer is being submitted, because the question is about to
+  be replaced and a dialog opened in that window would be removed without a close event.
 
 **Costs:**
 - A human review step before a rule can be shown in the box, and a ledger file to maintain.
