@@ -8,9 +8,6 @@ labels: ""
 <!--
 Apply exactly one priority label (P0-P3) when filing. Definitions and the weekly/monthly
 workflow are in .github/TRIAGE.md.
-
-Security: for a suspected P0, describe impact and affected surface only. Send exploit details to
-the maintainer privately instead of posting them in a public issue.
 -->
 
 ## Problem

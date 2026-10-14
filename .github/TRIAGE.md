@@ -120,5 +120,6 @@ explicitly:
 gh issue create --title "..." --body-file body.md --label P2 --label needs-verification
 ```
 
-A suspected P0 security issue is filed with impact and affected surface only. Exploit details go
-to the maintainer privately, never into the public issue.
+Security findings, including exploit details, may be filed in public issues because the app is a
+demo with no real user data and no financial exposure. If the app ever handles real intakes, move
+exploit details to private reporting and revisit this paragraph.
