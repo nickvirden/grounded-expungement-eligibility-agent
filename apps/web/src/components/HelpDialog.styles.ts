@@ -95,9 +95,9 @@ export const Dialog = styled.dialog`
      treat as a keyboard-focusable scroll container, drawing a focus ring around the whole sheet. */
   overflow: hidden;
 
-  /* WebKit and Firefox move focus onto the frame itself when Tab wraps past the first or last
-     control. A keyboard user must see where focus is, so the frame shows an inset ring there; the
-     ring is inset because the frame clips its content and an outset ring would be cut off. It is
+  /* The frame has tabindex -1, so it is outside the Tab order and can only be focused from
+     script. If that happens, a keyboard user must still see where focus is, so it shows an inset
+     ring; inset because the frame clips its content and an outset ring would be cut off. It is
      not shown on open, since initial focus goes to the heading. */
   &:focus-visible {
     outline: 2px solid var(--color-blue-500);

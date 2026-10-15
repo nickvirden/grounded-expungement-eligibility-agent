@@ -584,6 +584,22 @@ test.describe('Help dialog: double activation does not reach the page behind', (
     }
   }
 
+  test('a press that begins inside the window and is released after it does not reach the page', async ({
+    page,
+  }) => {
+    const requests = await watchAssess(page);
+    const before = await questionText(page);
+    const point = await openAndFindPoint(page, 'backdrop');
+    await page.mouse.click(point.x, point.y);
+    // Pressed 550ms after the close (inside the 700ms window) and released about 200ms later,
+    // outside it: the click that results belongs to a press the guard already cancelled.
+    await page.waitForTimeout(550);
+    await page.mouse.down();
+    await page.waitForTimeout(200);
+    await page.mouse.up();
+    await expectNothingActivated(page, requests, before);
+  });
+
   test('a deliberate tap on an answer 900ms after closing works normally', async ({ page }) => {
     const requests = await watchAssess(page);
     await openByTap(page);

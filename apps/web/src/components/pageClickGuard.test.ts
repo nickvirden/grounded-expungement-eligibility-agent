@@ -164,4 +164,81 @@ describe('createClickGuard', () => {
     // 1200ms after the first start but only 600ms after the second.
     assert.equal(dispatch('click', outer, 1).preventDefault, 1);
   });
+
+  describe('a press that straddles the end of a window', () => {
+    it('swallows the click of a press that began inside the window and was released after it', () => {
+      const { env, advance, dispatch } = fakeEnv();
+      createClickGuard(env).start(dialog);
+      advance(POINTER_WINDOW_MS - 100);
+      assert.equal(dispatch('mousedown', outer, 1).preventDefault, 1);
+      advance(150);
+      assert.deepEqual(dispatch('click', outer, 1), { preventDefault: 1, stopPropagation: 1 });
+    });
+
+    it('does not swallow the click of a press that began after the window', () => {
+      const { env, advance, dispatch } = fakeEnv();
+      createClickGuard(env).start(dialog);
+      advance(POINTER_WINDOW_MS + 50);
+      assert.equal(dispatch('mousedown', outer, 1).preventDefault, 0);
+      advance(50);
+      assert.equal(dispatch('click', outer, 1).preventDefault, 0);
+    });
+
+    it('does not carry a cancelled press over to the next independent press', () => {
+      const { env, advance, dispatch } = fakeEnv();
+      createClickGuard(env).start(dialog);
+      advance(POINTER_WINDOW_MS - 100);
+      dispatch('mousedown', outer, 1);
+      advance(150);
+      dispatch('click', outer, 1);
+      advance(200);
+      assert.equal(dispatch('mousedown', outer, 1).preventDefault, 0);
+      assert.equal(dispatch('click', outer, 1).preventDefault, 0);
+    });
+
+    it('applies the longer window to a multi-click press released after it ends', () => {
+      const { env, advance, dispatch, listenerCount } = fakeEnv();
+      createClickGuard(env).start(dialog);
+      advance(MULTI_CLICK_WINDOW_MS - 50);
+      assert.equal(dispatch('mousedown', outer, 2).preventDefault, 1);
+      // The window ends while the press is held; the listeners stay for its click.
+      advance(100);
+      assert.equal(listenerCount(), 3);
+      assert.equal(dispatch('click', outer, 2).preventDefault, 1);
+      assert.equal(listenerCount(), 0);
+    });
+
+    it('cancels the dblclick that follows a cancelled click', () => {
+      const { env, advance, dispatch } = fakeEnv();
+      createClickGuard(env).start(dialog);
+      advance(POINTER_WINDOW_MS - 100);
+      dispatch('mousedown', outer, 2);
+      advance(150);
+      dispatch('click', outer, 2);
+      assert.equal(dispatch('dblclick', outer, 2).preventDefault, 1);
+    });
+
+    it('releases the listeners when the next press begins after a held-open window', () => {
+      const { env, advance, dispatch, listenerCount } = fakeEnv();
+      createClickGuard(env).start(dialog);
+      advance(MULTI_CLICK_WINDOW_MS - 50);
+      dispatch('mousedown', outer, 2);
+      advance(100);
+      assert.equal(listenerCount(), 3);
+      // No click ever arrives (for example the pointer was cancelled); a fresh press ends it.
+      assert.equal(dispatch('mousedown', outer, 1).preventDefault, 0);
+      assert.equal(listenerCount(), 0);
+    });
+
+    it('releases the listeners on its own when a held-open window never sees a click', () => {
+      const { env, advance, dispatch, listenerCount } = fakeEnv();
+      createClickGuard(env).start(dialog);
+      advance(MULTI_CLICK_WINDOW_MS - 50);
+      dispatch('mousedown', outer, 2);
+      advance(100);
+      assert.equal(listenerCount(), 3);
+      advance(1000);
+      assert.equal(listenerCount(), 0);
+    });
+  });
 });

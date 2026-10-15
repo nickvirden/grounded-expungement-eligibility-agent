@@ -436,12 +436,24 @@ tests, so everything is render-time).
   Cancelling `mousedown` also keeps focus on the Help button instead of the control under the
   pointer. The windows:
   - 700ms for any pointer click (`detail` of 1 or more): the platform's default double-click time
-    (500ms on Windows) plus margin, and a triple tap at a normal pace.
-  - 1200ms for clicks that continue a multi-click sequence (`detail` of 2 or more): the slowest
-    double-click time a user can configure.
-  - Keyboard, assistive-technology and programmatic clicks (`detail` of 0) are never held back,
-    because they cannot be the second half of a pointer double activation. Esc starts no window.
-    Opening the dialog again, or the question changing, ends the window.
+    (500ms on Windows) plus margin.
+  - 1200ms for clicks that continue a multi-click sequence (`detail` of 2 or more): longer than the
+    longest double-click time of any platform setting we know of (Windows tops out at 900ms), with
+    margin.
+  - Touch differs by engine. WebKit and Firefox report `detail` 1 for every tap, so only the 700ms
+    window applies to touch there (a third tap of a slow triple tap, for example at about 710ms,
+    reaches the page); Chromium counts taps and applies the 1200ms window as well.
+  - Keyboard and programmatic clicks (`detail` of 0) are never held back, because they cannot be
+    the second half of a pointer double activation. Esc starts no window. An assistive-technology
+    activation that a platform synthesizes as a touch (VoiceOver on iOS, for example) probably
+    reports `detail` 1, so one within 700ms of a pointer close can be ignored. That is accepted:
+    a screen-reader user cannot move to an answer and activate it in that time.
+  - A press is judged once, at `mousedown`. If it began inside a window and was cancelled, its
+    `click` is cancelled too even when the button is released after the window ends. A press that
+    began after the window is never affected. If a window ends while a cancelled press is still
+    held, the listeners stay until its click, the next press, or one more second, then remove
+    themselves.
+  - Opening the dialog again, or the question changing, ends the window.
   - Cost: a deliberate tap on an answer, or on the Help button, within 700ms of closing the
     dialog with the pointer is ignored.
 - The Back to the question button is hidden at heights of 480px and below (a phone in landscape,
