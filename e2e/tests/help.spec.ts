@@ -202,6 +202,8 @@ test.describe('Help dialog: closing and focus', () => {
     await gotoNode(page, '7-10');
     await openByClick(page);
     await expect(dialog(page)).toHaveCSS('overflow', 'hidden');
+    // Outside the Tab order; it can only be focused programmatically.
+    await expect(dialog(page)).toHaveAttribute('tabindex', '-1');
     for (const key of ['Tab', 'Tab', 'Tab', 'Tab', 'Shift+Tab', 'Shift+Tab', 'Shift+Tab']) {
       await page.keyboard.press(key);
       const tag = await page.evaluate(() => document.activeElement?.tagName);
@@ -426,22 +428,13 @@ test.describe('Help dialog: touch and in-flight requests', () => {
 });
 
 // The second click of a double click or double tap would reach the page under the dialog once
-// the first click has closed it. Each pointer-initiated close must swallow it.
+// the first click has closed it. Each pointer-initiated close must swallow it, however slowly the
+// user double-clicks, without delaying keyboard or assistive-technology activation.
 test.describe('Help dialog: double activation does not reach the page behind', () => {
   test.use({ viewport: MOBILE, hasTouch: true });
 
-  type Gesture = 'double click' | 'double tap';
-  const gestures: Gesture[] = ['double click', 'double tap'];
-
-  async function activateTwice(page: Page, gesture: Gesture, x: number, y: number) {
-    if (gesture === 'double click') {
-      await page.mouse.dblclick(x, y);
-      return;
-    }
-    await page.touchscreen.tap(x, y);
-    await page.waitForTimeout(60);
-    await page.touchscreen.tap(x, y);
-  }
+  type Target = 'backdrop' | 'Close' | 'Back';
+  const targets: Target[] = ['backdrop', 'Close', 'Back'];
 
   async function watchAssess(page: Page) {
     const requests: string[] = [];
@@ -455,33 +448,43 @@ test.describe('Help dialog: double activation does not reach the page behind', (
     return requests;
   }
 
-  const questionText = (page: Page) => page.getByRole('heading', { level: 2 }).textContent();
+  // The question heading, by its explicit role attribute: a closing dialog stays exposed for the
+  // length of its exit transition, so a role query for level-2 headings can match two elements.
+  const questionHeading = (page: Page) => page.locator('h2[role="heading"]');
+  const questionText = async (page: Page) => (await questionHeading(page).textContent()) ?? '';
 
-  async function expectNothingActivated(page: Page, requests: string[], questionBefore: string) {
+  async function openByTap(page: Page) {
+    await trigger(page).tap();
+    await expect(page.locator('dialog')).toHaveAttribute('open', '');
+    await page
+      .locator('dialog')
+      .evaluate((el) => Promise.all(el.getAnimations().map((a) => a.finished)));
+  }
+
+  /**
+   * Waits until a close has fully settled: the dialog is closed, its `close` event has run and
+   * focus is on the Help button. The browser restores focus natively before the `close` event
+   * fires, and the event handler then focuses the button again, so focusing something else in
+   * between would lose that second focus call.
+   */
+  async function settleAfterClose(page: Page) {
     await expect(page.locator('dialog')).not.toHaveAttribute('open', '');
-    await page.waitForTimeout(800);
-    expect(requests).toEqual([]);
-    expect(new URL(page.url()).pathname).toBe('/intake/texas/quick');
-    await expect(page.getByRole('heading', { level: 2 })).toHaveText(questionBefore);
+    await page.evaluate(
+      () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))),
+    );
+    await expect(trigger(page)).toBeFocused();
   }
 
   /**
    * Sizes the viewport so the open dialog's `control` sits over the centre of the answer button at
-   * `answerIndex`, and returns that point. The sheet is anchored to the
-   * bottom edge, so a control's distance from the bottom is fixed and the viewport height moves it.
+   * `answerIndex`, and returns that point. The sheet is anchored to the bottom edge, so a
+   * control's distance from the bottom is fixed and the viewport height moves it.
    */
   async function alignControlOverAnswer(page: Page, control: Locator, answerIndex: number) {
-    const fromBottom = async () => {
-      const box = await control.boundingBox();
-      const height = page.viewportSize()?.height ?? 0;
-      if (!box) throw new Error('control has no box');
-      return { x: box.x + box.width / 2, fromBottom: height - (box.y + box.height / 2) };
-    };
-    // Measure the settled sheet, not mid-slide.
-    await page
-      .locator('dialog')
-      .evaluate((el) => Promise.all(el.getAnimations().map((a) => a.finished)));
-    const { fromBottom: offset } = await fromBottom();
+    const box = await control.boundingBox();
+    const height = page.viewportSize()?.height ?? 0;
+    if (!box) throw new Error('control has no box');
+    const offset = height - (box.y + box.height / 2);
     const answers = await page.locator('button[aria-pressed]').evaluateAll((els) =>
       els.map((el) => {
         const r = el.getBoundingClientRect();
@@ -490,9 +493,11 @@ test.describe('Help dialog: double activation does not reach the page behind', (
     );
     const target = answers[answerIndex];
     if (!target) throw new Error(`no answer ${answerIndex}`);
-    const centre = (target.top + target.bottom) / 2;
     // The footer is hidden at heights of 480px and below, so the viewport must stay above that.
-    await page.setViewportSize({ width: MOBILE.width, height: Math.round(centre + offset) });
+    await page.setViewportSize({
+      width: MOBILE.width,
+      height: Math.round((target.top + target.bottom) / 2 + offset),
+    });
     // Let the resize reflow before measuring, so the point is not read from the old layout.
     await page.waitForTimeout(400);
     const after = await control.boundingBox();
@@ -505,14 +510,10 @@ test.describe('Help dialog: double activation does not reach the page behind', (
     return point;
   }
 
-  for (const gesture of gestures) {
-    test(`a ${gesture} on the backdrop over an answer activates nothing behind it`, async ({
-      page,
-    }) => {
-      const requests = await watchAssess(page);
-      const before = (await questionText(page)) ?? '';
-      await trigger(page).tap();
-      await expect(page.locator('dialog')).toHaveAttribute('open', '');
+  /** Opens the dialog and returns the point of the target, which lies over an answer button. */
+  async function openAndFindPoint(page: Page, target: Target) {
+    await openByTap(page);
+    if (target === 'backdrop') {
       const point = await page.evaluate(() => {
         const answer = document.querySelector('button[aria-pressed]')?.getBoundingClientRect();
         return answer
@@ -520,55 +521,139 @@ test.describe('Help dialog: double activation does not reach the page behind', (
           : null;
       });
       if (!point) throw new Error('no answer');
-      await activateTwice(page, gesture, point.x, point.y);
-      await expectNothingActivated(page, requests, before);
-    });
-
-    test(`a ${gesture} on "Back to the question" over an answer activates nothing behind it`, async ({
-      page,
-    }) => {
-      const requests = await watchAssess(page);
-      const before = (await questionText(page)) ?? '';
-      await trigger(page).tap();
-      await expect(page.locator('dialog')).toHaveAttribute('open', '');
-      const back = dialog(page).getByRole('button', { name: 'Back to the question' });
-      const point = await alignControlOverAnswer(page, back, 1);
-      await activateTwice(page, gesture, point.x, point.y);
-      await expectNothingActivated(page, requests, before);
-    });
-
-    test(`a ${gesture} on Close over an answer activates nothing behind it`, async ({ page }) => {
-      const requests = await watchAssess(page);
-      const before = (await questionText(page)) ?? '';
-      await trigger(page).tap();
-      await expect(page.locator('dialog')).toHaveAttribute('open', '');
-      const close = dialog(page).getByRole('button', { name: 'Close' });
-      const point = await alignControlOverAnswer(page, close, 0);
-      await activateTwice(page, gesture, point.x, point.y);
-      await expectNothingActivated(page, requests, before);
-    });
+      return point;
+    }
+    const control =
+      target === 'Close'
+        ? dialog(page).getByRole('button', { name: 'Close' })
+        : dialog(page).getByRole('button', { name: 'Back to the question' });
+    return alignControlOverAnswer(page, control, target === 'Close' ? 0 : 1);
   }
 
-  test('a deliberate tap on an answer well after closing works normally', async ({ page }) => {
+  async function expectNothingActivated(page: Page, requests: string[], questionBefore: string) {
+    await expect(page.locator('dialog')).not.toHaveAttribute('open', '');
+    await page.waitForTimeout(800);
+    expect(requests).toEqual([]);
+    expect(new URL(page.url()).pathname).toBe('/intake/texas/quick');
+    await expect(questionHeading(page)).toHaveText(questionBefore);
+    // The swallowed press must not move focus onto the control under the pointer either.
+    await expect(trigger(page)).toBeFocused();
+  }
+
+  type Sequence = { kind: 'mouse' | 'tap'; gaps: number[] };
+  async function press(page: Page, sequence: Sequence, point: { x: number; y: number }) {
+    for (const [index, gap] of [0, ...sequence.gaps].entries()) {
+      if (index > 0) await page.waitForTimeout(gap);
+      if (sequence.kind === 'tap') {
+        await page.touchscreen.tap(point.x, point.y);
+      } else {
+        // The first click closes the dialog; later ones report the running click count, as a
+        // real double click does. Playwright's own `clickCount` option on `mouse.click` sends
+        // every count in one call, including a plain click at the later time, so the press and
+        // release are sent separately.
+        await page.mouse.move(point.x, point.y);
+        await page.mouse.down({ clickCount: index + 1 });
+        await page.mouse.up({ clickCount: index + 1 });
+      }
+    }
+  }
+
+  const sequences: Array<[string, Sequence]> = [
+    ['a double click', { kind: 'mouse', gaps: [30] }],
+    ['a double tap', { kind: 'tap', gaps: [60] }],
+    ...[150, 300, 380, 420, 500, 600, 900].map((gap): [string, Sequence] => [
+      `a double click ${gap}ms apart`,
+      { kind: 'mouse', gaps: [gap] },
+    ]),
+    ...[420, 500, 600].map((gap): [string, Sequence] => [
+      `a double tap ${gap}ms apart`,
+      { kind: 'tap', gaps: [gap] },
+    ]),
+    ['a triple tap 200ms apart', { kind: 'tap', gaps: [200, 200] }],
+  ];
+
+  for (const target of targets) {
+    for (const [name, sequence] of sequences) {
+      test(`${name} on ${target} over an answer activates nothing behind it`, async ({ page }) => {
+        const requests = await watchAssess(page);
+        const before = await questionText(page);
+        const point = await openAndFindPoint(page, target);
+        await press(page, sequence, point);
+        await expectNothingActivated(page, requests, before);
+      });
+    }
+  }
+
+  test('a deliberate tap on an answer 900ms after closing works normally', async ({ page }) => {
     const requests = await watchAssess(page);
-    await trigger(page).tap();
-    await expect(page.locator('dialog')).toHaveAttribute('open', '');
+    await openByTap(page);
     await dialog(page).getByRole('button', { name: 'Back to the question' }).tap();
     await expect(page.locator('dialog')).not.toHaveAttribute('open', '');
-    await page.waitForTimeout(700);
+    await page.waitForTimeout(900);
     await page.locator('button[aria-pressed]').first().tap();
     await expect.poll(() => requests.length).toBe(1);
   });
 
   test('keyboard activation of an answer works right after closing with Esc', async ({ page }) => {
     const requests = await watchAssess(page);
-    await trigger(page).tap();
-    await expect(page.locator('dialog')).toHaveAttribute('open', '');
+    await openByTap(page);
     await page.keyboard.press('Escape');
-    await expect(page.locator('dialog')).not.toHaveAttribute('open', '');
+    await settleAfterClose(page);
     await page.locator('button[aria-pressed]').first().focus();
     await page.keyboard.press('Enter');
     await expect.poll(() => requests.length).toBe(1);
+  });
+
+  test('keyboard activation of an answer is not delayed right after a pointer close', async ({
+    page,
+  }) => {
+    const requests = await watchAssess(page);
+    await openByTap(page);
+    await dialog(page).getByRole('button', { name: 'Back to the question' }).tap();
+    await settleAfterClose(page);
+    await page.locator('button[aria-pressed]').first().focus();
+    await page.keyboard.press('Enter');
+    await expect.poll(() => requests.length).toBe(1);
+  });
+
+  test('the Help button reopens by keyboard right after a pointer close', async ({ page }) => {
+    await watchAssess(page);
+    await openByTap(page);
+    await dialog(page).getByRole('button', { name: 'Back to the question' }).tap();
+    await settleAfterClose(page);
+    await page.keyboard.press('Enter');
+    await expect(page.locator('dialog')).toHaveAttribute('open', '');
+  });
+
+  test('opening the dialog again ends the window, so a tap after a keyboard close works', async ({
+    page,
+  }) => {
+    const requests = await watchAssess(page);
+    await openByTap(page);
+    await dialog(page).getByRole('button', { name: 'Back to the question' }).tap();
+    await settleAfterClose(page);
+    await page.keyboard.press('Enter');
+    await expect(page.locator('dialog')).toHaveAttribute('open', '');
+    await page.keyboard.press('Escape');
+    await expect(page.locator('dialog')).not.toHaveAttribute('open', '');
+    await page.locator('button[aria-pressed]').first().tap();
+    await expect.poll(() => requests.length).toBe(1);
+  });
+
+  test('the window ends when the question changes, so a tap on the next question works', async ({
+    page,
+  }) => {
+    const requests = await watchAssess(page);
+    const before = await questionText(page);
+    await openByTap(page);
+    await dialog(page).getByRole('button', { name: 'Back to the question' }).tap();
+    await settleAfterClose(page);
+    // Answer by keyboard (not delayed); the next question replaces the card and its dialog.
+    await page.locator('button[aria-pressed]').first().focus();
+    await page.keyboard.press('Enter');
+    await expect(questionHeading(page)).not.toHaveText(before);
+    await page.locator('button[aria-pressed]:enabled').first().tap();
+    await expect.poll(() => requests.length).toBe(2);
   });
 });
 

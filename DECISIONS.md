@@ -416,10 +416,11 @@ tests, so everything is render-time).
   - The dialog, Close and Back carry a transparent 1px border so forced-colors mode can draw their
     edges.
   - The dialog frame is not a scroll container (`overflow: hidden`; the body scrolls) and has
-    `tabindex="-1"`, so it is outside the Tab order. It can still take focus, programmatically or
-    when an engine wraps Tab past the first or last control onto the frame. It then shows an inset
-    2px `--color-blue-500` ring (inset because the frame clips its content), so a keyboard user can
-    always see where focus is. It is not focused on open, where focus goes to the heading.
+    `tabindex="-1"`. In Chromium and WebKit, Tab cycles Close, the body and Back, then leaves for
+    the browser UI; in Firefox it leaves for the browser UI. The frame never takes Tab focus in
+    any of them, so it can only be focused programmatically. If it is focused, it shows an inset
+    2px `--color-blue-500` ring (inset because the frame clips its content), so focus is never
+    invisible. It is not focused on open, where focus goes to the heading.
   - A `vh` line precedes `dvh` for the maximum height.
 - The backdrop closes the dialog from a JS `click` handler on the dialog. The handler closes only
   when the press also began on the backdrop (a drag that starts inside and ends outside must not
@@ -427,12 +428,22 @@ tests, so everything is render-time).
   rounded-corner cutouts also report the dialog as the click target).
 - Rejected: native light dismiss (`closedby="any"`). It closes on pointer-up, so on touch the tap's
   follow-up click is delivered to the page behind the backdrop, which can submit an answer.
-- Every pointer-initiated close (backdrop, Close, Back to the question) starts a 400ms window in
-  which a capture-phase listener on `document` swallows `click` and `dblclick` events aimed outside
-  the dialog. Without it the second click of a double click or double tap would reach whatever sits
-  under the pointer once the dialog has left the top layer: an answer button (the form has no undo)
-  or the Back link. Esc and keyboard activation start no window. The cost: a deliberate tap on an
-  answer within 400ms of closing the dialog with the pointer is ignored.
+- Every pointer-initiated close (backdrop, Close, Back to the question) starts a guard window in
+  which a capture-phase listener on `document` cancels pointer `click`, `dblclick` and `mousedown`
+  events aimed outside the dialog (`apps/web/src/components/pageClickGuard.ts`). Without it the
+  second click of a double click or double tap would reach whatever sits under the pointer once
+  the dialog has left the top layer: an answer button (the form has no undo) or the Back link.
+  Cancelling `mousedown` also keeps focus on the Help button instead of the control under the
+  pointer. The windows:
+  - 700ms for any pointer click (`detail` of 1 or more): the platform's default double-click time
+    (500ms on Windows) plus margin, and a triple tap at a normal pace.
+  - 1200ms for clicks that continue a multi-click sequence (`detail` of 2 or more): the slowest
+    double-click time a user can configure.
+  - Keyboard, assistive-technology and programmatic clicks (`detail` of 0) are never held back,
+    because they cannot be the second half of a pointer double activation. Esc starts no window.
+    Opening the dialog again, or the question changing, ends the window.
+  - Cost: a deliberate tap on an answer, or on the Help button, within 700ms of closing the
+    dialog with the pointer is ignored.
 - The Back to the question button is hidden at heights of 480px and below (a phone in landscape,
   200% and 400% zoom) so the body keeps the height; Close and Esc remain.
 - The Help button is disabled while an answer is being submitted, because the question is about to
