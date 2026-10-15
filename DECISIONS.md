@@ -414,18 +414,25 @@ tests, so everything is render-time).
     open.
   - Initial focus goes to the heading, so WebKit does not outline the whole sheet after a tap.
   - The dialog, Close and Back carry a transparent 1px border so forced-colors mode can draw their
-    edges. The dialog frame is not a scroll container (`overflow: hidden`, the body scrolls) and
-    draws no focus ring: WebKit and Firefox move focus onto the frame itself when Tab wraps past
-    the first or last control, and a sheet-sized ring there reads as a defect.
+    edges.
+  - The dialog frame is not a scroll container (`overflow: hidden`; the body scrolls) and has
+    `tabindex="-1"`, so it is outside the Tab order. It can still take focus, programmatically or
+    when an engine wraps Tab past the first or last control onto the frame. It then shows an inset
+    2px `--color-blue-500` ring (inset because the frame clips its content), so a keyboard user can
+    always see where focus is. It is not focused on open, where focus goes to the heading.
   - A `vh` line precedes `dvh` for the maximum height.
-- The backdrop closes the dialog from a JS `click` handler, not native light dismiss
-  (`closedby="any"`). Native light dismiss closes on pointer-up, so on touch the tap's follow-up
-  click was dispatched to the page after the dialog had left the top layer and activated whatever
-  sat beneath the backdrop, such as an answer button. The `click` is dispatched while the dialog is
-  still in the top layer, so nothing behind it receives it. The handler closes only when the press
-  also began on the backdrop (a drag that starts inside and ends outside must not close it) and the
-  point lies outside the dialog's box (its own edge and padding also report the dialog as the
-  target).
+- The backdrop closes the dialog from a JS `click` handler on the dialog. The handler closes only
+  when the press also began on the backdrop (a drag that starts inside and ends outside must not
+  close it) and the point lies outside the dialog's bounding box (its own edge, padding and
+  rounded-corner cutouts also report the dialog as the click target).
+- Rejected: native light dismiss (`closedby="any"`). It closes on pointer-up, so on touch the tap's
+  follow-up click is delivered to the page behind the backdrop, which can submit an answer.
+- Every pointer-initiated close (backdrop, Close, Back to the question) starts a 400ms window in
+  which a capture-phase listener on `document` swallows `click` and `dblclick` events aimed outside
+  the dialog. Without it the second click of a double click or double tap would reach whatever sits
+  under the pointer once the dialog has left the top layer: an answer button (the form has no undo)
+  or the Back link. Esc and keyboard activation start no window. The cost: a deliberate tap on an
+  answer within 400ms of closing the dialog with the pointer is ignored.
 - The Back to the question button is hidden at heights of 480px and below (a phone in landscape,
   200% and 400% zoom) so the body keeps the height; Close and Esc remain.
 - The Help button is disabled while an answer is being submitted, because the question is about to

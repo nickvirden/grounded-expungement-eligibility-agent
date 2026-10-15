@@ -3,7 +3,7 @@
 import { HelpCircleIcon } from '@/components/icons/index';
 import { type AnswerShape, approvedHashes, decideHelp } from '@/lib/helpRuleLedger';
 import type { HelpBlock, HelpContent, PlainText, StatuteItem } from '@/lib/helpTransform';
-import { useId, useMemo, useRef } from 'react';
+import { type MouseEvent, useEffect, useId, useMemo, useRef } from 'react';
 import {
   AnswerBox,
   AnswerBoxLabel,
@@ -27,6 +27,7 @@ import {
   TriggerLabel,
 } from './HelpDialog.styles';
 import { dialogHeading, hasHelpContent, triggerParts } from './HelpDialog.utils';
+import { guardPageClicks } from './pageClickGuard';
 
 /**
  * The rule sentence a person has reviewed, shown above the Help button. `directive` is decoded
@@ -108,11 +109,28 @@ export function HelpDialog({
   // click whose target is the dialog. Only a press that also began on the backdrop may close.
   const pressBeganOnBackdrop = useRef(false);
 
+  // Ends the window in which page clicks are swallowed after a pointer-initiated close.
+  const endClickGuard = useRef<(() => void) | null>(null);
+  useEffect(() => () => endClickGuard.current?.(), []);
+
   const { lead, title } = triggerParts(content.title);
+
+  // Every pointer-initiated close goes through here so a double click or double tap cannot reach
+  // the page under the dialog (see guardPageClicks). Esc is keyboard-only and needs no guard.
+  const guardAgainstPassThrough = () => {
+    endClickGuard.current?.();
+    if (dialogRef.current) endClickGuard.current = guardPageClicks(dialogRef.current);
+  };
+
+  // A click with `detail` 0 is keyboard activation (Enter or Space on the button).
+  const closeButtonClick = (event: MouseEvent<HTMLButtonElement>) => {
+    if (event.detail > 0) guardAgainstPassThrough();
+  };
 
   const open = () => {
     const dialog = dialogRef.current;
     if (!dialog || dialog.open) return;
+    endClickGuard.current?.();
     dialog.showModal();
     // Focus the heading, not the first control or the scrolling body: WebKit draws a focus ring
     // around the whole sheet when the body takes focus after a tap. Screen readers announce
@@ -144,6 +162,7 @@ export function HelpDialog({
       <Dialog
         ref={dialogRef}
         aria-labelledby={headingId}
+        tabIndex={-1}
         onClose={returnFocusToTrigger}
         onPointerDown={(event) => {
           pressBeganOnBackdrop.current = event.target === event.currentTarget;
@@ -161,7 +180,10 @@ export function HelpDialog({
             event.clientX > box.right ||
             event.clientY < box.top ||
             event.clientY > box.bottom;
-          if (outside) event.currentTarget.close();
+          if (outside) {
+            guardAgainstPassThrough();
+            event.currentTarget.close();
+          }
         }}
       >
         <DialogHeader>
@@ -172,7 +194,9 @@ export function HelpDialog({
             </DialogTitle>
           </div>
           <CloseForm method="dialog">
-            <CloseButton type="submit">Close</CloseButton>
+            <CloseButton type="submit" onClick={closeButtonClick}>
+              Close
+            </CloseButton>
           </CloseForm>
         </DialogHeader>
 
@@ -186,7 +210,9 @@ export function HelpDialog({
 
         <DialogFooter>
           <BackForm method="dialog">
-            <BackButton type="submit">Back to the question</BackButton>
+            <BackButton type="submit" onClick={closeButtonClick}>
+              Back to the question
+            </BackButton>
           </BackForm>
         </DialogFooter>
       </Dialog>
