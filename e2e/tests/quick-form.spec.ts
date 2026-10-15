@@ -43,7 +43,7 @@ test.describe('Quick Form — Texas happy path', () => {
     await page.goto('/intake/texas/quick');
 
     // First question is present in the initial HTML (SSR)
-    const questionHeading = page.locator('h2');
+    const questionHeading = page.getByRole('heading', { level: 2 });
     await expect(questionHeading).toBeVisible({ timeout: 10_000 });
 
     // There must be at least two answer options
@@ -59,7 +59,7 @@ test.describe('Quick Form — Texas happy path', () => {
     await page.goto('/intake/texas/quick');
 
     // Wait for the root question to load
-    await expect(page.locator('h2')).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole('heading', { level: 2 })).toBeVisible({ timeout: 10_000 });
 
     // Root answer position 0: "I was arrested, but it didn't end up resulting in a conviction"
     const notConvictedButton = page.getByRole('button', {
@@ -125,7 +125,7 @@ test.describe('Quick Form — Texas happy path', () => {
 
   test('"no charges were filed" branch reaches a correctly-paired question', async ({ page }) => {
     await page.goto('/intake/texas/quick');
-    await expect(page.locator('h2')).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole('heading', { level: 2 })).toBeVisible({ timeout: 10_000 });
 
     // Root answer position 0 leads to the "outcome of the criminal record" question.
     const notConvictedButton = page.getByRole('button', {
@@ -165,7 +165,7 @@ test.describe('Quick Form — Texas happy path', () => {
     });
 
     await page.goto('/intake/texas/quick');
-    await expect(page.locator('h2')).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole('heading', { level: 2 })).toBeVisible({ timeout: 10_000 });
 
     // Click path: convicted as adult → felony → something else → no sex-offender
     // registration → not on that crime list → no jail/prison sentence. Reaches
@@ -210,7 +210,7 @@ test.describe('Quick Form — Texas happy path', () => {
 
   test('back button returns to landing page', async ({ page }) => {
     await page.goto('/intake/texas/quick');
-    await expect(page.locator('h2')).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole('heading', { level: 2 })).toBeVisible({ timeout: 10_000 });
 
     await page.getByRole('link', { name: /back/i }).click();
     await expect(page).toHaveURL('/');
@@ -218,13 +218,13 @@ test.describe('Quick Form — Texas happy path', () => {
 
   test('progress bar advances after answering a question', async ({ page }) => {
     await page.goto('/intake/texas/quick');
-    await expect(page.locator('h2')).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole('heading', { level: 2 })).toBeVisible({ timeout: 10_000 });
 
     const progressBar = page.locator('[role="progressbar"]');
     const initialValue = await progressBar.getAttribute('aria-valuenow');
 
     // Click first answer (position 0 — goes to next question or terminal)
-    const firstButton = page.getByRole('button').first();
+    const firstButton = page.locator('button[aria-pressed]').first();
     await expect(firstButton).toBeEnabled({ timeout: 10_000 });
     await firstButton.click();
 

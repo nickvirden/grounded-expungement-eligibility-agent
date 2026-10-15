@@ -109,3 +109,10 @@ svg {
   outline: 2px solid var(--color-blue-500);
   outline-offset: 2px;
 }
+
+/* Page scroll lock while a modal dialog is open. The gutter is reserved only then, so the
+   layout does not jump when the scrollbar disappears. */
+html:has(dialog[open]) {
+  overflow: hidden;
+  scrollbar-gutter: stable;
+}
