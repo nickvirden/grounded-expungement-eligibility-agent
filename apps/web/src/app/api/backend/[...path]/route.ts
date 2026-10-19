@@ -25,9 +25,9 @@
  */
 import { randomBytes } from 'node:crypto';
 import { isSameOriginRequest } from '@/lib/checkSameOrigin';
+import { internalApiUrl } from '@/lib/internalApiUrl';
 import { NextResponse } from 'next/server';
 
-const API_BASE = process.env.INTERNAL_API_URL ?? 'http://localhost:8000';
 const MUTATING_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
 
 async function proxy(req: Request, path: string[]): Promise<Response> {
@@ -40,7 +40,7 @@ async function proxy(req: Request, path: string[]): Promise<Response> {
   const search = new URL(req.url).search;
   // lib/api.ts's paths already start with "api" (e.g. "/api/eligibility/assess"),
   // which [...path] captures as part of this segment -- don't prepend another one.
-  const upstreamUrl = `${API_BASE}/${path.join('/')}${search}`;
+  const upstreamUrl = `${internalApiUrl()}/${path.join('/')}${search}`;
 
   const headers = new Headers({ 'Content-Type': 'application/json' });
 

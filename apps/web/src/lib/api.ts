@@ -4,6 +4,7 @@
  * All requests go through this module so base URL resolution and response
  * validation are centralized.
  */
+import { internalApiUrl } from './internalApiUrl';
 import {
   type AssessRequest,
   type AssessResponse,
@@ -31,10 +32,7 @@ import {
 // sidesteps this: the browser only ever talks to its own origin, and the
 // proxy synthesizes a matching CSRF pair server-to-server, same pattern as
 // api/chat/route.ts already uses for the agent chat flow.
-const API_BASE =
-  typeof window === 'undefined'
-    ? (process.env.INTERNAL_API_URL ?? 'http://api:8000')
-    : '/api/backend';
+const API_BASE = typeof window === 'undefined' ? internalApiUrl() : '/api/backend';
 
 async function fetchJson<T>(path: string, options: RequestInit = {}): Promise<T> {
   const headers = new Headers(options.headers);
