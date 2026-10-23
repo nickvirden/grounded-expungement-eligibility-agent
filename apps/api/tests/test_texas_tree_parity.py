@@ -10,6 +10,8 @@ not the same code checking itself.
 Five (question_id, answer_position) pairs intentionally differ from what the
 original legacy file produces, so the tree and the fixture are changed together
 (DECISIONS.md section 16); the fixture's sourceSha256 still pins that file.
+Wording corrections to a handful of nodes are applied the same way (DECISIONS.md
+section 21).
 """
 import json
 from pathlib import Path
