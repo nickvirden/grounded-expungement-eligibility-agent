@@ -59,7 +59,7 @@
       "group": 2,
       "variant": 0,
       "question": "<p>You've indicated that your charges were dismissed in the case we're evaluating.</p><p>Were you convicted of any other charges from the same arrest or set of events?</p>",
-      "help": "<h5><u>The Same Criminal Episode</u></h5><div><b>If you were convicted of ANY of the offenses in the same \"Criminal Episode,\" answer YES to this question.</b></div><p>If the same case number was used, or the charges resulted from the same set of events or subject matter, they will typically be deemed to be part of the same Criminal Episode.</p><p>When you're arrested, it's frequently for more than one offense, even though some of those charges are dismissed or later dropped. In addition, it is not uncommon for prosecutors to file multiple charges as a tactic in negotiating plea bargains, eventually dismissing many of them.</p><div><b>Here is an example you may find helpful in understanding the concept:</b></div><p>If you were pulled over for driving while intoxicated, and the police found drugs in the car, these would be charges from the same arrest. If the drug charges were dismissed, but you were convicted of the driving while intoxicated charges, the answer is YES. If both the driving while intoxicated charge and the drug charges were both dismissed, the answer is NO.</p>",
+      "help": "<h5><u>The Same Criminal Episode</u></h5><div><b>If you were convicted of ANY of the offenses in the same \"Criminal Episode,\" answer YES to this question.</b></div><p>If the same case number was used, or the charges resulted from the same set of events or subject matter, they will typically be deemed to be part of the same Criminal Episode.</p><p>When you're arrested, it's frequently for more than one offense, even though some of those charges are dismissed or later dropped. In addition, it is not uncommon for prosecutors to file multiple charges as a tactic in negotiating plea bargains, eventually dismissing many of them.</p><div><b>Here is an example you may find helpful in understanding the concept:</b></div><p>If you were pulled over for driving while intoxicated, and the police found drugs in the car, these would be charges from the same arrest. If the drug charges were dismissed, but you were convicted of the driving while intoxicated charges, the answer to this question is YES. If both the driving while intoxicated charge and the drug charges were both dismissed, the answer to this question is NO.</p>",
       "answers": [
         {
           "value": "Yes, I was convicted of other charges from this incident",
@@ -92,7 +92,7 @@
     "4-0": {
       "group": 4,
       "variant": 0,
-      "question": "<p>Great! Now we need to figure out whether the Statute of Limitations have passed for the charges you had dismissed. </p><p>Please pay attention to the Help button on the next question, unless you're sure you know the statute of limitations for the offense you were arrested for.</p>",
+      "question": "<p>Great! Now we need to figure out whether the Statute of Limitations have passed for the charges you had dismissed. </p><p>Please pay attention to the help button on the next question, unless you're sure you know the statute of limitations for the offense you were arrested for.</p>",
       "help": "<h5><u>What is a Statute of Limitations?</u></h5><p>A <b>\"Statute of Limitations\"</b> is the time allowed to file charges against you. The statute of limitations for some cases is as short as one year, while some serious criminal offenses have no limit and can be filed at any time, even decades after the crime occurred (an example would be murder). In Texas, most criminal offenses have statutes of limitation ranging from 2 to 10 years.</p><p>These time periods can vary quite a bit, so you often need to do a little research to find the right statute of limitation for your criminal offense. A good place to start here would be the Texas Code of Criminal Procedure Art. 12.01, et seq.</p>",
       "answers": [
         {
@@ -1221,7 +1221,7 @@
     "2-6": {
       "group": 2,
       "variant": 6,
-      "question": "<p>Was this conviction for a crime that was violent or sexual in nature?</p><p>For example, misdemeanor simple assault does not count under these rules.</p>",
+      "question": "<p>Was this conviction for a crime that was violent or sexual in nature?</p><p>For example, misdemeanor simple assault does not count for this question.</p>",
       "help": null,
       "answers": [
         {
