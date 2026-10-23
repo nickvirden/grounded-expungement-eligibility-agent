@@ -904,7 +904,7 @@
       "group": 12,
       "variant": 3,
       "question": "Were you placed on deferred adjudication for disorderly conduct offenses listed in the help button?",
-      "help": "<h5><u>Disorderly Conduct Offenses</u></h5><p><b>Answer YES to this question if you were convicted of a violation of Texas Penal Code Chapter 42, which covers Disorderly Conduct Offenses.</b></p><p>The following is a list of criminal offenses listed in Chapter 42:</p><ul><li>Disorderly Conduct</li><li>Obstructing a Highway or Other Passageway</li><li>Riot</li><li>Disrupting Meeting or Procession</li><li>Funeral Service Disruptions</li><li>False Alarm or Report</li><li>Silent or Abusive Calls to 911</li><li>Interference with Emergency Request</li><li>Harassment</li><li>Stalking</li><li>Abuse of a Corpse</li><li>Cruelty to Animals</li><li>Dog Fighting and Cockfighting</li><li>Destruction of a Flag</li><li>Use of Laser Pointers and</li><li>Illumination of Aircraft by Intense Light</li></ul>",
+      "help": "<h5><u>Disorderly Conduct Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for a violation of Texas Penal Code Chapter 42, which covers Disorderly Conduct Offenses.</b></p><p>The following is a list of criminal offenses listed in Chapter 42:</p><ul><li>Disorderly Conduct</li><li>Obstructing a Highway or Other Passageway</li><li>Riot</li><li>Disrupting Meeting or Procession</li><li>Funeral Service Disruptions</li><li>False Alarm or Report</li><li>Silent or Abusive Calls to 911</li><li>Interference with Emergency Request</li><li>Harassment</li><li>Stalking</li><li>Abuse of a Corpse</li><li>Cruelty to Animals</li><li>Dog Fighting and Cockfighting</li><li>Destruction of a Flag</li><li>Use of Laser Pointers and</li><li>Illumination of Aircraft by Intense Light</li></ul>",
       "answers": [
         {
           "value": "Yes, I was given a deferred sentence for one of the crimes on that list",
@@ -972,7 +972,7 @@
       "group": 16,
       "variant": 1,
       "question": "Finally, were you put on deferred for a crime involving a child or family listed in the help button?",
-      "help": "<h5><u>Offenses Against the Family</u></h5><p><b>Answer YES to this question if you were convicted of a violation of Texas Penal Code Chapter 25, which covers Offenses Against the Family.</b></p><p>The following is a list of criminal offenses listed in Chapter 25:</p><ul><li>Criminal Nonsupport</li><li>Continuous Violence Against the Family</li><li>Interference with Child Custody</li><li>Harboring Runaway Child</li><li>Enticing a Child</li><li>Agreement to Abduct From Custody</li><li>Prohibited Sexual Conduct</li><li>Bigamy</li><li>Violations of Certain Family-Related Court Orders</li><li>Violation of Certain Protective Orders</li><li>Sale or Purchase of a Child</li><li>Unregulated Transfer of Adopted Child</li><li>Advertising for Placement of Child</li><li>Interference with Rights of Guardian of the Person</li></ul>",
+      "help": "<h5><u>Offenses Against the Family</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for a violation of Texas Penal Code Chapter 25, which covers Offenses Against the Family.</b></p><p>The following is a list of criminal offenses listed in Chapter 25:</p><ul><li>Criminal Nonsupport</li><li>Continuous Violence Against the Family</li><li>Interference with Child Custody</li><li>Harboring Runaway Child</li><li>Enticing a Child</li><li>Agreement to Abduct From Custody</li><li>Prohibited Sexual Conduct</li><li>Bigamy</li><li>Violations of Certain Family-Related Court Orders</li><li>Violation of Certain Protective Orders</li><li>Sale or Purchase of a Child</li><li>Unregulated Transfer of Adopted Child</li><li>Advertising for Placement of Child</li><li>Interference with Rights of Guardian of the Person</li></ul>",
       "answers": [
         {
           "value": "Yes, I was given a deferred sentence for one of the crimes on that list",
@@ -1473,7 +1473,7 @@
       "group": 14,
       "variant": 5,
       "question": "Were you convicted of kidnapping, unlawful restraint, or one of the crimes listed in the help button?",
-      "help": "<h5><u>Kidnapping, Unlawful Restraint, and Smuggling of Persons Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for a violation of Texas Penal Code Chapter 20, which covers Kidnapping, Unlawful Restraint, and Smuggling of Persons Offenses.</b></p><p>The following is a list of criminal offenses listed in Chapter 20:</p><ul><li>Unlawful Restraint</li><li>Kidnapping</li><li>Smuggling of Persons and</li><li>Operation of a Stash House</li></ul>",
+      "help": "<h5><u>Kidnapping, Unlawful Restraint, and Smuggling of Persons Offenses</u></h5><p><b>Answer YES to this question if you were convicted of a violation of Texas Penal Code Chapter 20, which covers Kidnapping, Unlawful Restraint, and Smuggling of Persons Offenses.</b></p><p>The following is a list of criminal offenses listed in Chapter 20:</p><ul><li>Unlawful Restraint</li><li>Kidnapping</li><li>Smuggling of Persons and</li><li>Operation of a Stash House</li></ul>",
       "answers": [
         {
           "value": "Yes, I was convicted of kidnapping or one of the crimes listed in the help button",
