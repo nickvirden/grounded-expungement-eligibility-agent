@@ -534,7 +534,7 @@ identically to the tree, its committed mirror in `apps/api/shared_data/`, and
 corrected tree and fixture are not what that file produces. The legacy file shares one help string
 between sibling questions (for example 11-11 and 12-3), so reproducing a correction from the
 source also means giving the corrected question its own string. Re-extracting from the original
-file reverts every correction, and the diff of a re-extraction against the committed files is the
+file reverts every correction, along with the routing changes in section 16, and the diff of a re-extraction against the committed files is the
 list of corrections to re-apply. The legacy checkout lives outside this repository and its path is
 not recorded here.
 
