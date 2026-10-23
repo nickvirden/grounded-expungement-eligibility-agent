@@ -371,3 +371,112 @@ hash-based CSP for inline scripts; if the browser starts calling the API origin 
 if unhandled 500s must carry security headers (an Exception handler installed on
 `ServerErrorMiddleware` can apply them); if a production build moves to Turbopack, which does not
 define `__webpack_nonce__`, it needs an equivalent of `instrumentation-client.ts`.
+
+---
+
+## 20. Help Presentation: Dialog, Reviewed Rule Ledger, Separate Sanitizer Profile
+
+**Decision:** Question help text is shown behind a "Help: <title>" button that opens a native
+`<dialog>` (a bottom sheet at 640px and below, a centred dialog above that). Nodes with no help
+render no button. A rule sentence is promoted into a "How to answer" box above the button only when
+a person has reviewed it: `apps/web/src/lib/helpRuleLedger.json` records, per reviewed node, a
+SHA-256 over the state, the question, the rule sentence, the whole help text and the answer labels,
+and `decideHelp` promotes a rule only when the current content hashes to a recorded entry. Everything
+else stays in the dialog body, never hidden or reworded: a rule that is the single "answer yes/no"
+sentence in a promotable position (the first paragraph) is an ordinary bold paragraph there, and
+any other sentences are left where the help text puts them.
+`apps/web/src/lib/helpTransform.ts` turns the legacy help HTML into a title, an optional rule
+sentence and render blocks using its own sanitizer profiles; `sanitizeLegacyHtml` is unchanged and
+still serves questions, answers and the decision path (§17). Statute and index lists come back as
+data and are rendered by React (labels and entries as text nodes). Content problems found in the
+help text itself (#67, and the statute spike #74) are not rewritten here (the trees are pinned by parity
+tests, so everything is render-time).
+
+**Why:**
+- The legacy titles are `<h5><u>…</u></h5>`; the existing allowlist strips `h5`, which left a bare
+  underlined line. Widening that one allowlist would also widen it for questions and answers, so
+  help has a separate input profile (adds `h5` and `div`) and a separate output profile (adds
+  attribute-free `h3`/`h4`).
+- The global reset zeroes margins and padding, so list and paragraph rhythm has to be rebuilt where
+  the help is rendered.
+- Inline help pushed the answer buttons 900 to 2,300px down the page on a phone. Behind a button the
+  answers stay in view and the dialog scrolls on its own.
+- Legacy help can contradict its question (for example a node whose question asks about deferred
+  adjudication and whose rule sentence says "convicted"; #67). Code cannot judge whether a sentence
+  agrees with its question, so promoting a rule into the app's own voice requires a recorded human
+  review. The review covers the whole help text because no list of phrasings can
+  recognise every way a body could gain a contradicting instruction.
+- The client knows the question group but not the node variant (§16), so lookup is by content hash;
+  the `<state>:<nodeId>` keys are for reviewers and for the test that ties each entry to the tree.
+- The dialog is native: `showModal()` makes the page inert and Esc closes it through the native
+  `cancel`/`close`, with no focus-trap code. Four browser differences are handled explicitly:
+  - Focus is returned to the button on close, because WebKit does not restore it after a pointer
+    open.
+  - Initial focus goes to the heading, so WebKit does not outline the whole sheet after a tap.
+  - The dialog, Close and Back carry a transparent 1px border so forced-colors mode can draw their
+    edges.
+  - The dialog frame is not a scroll container (`overflow: hidden`; the body scrolls) and has
+    `tabindex="-1"`. In Chromium and WebKit, Tab cycles Close, the body and Back, then leaves for
+    the browser UI; in Firefox it leaves for the browser UI. The frame never takes Tab focus in
+    any of them, so it can only be focused programmatically. If it is focused, it shows an inset
+    2px `--color-blue-500` ring (inset because the frame clips its content), so focus is never
+    invisible. It is not focused on open, where focus goes to the heading.
+  - A `vh` line precedes `dvh` for the maximum height.
+- The backdrop closes the dialog from a JS `click` handler on the dialog. The handler closes only
+  when the press also began on the backdrop (a drag that starts inside and ends outside must not
+  close it) and the point lies outside the dialog's bounding box (its own edge, padding and
+  rounded-corner cutouts also report the dialog as the click target).
+- Rejected: native light dismiss (`closedby="any"`). It closes on pointer-up, so on touch the tap's
+  follow-up click is delivered to the page behind the backdrop, which can submit an answer.
+- Every pointer-initiated close (backdrop, Close, Back to the question) starts a guard window in
+  which a capture-phase listener on `document` cancels pointer `click`, `dblclick` and `mousedown`
+  events aimed outside the dialog (`apps/web/src/components/pageClickGuard.ts`). Without it the
+  second click of a double click or double tap would reach whatever sits under the pointer once
+  the dialog has left the top layer: an answer button (the form has no undo) or the Back link.
+  Cancelling `mousedown` also keeps focus on the Help button instead of the control under the
+  pointer. The windows:
+  - 700ms for any pointer click (`detail` of 1 or more): the platform's default double-click time
+    (500ms on Windows) plus margin.
+  - 1200ms for clicks that continue a multi-click sequence (`detail` of 2 or more): longer than the
+    longest double-click time of any platform setting we know of (Windows tops out at 900ms), with
+    margin.
+  - Touch differs by engine. WebKit and Firefox report `detail` 1 for every tap, so only the 700ms
+    window applies to touch there (a third tap of a slow triple tap, for example at about 710ms,
+    reaches the page); Chromium counts taps and applies the 1200ms window as well.
+  - Keyboard and programmatic clicks (`detail` of 0) are never held back, because they cannot be
+    the second half of a pointer double activation. Esc starts no window. An assistive-technology
+    activation that a platform synthesizes as a touch (VoiceOver on iOS, for example) probably
+    reports `detail` 1, so one within 700ms of a pointer close can be ignored. That is accepted:
+    a screen-reader user cannot move to an answer and activate it in that time.
+  - A press is judged once, at `mousedown`. If it began inside a window and was cancelled, its
+    `click` is cancelled too even when the button is released after the window ends. A press that
+    began after the window is never affected. If a window ends while a cancelled press is still
+    held, the listeners stay until its click, the next press, or one more second, then remove
+    themselves.
+  - Opening the dialog again, or the question changing, ends the window.
+  - Cost: a deliberate tap on an answer, or on the Help button, within 700ms of closing the
+    dialog with the pointer is ignored.
+- The Back to the question button is hidden at heights of 480px and below (a phone in landscape,
+  200% and 400% zoom) so the body keeps the height; Close and Esc remain.
+- The Help button is disabled while an answer is being submitted, because the question is about to
+  be replaced and a dialog opened in that window would be removed without a close event.
+
+**Costs:**
+- A human review step before a rule can be shown in the box, and a ledger file to maintain.
+- Because the hash covers the whole help text, any change to its words withdraws a reviewed box
+  until it is reviewed again. Formatting changes that leave the words unchanged do not. Re-review
+  only happens on a deliberate re-extraction of the tree, so the cost is small.
+- The help needs JavaScript to open, and a closed dialog is neither found by find-in-page nor
+  printed.
+- Known gaps in the transform and the review hash are tracked: the title guard recognises only
+  literal rule phrases (#115), and the review hash ignores block structure and formatting (#116).
+- A reviewed entry also covers any other node with identical wording; the review sheet from
+  `pnpm --filter web help:review` lists them.
+
+**Alternatives rejected:**
+- Keeping the inline callout: it is the source of the answers-off-screen problem.
+- One global sanitizer allowlist with `h5` added: it would change what questions and answers can
+  contain, which are rendered by a different, security-reviewed profile.
+- A keyword check for "the sentence agrees with the question": it passes rules that are wider than
+  their question, and failing closed on the keywords withholds rules that are correct.
+- CSS-only fixes: styling cannot restore the stripped `h5`, and it leaves the answers off screen.

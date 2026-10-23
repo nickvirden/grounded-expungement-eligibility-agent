@@ -137,23 +137,6 @@ export const QuestionText = styled.h2`
   }
 `;
 
-export const HelpText = styled.div`
-  font-size: 0.9375rem;
-  color: var(--color-navy-600);
-  line-height: 1.6;
-  margin-bottom: var(--space-8);
-  padding: var(--space-4);
-  background: var(--color-blue-100);
-  border-radius: var(--radius-lg);
-  border-left: 3px solid var(--color-blue-500);
-  & > *:first-child {
-    margin-top: 0;
-  }
-  & > *:last-child {
-    margin-bottom: 0;
-  }
-`;
-
 // ─── Answer buttons ───────────────────────────────────────────────────────────
 
 export const AnswerList = styled.ul`

@@ -1,4 +1,41 @@
 {
   "version": 1,
-  "entries": {}
+  "entries": {
+    "texas:11-11": {
+      "reviewed": true,
+      "hash": "3e8cab2a3eefe683f1c106bdf44a23248e15f7e32758f6786e7e68235a6d0efe",
+      "fields": {
+        "question": "290a48560756",
+        "rule": "a282e483780d",
+        "help": "1548d60299e0",
+        "answers": "09842f88b290"
+      },
+      "reviewedBy": "nickvirden",
+      "reviewedAt": "2026-10-21"
+    },
+    "texas:15-1": {
+      "reviewed": true,
+      "hash": "3f270c2e7ff1bbcef18d9e555f477d25544941866cf733d0f9ea26cec1c7c7b8",
+      "fields": {
+        "question": "775688bbbe2b",
+        "rule": "2a769239fc25",
+        "help": "7518cc59bfe5",
+        "answers": "271370a87af2"
+      },
+      "reviewedBy": "nickvirden",
+      "reviewedAt": "2026-10-21"
+    },
+    "texas:15-3": {
+      "reviewed": true,
+      "hash": "7e2ee008a16144b4bd1f1ad85d31a098c622ed076a9c31c5115c150d11d38ebf",
+      "fields": {
+        "question": "35c18fe1de36",
+        "rule": "8a17bb268a27",
+        "help": "889e3254d993",
+        "answers": "d142daef2621"
+      },
+      "reviewedBy": "nickvirden",
+      "reviewedAt": "2026-10-21"
+    }
+  }
 }
