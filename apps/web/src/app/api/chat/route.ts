@@ -6,9 +6,8 @@
  */
 import { randomBytes } from 'node:crypto';
 import { isSameOriginRequest } from '@/lib/checkSameOrigin';
+import { internalApiUrl } from '@/lib/internalApiUrl';
 import { NextResponse } from 'next/server';
-
-const API_BASE = process.env.INTERNAL_API_URL ?? 'http://localhost:8000';
 
 export async function POST(req: Request): Promise<Response> {
   // This route synthesizes a matching CSRF pair below, which always passes
@@ -37,7 +36,7 @@ export async function POST(req: Request): Promise<Response> {
 
   const csrfToken = randomBytes(32).toString('base64url');
 
-  const intakeRes = await fetch(`${API_BASE}/api/intakes`, {
+  const intakeRes = await fetch(`${internalApiUrl()}/api/intakes`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
