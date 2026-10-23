@@ -47,6 +47,18 @@ jobs:
       - name: Unit tests
         run: pnpm test
 
+      # Next restores incremental compiler output from this folder. The exact
+      # key misses on every source change, so the restore-key supplies the
+      # previous run's cache. Each job has its own prefix so the two parallel
+      # builds never race to save the same key.
+      - name: Cache Next.js build cache
+        uses: actions/cache@v6
+        with:
+          path: apps/web/.next/cache
+          key: ${{ runner.os }}-nextjs-web-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/web/src/**', 'apps/web/public/**', 'apps/web/next.config.ts', 'apps/web/tsconfig.json', 'apps/web/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-web-${{ hashFiles('pnpm-lock.yaml') }}-
+
       - name: Build
         run: pnpm --filter web build
 
@@ -174,6 +186,18 @@ jobs:
       - name: Install Python dependencies
         working-directory: apps/api
         run: uv sync --locked
+
+      # Next restores incremental compiler output from this folder. The exact
+      # key misses on every source change, so the restore-key supplies the
+      # previous run's cache. Each job has its own prefix so the two parallel
+      # builds never race to save the same key.
+      - name: Cache Next.js build cache
+        uses: actions/cache@v6
+        with:
+          path: apps/web/.next/cache
+          key: ${{ runner.os }}-nextjs-e2e-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/web/src/**', 'apps/web/public/**', 'apps/web/next.config.ts', 'apps/web/tsconfig.json', 'apps/web/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-e2e-${{ hashFiles('pnpm-lock.yaml') }}-
 
       # The suite serves the build that ships, so the browser enforces the
       # production CSP (nonce-only styles, no unsafe-eval).

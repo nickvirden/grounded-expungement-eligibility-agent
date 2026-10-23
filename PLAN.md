@@ -121,7 +121,7 @@ phase 02 next, and so on — rather than the whole stack landing as one merge at
 
 ## Phase 10 — Docs + Release · (merged into phase/09-polish-docs)
 
-- [x] DECISIONS.md final pass (13 sections covering all major architectural choices)
+- [x] DECISIONS.md final pass covering all major architectural choices
 - [x] README quickstart, architecture diagram, demo script, tech stack table
 - [x] PLAN.md final status update (this file)
 

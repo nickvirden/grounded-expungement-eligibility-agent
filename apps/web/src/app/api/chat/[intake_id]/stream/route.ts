@@ -8,7 +8,7 @@
  * token in the URL would leak into logs and any Referer header.
  */
 
-const API_BASE = process.env.INTERNAL_API_URL ?? 'http://localhost:8000';
+import { internalApiUrl } from '@/lib/internalApiUrl';
 
 // The API's own real statuses for this route -- anything else upstream
 // returns is an unexpected failure, reported as a generic 502 rather than
@@ -29,12 +29,15 @@ export async function GET(
   // rolled out this header.
   const authHeader = req.headers.get('authorization');
 
-  const upstream = await fetch(`${API_BASE}/api/intakes/${encodeURIComponent(intake_id)}/stream`, {
-    headers: {
-      Accept: 'text/event-stream',
-      ...(authHeader ? { Authorization: authHeader } : {}),
+  const upstream = await fetch(
+    `${internalApiUrl()}/api/intakes/${encodeURIComponent(intake_id)}/stream`,
+    {
+      headers: {
+        Accept: 'text/event-stream',
+        ...(authHeader ? { Authorization: authHeader } : {}),
+      },
     },
-  });
+  );
 
   if (!upstream.ok || !upstream.body) {
     const status = FORWARDED_STATUSES.has(upstream.status) ? upstream.status : 502;

@@ -1,3 +1,9 @@
+## [2.2.1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.2.0...v2.2.1) (2026-10-19)
+
+### Bug Fixes
+
+* **web:** use one shared default for INTERNAL_API_URL ([24d161a](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/24d161aa6853306f99af2a9ce158f132cd08979d))
+
 ## [2.2.0](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.1.3...v2.2.0) (2026-10-12)
 
 ### Features

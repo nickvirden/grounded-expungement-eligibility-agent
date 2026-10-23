@@ -1,3 +1,4 @@
+import { internalApiUrl } from '@/lib/internalApiUrl';
 import type { Metadata } from 'next';
 import LandingClient from './LandingClient';
 
@@ -18,10 +19,7 @@ export default async function HomePage() {
   let states: string[] = [];
 
   try {
-    const res = await fetch(
-      `${process.env.INTERNAL_API_URL ?? 'http://localhost:8000'}/api/states`,
-      { next: { revalidate: 3600 } },
-    );
+    const res = await fetch(`${internalApiUrl()}/api/states`, { next: { revalidate: 3600 } });
     if (res.ok) {
       // API returns list[StateInfo] — extract the state key from each object
       const data = (await res.json()) as Array<{ state: string }> | { states: string[] };
