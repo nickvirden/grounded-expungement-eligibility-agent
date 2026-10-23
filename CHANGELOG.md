@@ -1,3 +1,17 @@
+## [2.4.0](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.3.0...v2.4.0) (2026-10-23)
+
+### Features
+
+* **web:** add the Help dialog and How to answer box to the Quick Form ([0566de9](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/0566de95eb1bd0b5a595afa56215159bbd733b31))
+* **web:** approve the first three help rules in the review ledger ([9bc306a](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/9bc306aa998f0ff6c2dba5afe5790c0d112ff3c9))
+
+### Bug Fixes
+
+* **web:** close the help dialog from a click handler and harden its behaviour ([a17d7ef](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/a17d7ef03bfbaf1775e67bf7769b5813eaf69f25))
+* **web:** judge a press once so a click that straddles the guard window is swallowed ([1b69ce8](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/1b69ce8ab93a30142c7231eefc9016d8dd6fcc11))
+* **web:** stop a double click or tap from reaching the page after the help dialog closes ([38b34a1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/38b34a10f3f29ffaa6a9f5c57b0c11e569b8d09e))
+* **web:** widen the click guard and test it ([8f0dda5](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/8f0dda500c3636775896b0111188de2a4df228de))
+
 ## [2.3.0](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.2.1...v2.3.0) (2026-10-23)
 
 ### Features
