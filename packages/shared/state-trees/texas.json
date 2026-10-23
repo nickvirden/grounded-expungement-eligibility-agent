@@ -59,14 +59,14 @@
       "group": 2,
       "variant": 0,
       "question": "<p>You've indicated that your charges were dismissed in the case we're evaluating.</p><p>Were you convicted of any other charges from the same arrest or set of events?</p>",
-      "help": "<h5><u>The Same Criminal Episode</u></h5><div><b>If you were convicted of ANY of the offenses in the same \"Criminal Episode,\" answer YES to this question.</b></div><p>If the same case number was used, or the charges resulted from the same set of events or subject matter, they will typically be deemed to be part of the same Criminal Episode.</p><p>When you're arrested, it's frequently for more than one offense, even though some of those charges are dismissed or later dropped. In addition, it is not uncommon for prosecutors to file multiple charges as a tactic in negotiating plea bargains, eventually dismissing many of them.</p><div><b>Here is an example you may find helpful in understanding the concept:</b></div><p>If you were pulled over for driving while intoxicated, and the police found drugs in the car, these would be charges from the same arrest. If the drug charges were dismissed, but you were convicted of the driving while intoxicated charges, you would answer YES to this question. If both the driving while intoxicated charge and the drug charges were both dismissed, you would answer NO to this question.</p>",
+      "help": "<h5><u>The Same Criminal Episode</u></h5><div><b>If you were convicted of ANY of the offenses in the same \"Criminal Episode,\" answer YES to this question.</b></div><p>If the same case number was used, or the charges resulted from the same set of events or subject matter, they will typically be deemed to be part of the same Criminal Episode.</p><p>When you're arrested, it's frequently for more than one offense, even though some of those charges are dismissed or later dropped. In addition, it is not uncommon for prosecutors to file multiple charges as a tactic in negotiating plea bargains, eventually dismissing many of them.</p><div><b>Here is an example you may find helpful in understanding the concept:</b></div><p>If you were pulled over for driving while intoxicated, and the police found drugs in the car, these would be charges from the same arrest. If the drug charges were dismissed, but you were convicted of the driving while intoxicated charges, the answer is YES. If both the driving while intoxicated charge and the drug charges were both dismissed, the answer is NO.</p>",
       "answers": [
         {
-          "value": "I was convicted of other charges from this incident",
+          "value": "Yes, I was convicted of other charges from this incident",
           "position": 0
         },
         {
-          "value": "I was not convicted of any other charges from this arrest or sequence of events",
+          "value": "No, I was not convicted of any other charges from this arrest or sequence of events",
           "position": 1
         }
       ],
@@ -93,7 +93,7 @@
       "group": 4,
       "variant": 0,
       "question": "<p>Great! Now we need to figure out whether the Statute of Limitations have passed for the charges you had dismissed. </p><p>Please pay attention to the help buttons during the next few questions, unless you're sure you know the statute of limitations for the offense you were arrested for.</p>",
-      "help": "<h5><u>What is a Statute of Limitations?</u></h5>A <b>\"Statute of Limitations\"</b> is the time allowed to file charges against you. The statute of limitations for some cases is as short as one year, while some serious criminal offenses have no limit and can be filed at any time, even decades after the crime occurred (an example would be murder). In Texas, most criminal offenses have statutes of limitation ranging from 2 to 10 years.</p><p>These time periods can vary quite a bit, so you often need to do a little research to find the right statute of limitation for your criminal offense. A good place to start here would be the Texas Code of Criminal Procedure Art. 12.01, et seq. However, here are some general time periods that should be helpful in answering this question: </p><p><b>Felonies With NO Statute of Limitations:</b> Answer NO to this question if you were charged with any of the following crimes: Murder, Manslaughter, Sexual Assault, Human Trafficking, Compelling Prostitution of a Minor, Leaving the Scene of an Accident when a Death has Taken Place</p><p><b>Felonies With 10 Year Statutes of Limitations:</b> Answer NO to this question if it has not yet been 10 years since one of these criminal events occurred. Examples of these types of felonies would be: Compelling Prostitution, Arson, Crimes Involving Injury to the Elderly or Disabled, Forgery, and Theft offenses by government employees. </p><p><b>Felonies with 7 Year Statutes of Limitations:</b> Answer NO to this question if it has not yet been 7 years since one of these criminal events occurred. Examples of these types of felonies include: Identity Theft, Money Laundering, Fraud, Bigamy, and certain financial and tax crimes. </p><p><b>Felonies with 5 Year Statutes of Limitations:</b> Answer NO to this question of it has not yet been 5 years since one of these criminal events occurred. Examples of these types of felonies would be: Insurance Fraud, many Theft offenses, Robbery, Burglary, and Endangering or Abandoning a Child.</p><p><b>All Other Felonies Have a 3 Year Statute of Limitations:</b> Answer NO to this question if it has not yet been 3 years since one of these criminal events has occurred.</p><p><b>Most Misdemeanors have a 2 Year Statute of Limitation:</b> Answer NO to this question if it has not yet been 2 years since one of these criminal events has occurred.</p>",
+      "help": "<h5><u>What is a Statute of Limitations?</u></h5><p>A <b>\"Statute of Limitations\"</b> is the time allowed to file charges against you. The statute of limitations for some cases is as short as one year, while some serious criminal offenses have no limit and can be filed at any time, even decades after the crime occurred (an example would be murder). In Texas, most criminal offenses have statutes of limitation ranging from 2 to 10 years.</p><p>These time periods can vary quite a bit, so you often need to do a little research to find the right statute of limitation for your criminal offense. A good place to start here would be the Texas Code of Criminal Procedure Art. 12.01, et seq.</p>",
       "answers": [
         {
           "value": "Let's figure this out!",
@@ -134,7 +134,7 @@
           "position": 0
         },
         {
-          "value": "My charges were dismissed for another reason",
+          "value": "No, my charges were dismissed for another reason",
           "position": 1
         }
       ],
@@ -321,7 +321,7 @@
           "position": 0
         },
         {
-          "value": "My charges were dismissed for another reason",
+          "value": "No, my charges were dismissed for another reason",
           "position": 3
         }
       ],
@@ -1195,7 +1195,7 @@
           "position": 9
         },
         {
-          "value": "My conviction was not in one of the counties on that list",
+          "value": "No, my conviction was not in one of the counties on that list",
           "position": 10
         }
       ],
