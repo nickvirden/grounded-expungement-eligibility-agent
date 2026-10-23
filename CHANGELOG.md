@@ -1,3 +1,11 @@
+## [2.3.0](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.2.1...v2.3.0) (2026-10-23)
+
+### Features
+
+* **web:** add a synchronous SHA-256 ([3bca7e3](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/3bca7e393476929e6d74f46e071c213fdf54ff6c))
+* **web:** add the help rule review ledger ([dd7cbf3](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/dd7cbf3ad4de2782e2d3c4425d93c4536f5fa49c))
+* **web:** add the help-text transform ([530aaf8](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/530aaf81e2cb3a8ba18b5d4146b8e59795a26f73))
+
 ## [2.2.1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.2.0...v2.2.1) (2026-10-19)
 
 ### Bug Fixes
