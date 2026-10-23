@@ -84,6 +84,75 @@ def test_no_orphaned_nodes(tree: tuple[str, dict[str, Any]]) -> None:
         assert node_id in referenced, f"{state}: node {node_id!r} is never reached"
 
 
+def _question_edges(data: dict[str, Any]) -> dict[str, list[str]]:
+    """Node -> destination nodes, resolved the way the engine does: a transition is
+    addressed by (group, answer position), not by the node the answer was shown on."""
+    destinations = {
+        (t["from"]["questionId"], t["from"]["answerPosition"]): t["to"]
+        for t in data["transitions"]
+    }
+    edges: dict[str, list[str]] = {}
+    for node_id, node in data["nodes"].items():
+        edges[node_id] = [
+            destinations[(node["group"], answer["position"])]["nodeId"]
+            for answer in node["answers"]
+            if destinations[(node["group"], answer["position"])]["type"] == "question"
+        ]
+    return edges
+
+
+def test_every_node_is_reachable_from_the_entry_node(
+    tree: tuple[str, dict[str, Any]],
+) -> None:
+    """Following answers from the entry node must reach every node; a node that only
+    other unreachable nodes point at would pass a "is referenced" check but never
+    be shown to a user."""
+    state, data = tree
+    edges = _question_edges(data)
+    seen = {data["entryNodeId"]}
+    frontier = [data["entryNodeId"]]
+    while frontier:
+        for destination in edges[frontier.pop()]:
+            if destination not in seen:
+                seen.add(destination)
+                frontier.append(destination)
+    assert not set(data["nodes"]) - seen, (
+        f"{state}: unreachable from {data['entryNodeId']}: {sorted(set(data['nodes']) - seen)}"
+    )
+
+
+def test_no_answer_path_cycles_back_to_an_asked_question(
+    tree: tuple[str, dict[str, Any]],
+) -> None:
+    """A cycle is a path with no exit: a user answering consistently is asked the same
+    questions again indefinitely."""
+    state, data = tree
+    edges = _question_edges(data)
+    in_progress: set[str] = set()
+    finished: set[str] = set()
+
+    for root in data["nodes"]:
+        if root in finished:
+            continue
+        # Iterative depth-first search; each stack frame is (node, remaining destinations).
+        path = [root]
+        stack = [iter(edges[root])]
+        in_progress.add(root)
+        while stack:
+            destination = next(stack[-1], None)
+            if destination is None:
+                finished.add(path[-1])
+                in_progress.discard(path.pop())
+                stack.pop()
+            elif destination in in_progress:
+                cycle = [*path[path.index(destination) :], destination]
+                pytest.fail(f"{state}: answer path cycles: {' -> '.join(cycle)}")
+            elif destination not in finished:
+                in_progress.add(destination)
+                path.append(destination)
+                stack.append(iter(edges[destination]))
+
+
 def test_answer_text_unique_within_a_question(tree: tuple[str, dict[str, Any]]) -> None:
     state, data = tree
     for node_id, node in data["nodes"].items():

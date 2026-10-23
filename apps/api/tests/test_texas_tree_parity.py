@@ -6,6 +6,10 @@ request/response contract with no awareness of how the tree is extracted or
 how `rule_engine` represents nodes. Comparing every reachable
 (question_id, answer_position) pair against it is a genuine cross-check,
 not the same code checking itself.
+
+Five (question_id, answer_position) pairs intentionally differ from what the
+original legacy file produces, so the tree and the fixture are changed together
+(DECISIONS.md section 16); the fixture's sourceSha256 still pins that file.
 """
 import json
 from pathlib import Path
@@ -82,3 +86,37 @@ def test_engine_walk_reaches_exactly_the_traced_set() -> None:
                 frontier.append((result.next_question_id, result.next_answers))
 
     assert visited == set(_STEP_CASES)
+
+
+@pytest.mark.parametrize(
+    ("question_id", "answer_position", "next_question_id", "text_fragment", "answer_positions"),
+    [
+        (4, 9, 4, "first time offender", [5, 6]),
+        (7, 12, 7, "two (2) years since you successfully completed your probation", [13, 14]),
+        (7, 15, 7, "Were you a minor when convicted", [11, 18]),
+        (7, 18, 8, "organized criminal activity", [2, 12]),
+    ],
+)
+def test_maintained_routing_differs_from_legacy(
+    question_id: int,
+    answer_position: int,
+    next_question_id: int,
+    text_fragment: str,
+    answer_positions: list[int],
+) -> None:
+    """The routes the legacy override chain gets wrong (a shadowed DWI override and
+    redirects back to already-answered questions) go where the statutes send the user."""
+    result = step("texas", question_id, answer_position)
+
+    assert not result.is_terminal
+    assert result.next_question_id == next_question_id
+    assert result.next_question_text is not None
+    assert text_fragment in result.next_question_text
+    assert [a["position"] for a in result.next_answers] == answer_positions
+
+
+def test_answering_that_deferred_probation_is_ongoing_ends_the_walk() -> None:
+    result = step("texas", 6, 9)
+
+    assert result.is_terminal
+    assert result.result_label == "Does Not Qualify Yet"

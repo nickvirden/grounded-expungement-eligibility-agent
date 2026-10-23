@@ -3,7 +3,7 @@
   "sourceFile": "questionnaire-api/states/texas.js",
   "sourceSha256": "cf484f5bde767dcdcf3d39a490f8ccf033f6ad89bb4e1be201c7c685ec148084",
   "tracedAt": "2026-10-01T21:19:58.359Z",
-  "reachableCount": 180,
+  "reachableCount": 181,
   "trace": {
     "root": {
       "success": true,
@@ -1871,23 +1871,9 @@
     },
     "6:9": {
       "success": true,
-      "new_question": {
-        "id": 1,
-        "question": "Which type of deferred sentencing were you granted?"
-      },
-      "new_answers": [
-        {
-          "value": "I was given Deferred Adjudication",
-          "position": 3
-        },
-        {
-          "value": "I was given Deferred Prosecution or Pretrial Diversion",
-          "position": 4
-        }
-      ],
-      "helpText": "<h5><u>Deferred Sentencing</u></h5><p><b>\"Deferred Adjudication\"</b> is a form of probation granted by the court where if you abide by the terms of your probation, the court will dismiss the charges against you. However, in exchange for giving you the opportunity to have your charges dismissed, the court requires you to ENTER A GUILTY PLEA if you violate the terms of your probation, the court will proceed directly to sentencing you. Deferred Adjudication is far more common than Deferred Prosecution, but our firm sees both all of the time.</p><p><b>\"Deferred Prosecution\"</b> or <b>\"Pre-Trial Diversion\"</b> is an informal type of probation, where if you complete the terms of your probation, the prosecutor will drop the charges against you before requiring you to enter a plea of guilt. It is less formal than Deferred Adjudication and typically agreed to with the prosecutor instead of a judge.",
-      "questionsLeft": 17,
-      "endpoint": false
+      "endpoint": true,
+      "value": "Does Not Qualify Yet",
+      "questionsLeft": 0
     },
     "6:10": {
       "success": true,
@@ -2013,20 +1999,20 @@
     "4:9": {
       "success": true,
       "new_question": {
-        "id": 3,
-        "question": "Did your conviction require you to register as a sex offender?"
+        "id": 4,
+        "question": "<p>To seal a DWI, you need to be a first time offender. </p><p>Have you previously been put on deferred adjudication, or convicted of, any crime that wasn't just a fine-only traffic offense? </p>"
       },
       "new_answers": [
         {
-          "value": "Yes, the conviction we're evaluating required me to register as a sex offender",
-          "position": 10
+          "value": "Yes, I have something else on my record",
+          "position": 5
         },
         {
-          "value": "No, my conviction did not require me to register as a sex offender",
-          "position": 11
+          "value": "Nope, this is the only thing on my record",
+          "position": 6
         }
       ],
-      "questionsLeft": 7,
+      "questionsLeft": 6,
       "endpoint": false
     },
     "4:10": {
@@ -2108,20 +2094,20 @@
     "7:12": {
       "success": true,
       "new_question": {
-        "id": 1,
-        "question": "Is the conviction we're evaluating a felony?"
+        "id": 7,
+        "question": "Has it been at least two (2) years since you successfully completed your probation?"
       },
       "new_answers": [
         {
-          "value": "Yes, the conviction we're currently evaluating was for a felony",
-          "position": 5
+          "value": "Yep, it's been at least two years since I completed probation",
+          "position": 13
         },
         {
-          "value": "No, the conviction we're currently evaluating was for a misdemeanor",
-          "position": 6
+          "value": "Nope, it hasn't been two years since I finished probation",
+          "position": 14
         }
       ],
-      "questionsLeft": 16,
+      "questionsLeft": 10,
       "endpoint": false
     },
     "6:12": {
@@ -2494,7 +2480,7 @@
         },
         {
           "value": "No, I was not a minor when convicted",
-          "position": 12
+          "position": 18
         }
       ],
       "questionsLeft": 2,
@@ -2802,6 +2788,26 @@
       ],
       "helpText": "<h5>Determinate Sentence Offenses</h5><p><b>Answer YES to this question if you have been found to have engaged in delinquent conduct for an offense eligible for a Determinate Sentence for one of the offenses listed below:</b></p><ul><li>Murder, capital murder, manslaughter</li><li>Aggravated kidnapping</li><li>Sexual assault</li><li>Aggravated assault</li><li>Aggravated robbery</li><li>Injury to a child, elderly individual, or disabled individual</li><li>An aggravated controlled substance felony</li><li>Criminal solicitation</li><li>Indecency with a child</li><li>Criminal solicitation of a minor and</li><li>Arson</li></ul>",
       "questionsLeft": 3,
+      "endpoint": false
+    },
+    "7:18": {
+      "success": true,
+      "new_question": {
+        "id": 8,
+        "question": "Were you convicted of one of the crimes in the help button related to engaging in organized criminal activity?"
+      },
+      "new_answers": [
+        {
+          "value": "Yes, I was convicted of one of the crimes on that list",
+          "position": 2
+        },
+        {
+          "value": "No, I wasn't convicted of any of the crimes on that list",
+          "position": 12
+        }
+      ],
+      "helpText": "<h5>Engaging in Organized Criminal Activity</h5><p><b>Answer YES to this question if you were put on deferred adjudication for or convicted of a violation of Texas Penal Code Chapter 71, which covers Engaging in Organized Criminal Activity.</b></p><p>The following is a list of criminal offenses listed in Chapter 71:</p><ul><li>Engaging in Organized Criminal Activity;</li><li>Violation of Related Court Orders;</li><li>Soliciting Membership in a Street Gang; and</li><li>Directing Activities of a Street Gang;</li></ul>",
+      "questionsLeft": 4,
       "endpoint": false
     },
     "8:13": {
