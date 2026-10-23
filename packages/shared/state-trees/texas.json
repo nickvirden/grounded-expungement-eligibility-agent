@@ -92,7 +92,7 @@
     "4-0": {
       "group": 4,
       "variant": 0,
-      "question": "<p>Great! Now we need to figure out whether the Statute of Limitations have passed for the charges you had dismissed. </p><p>Please pay attention to the Help button on each of the next few questions, unless you're sure you know the statute of limitations for the offense you were arrested for.</p>",
+      "question": "<p>Great! Now we need to figure out whether the Statute of Limitations have passed for the charges you had dismissed. </p><p>Please pay attention to the Help button on the next question, unless you're sure you know the statute of limitations for the offense you were arrested for.</p>",
       "help": "<h5><u>What is a Statute of Limitations?</u></h5><p>A <b>\"Statute of Limitations\"</b> is the time allowed to file charges against you. The statute of limitations for some cases is as short as one year, while some serious criminal offenses have no limit and can be filed at any time, even decades after the crime occurred (an example would be murder). In Texas, most criminal offenses have statutes of limitation ranging from 2 to 10 years.</p><p>These time periods can vary quite a bit, so you often need to do a little research to find the right statute of limitation for your criminal offense. A good place to start here would be the Texas Code of Criminal Procedure Art. 12.01, et seq.</p>",
       "answers": [
         {
@@ -1408,7 +1408,7 @@
       "help": "<h5><u>Weapons Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for or convicted of a violation of Texas Penal Code Chapter 46, which covers Weapons-Related Offenses.</b></p><p>The offenses in this chapter are Weapons-Related Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 46:</p><ul><li>Unlawful Carrying of Handgun by License Holder</li><li>Unlawful Possession of a Firearm</li><li>Unlawful Possession of Metal or Body Armor by a Felon</li><li>Prohibited Weapons</li><li>Unlawful Transfer of Certain Weapons</li><li>Hoax Bombs</li><li>Components of Explosives</li><li>Deadly Weapon in Penal Institution</li><li>Making a Firearm Accessible to a Child and</li><li>Firearm Smuggling</li></ul>",
       "answers": [
         {
-          "value": "Yeah, I was convicted of one of the weapons charges listed in the help button",
+          "value": "Yes, I was convicted of one of the weapons charges listed in the help button",
           "position": 10
         },
         {

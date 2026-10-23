@@ -109,7 +109,7 @@
       "success": true,
       "new_question": {
         "id": 4,
-        "question": "<p>Great! Now we need to figure out whether the Statute of Limitations have passed for the charges you had dismissed. </p><p>Please pay attention to the Help button on each of the next few questions, unless you're sure you know the statute of limitations for the offense you were arrested for.</p>"
+        "question": "<p>Great! Now we need to figure out whether the Statute of Limitations have passed for the charges you had dismissed. </p><p>Please pay attention to the Help button on the next question, unless you're sure you know the statute of limitations for the offense you were arrested for.</p>"
       },
       "new_answers": [
         {
@@ -2197,7 +2197,7 @@
       },
       "new_answers": [
         {
-          "value": "Yeah, I was convicted of one of the weapons charges listed in the help button",
+          "value": "Yes, I was convicted of one of the weapons charges listed in the help button",
           "position": 10
         },
         {

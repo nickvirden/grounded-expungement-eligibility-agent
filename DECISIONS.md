@@ -521,14 +521,14 @@ tests, so everything is render-time).
 **Decision:** The wording in `packages/shared/state-trees/texas.json` is the product's source of
 truth for question text, answer labels, and help text. A small set of strings in it is corrected
 by hand and therefore differs from what `scripts/extract_state_tree.mjs` produces from the legacy
-`states/texas.js`: conflicting help rules and answer labels on the deferred-adjudication
-questions (12-3, 16-1, 14-5, 10-7), yes/no answer buttons that did not read as answers to their
-question (2-0, 5-2, 6-1, 7-10), the worked example in 2-0's help, 4-0's help (reduced to the
-statute-of-limitations introduction), and references to help buttons that do not apply (2-6, 4-0,
-7-10). Each correction is applied identically to the tree, its committed mirror in
-`apps/api/shared_data/`, and `apps/api/tests/fixtures/texas_legacy_trace.json`, so the parity tests
-that replay every `(questionId, answerPosition)` pair keep agreeing. No transition, answer
-position, `group`, `variant`, or `questionsLeft` value changes.
+`states/texas.js`: the help rules at 12-3, 16-1 and 14-5 and the 10-7 answer label, yes/no
+answer buttons that do not read as answers to their question (2-0, 5-2, 6-1, 7-10, 10-9), the
+worked example in 2-0's help, 4-0's help (reduced to the statute-of-limitations introduction),
+and references to help that does not apply (2-6, 4-0, 7-10). Each correction is applied
+identically to the tree, its committed mirror in `apps/api/shared_data/`, and
+`apps/api/tests/fixtures/texas_legacy_trace.json`, so the parity tests that replay every
+`(questionId, answerPosition)` pair keep agreeing. No transition, answer position, `group`,
+`variant`, or `questionsLeft` value changes.
 
 **Provenance:** the fixture's `sourceSha256` pins the original, uncorrected `texas.js`. The
 corrected tree and fixture are not what that file produces. The legacy file shares one help string
