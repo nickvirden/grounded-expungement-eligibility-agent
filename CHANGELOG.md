@@ -1,3 +1,9 @@
+## [2.4.1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.0...v2.4.1) (2026-10-23)
+
+### Bug Fixes
+
+* **shared:** route the Texas DWI and deferred-probation answers out of the question loops ([5c67891](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/5c678913e02a4d2137c022f7b8e9bc85d0b408f5)), closes [#25](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/25) [#26](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/26)
+
 ## [2.4.0](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.3.0...v2.4.0) (2026-10-23)
 
 ### Features
