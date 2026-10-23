@@ -215,20 +215,51 @@ contract, and would require every caller -- engine, agent tool signatures, front
 to carry and resolve that ID instead of the two plain integers the legacy app always used. That's a
 larger, separate redesign, deferred to issue #27.
 
-**Known legacy behaviors, preserved exactly rather than "fixed":** two issues surfaced during
-extraction are faithfully reproduced, not corrected, because deciding how to handle them requires
-legal/content authority this change doesn't have:
+**Maintained routing that differs from the legacy handler:** the legacy override chain
+(`questionnaire-api/states/texas.js`) has two defects, and the maintained tree routes around them.
+Each change is applied identically to the tree, its committed mirror in `apps/api/shared_data/`, and
+`apps/api/tests/fixtures/texas_legacy_trace.json`, so the parity tests keep replaying every
+`(questionId, answerPosition)` pair; the fixture's `sourceSha256` still pins the original file.
+`test_texas_tree_parity.py` names the pairs that differ, and `test_state_tree_integrity.py` asserts
+that no answer path cycles and every node is reachable from the entry node.
 
-- One DWI-related override is shadowed by an earlier one with an overlapping condition, so "yes, I
-  was convicted of a DWI" at one question routes to the sex-offender-registration question instead of
-  the first-offender DWI question the legacy design otherwise reaches via a different path (the
-  first-offender question itself is reachable, just not from this specific answer). Tracked as issue
-  #25.
-- Several redirects, not just one, form a connected cycle of 16 question variants (not a single
-  isolated loop) -- a real user who keeps answering consistently through this part of the tree would
-  be asked the same questions again indefinitely with no path out. Tracked as issue #26.
+- **DWI conviction (#25).** In the legacy chain the override for "yes, I was convicted of a DWI"
+  at `4-13` (question 4, position 9) is shadowed by an earlier override with an overlapping condition,
+  so the answer reached the sex-offender-registration question (`3-9`) and, through it, the felony
+  screens and the Conviction Set Aside result, which CCP art. 42A.701(g)(1) excludes for DWI. The
+  maintained route is `4-6`, the first-offender question the shadowed override targeted, whose
+  wording ("any crime that wasn't just a fine-only traffic offense") follows the statute's
+  prior-record condition; "Nope" continues to the BAC, accident and interlock chain
+  (GV 411.0731).
+- **Redirects back to answered questions (#26).** Three redirects sent users back to group 1, and
+  together with the forward edges formed a connected cycle of 16 question variants with no exit. Two
+  changes break every cycle:
+  - `6-9` "Yes, I am on Deferred Adjudication or Deferred Prosecution" (position 9) ends at
+    Does Not Qualify Yet instead of `1-1`: GV 411.072 and 411.0725 require discharge and dismissal
+    before nondisclosure, so a person still serving the sentence is not yet eligible. This matches
+    `2-3`'s "deferred sentence has not been completed".
+  - `7-11` "No, I was not a minor when convicted" (position 12) no longer returns to `1-2`. Only
+    AL 106.041 (driving under the influence by a minor) is excluded from nondisclosure under
+    GV 411.073 and 411.0735, so an adult convicted of another alcohol offense rejoins the ordinary
+    misdemeanor flow, which is `7-12` after `6-10` and `8-16` after `7-13`. Transitions are
+    addressed by `(group, position)` alone, so one node cannot lead to both. `7-13` therefore
+    points at `7-15`, a copy of `7-11` whose "No" answer has its own position (18) and leads to
+    `8-16`; `6-10` keeps `7-11`, whose "No" leads to `7-12`.
 
-A duplicate-position case is *not* in this list because it isn't a bug: two distinct answers within
+`2-4` "No, I did not successfully complete the terms of pre-trial diversion" still leads to `1-2`,
+which assumes a conviction exists. That assumption is an open legal question (#81, #74), and with
+`6-9` redirected the edge is no longer on a cycle.
+
+These are readings of the statutes for the content owner's approval, not legal advice. Other routing
+the same statutes call into question, such as the 5-year wait at `8-5` and the missing path for a
+DWI conviction without community supervision, is tracked in #128 and #130.
+
+Re-extracting from the original legacy file (`make extract-trees`) restores the legacy routing, so
+the diff of a re-extraction against the committed tree is the list of changes to re-apply. A
+patch or overlay applied during extraction would add a build step and a second representation of
+the same routes whose only consumer is a rarely run script.
+
+A duplicate-position case is not a defect: two distinct answers within
 the same question can legitimately share a `position` value (the frontend disambiguates them by
 array index/text, not position, since `position` is only ever used to pick the next transition, not
 to identify an answer on screen).
