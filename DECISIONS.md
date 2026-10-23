@@ -236,19 +236,21 @@ that no answer path cycles and every node is reachable from the entry node.
   changes break every cycle:
   - `6-9` "Yes, I am on Deferred Adjudication or Deferred Prosecution" (position 9) ends at
     Does Not Qualify Yet instead of `1-1`: GV 411.072 and 411.0725 require discharge and dismissal
-    before nondisclosure, so a person still serving the sentence is not yet eligible. This matches
-    `2-3`'s "deferred sentence has not been completed".
-  - `7-11` "No, I was not a minor when convicted" (position 12) no longer returns to `1-2`. Only
-    AL 106.041 (driving under the influence by a minor) is excluded from nondisclosure under
-    GV 411.073 and 411.0735, so an adult convicted of another alcohol offense rejoins the ordinary
-    misdemeanor flow, which is `7-12` after `6-10` and `8-16` after `7-13`. Transitions are
-    addressed by `(group, position)` alone, so one node cannot lead to both. `7-13` therefore
-    points at `7-15`, a copy of `7-11` whose "No" answer has its own position (18) and leads to
-    `8-16`; `6-10` keeps `7-11`, whose "No" leads to `7-12`.
+    before nondisclosure for deferred adjudication, and expunction after a pretrial diversion
+    program requires completing it (CCP art. 55A.053), so a person still serving either is not yet
+    eligible. This matches `2-3`'s "deferred sentence has not been completed".
+  - `7-11` "No, I was not a minor when convicted" (position 12) leads to the misdemeanor flow
+    instead of `1-2`. Of the Alcoholic Beverage Code offenses, only AL 106.041 (driving under the
+    influence by a minor) is excluded from nondisclosure under GV 411.073 and 411.0735, so an adult
+    convicted of another alcohol offense rejoins the ordinary misdemeanor flow, which is `7-12`
+    after `6-10` and `8-16` after `7-13`. Transitions are addressed by `(group, position)` alone,
+    so one node cannot lead to both. `7-13` therefore points at `7-15`, a copy of `7-11` whose "No"
+    answer has its own position (18) and leads to `8-16`; `6-10` keeps `7-11`, whose "No" leads to
+    `7-12`.
 
-`2-4` "No, I did not successfully complete the terms of pre-trial diversion" still leads to `1-2`,
+`2-4` "No, I did not successfully complete the terms of pre-trial diversion" leads to `1-2`,
 which assumes a conviction exists. That assumption is an open legal question (#81, #74), and with
-`6-9` redirected the edge is no longer on a cycle.
+`6-9` redirected the edge is not on a cycle.
 
 These are readings of the statutes for the content owner's approval, not legal advice. Other routing
 the same statutes call into question, such as the 5-year wait at `8-5` and the missing path for a
