@@ -822,7 +822,7 @@
       "help": "<h5><u>Sexual Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for or convicted of a violation of Texas Penal Code Chapter 21, which covers Sexual Offenses.</b></p><p>The offenses in this chapter are Sexual Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 21:</p><ul><li>Public Lewdness</li><li>Indecent Exposure </li><li>Beastiality</li><li>Indecency with a Child</li><li>Improper Relationship Between Educator and Student</li><li>Invasive Visual Recording</li><li>Unlawful Disclosure or Promotion of Intimate Visual Material</li><li>Voyeurism</li><li>Sexual Coercion</li><li>Unlawful Electronic Transmission of Sexually Explicit Visual Material and</li><li>Continuous Sexual Abuse of a Child</li></ul>",
       "answers": [
         {
-          "value": "Yes, I was placed on a deferred sentence for one of the weapons crimes on that list",
+          "value": "Yes, I was placed on a deferred sentence for one of the crimes on that list",
           "position": 8
         },
         {
