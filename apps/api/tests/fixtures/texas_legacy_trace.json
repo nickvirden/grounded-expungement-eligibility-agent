@@ -109,7 +109,7 @@
       "success": true,
       "new_question": {
         "id": 4,
-        "question": "<p>Great! Now we need to figure out whether the Statute of Limitations have passed for the charges you had dismissed. </p><p>Please pay attention to the help buttons during the next few questions, unless you're sure you know the statute of limitations for the offense you were arrested for.</p>"
+        "question": "<p>Great! Now we need to figure out whether the Statute of Limitations have passed for the charges you had dismissed. </p><p>Please pay attention to the Help button on each of the next few questions, unless you're sure you know the statute of limitations for the offense you were arrested for.</p>"
       },
       "new_answers": [
         {
@@ -1891,7 +1891,7 @@
           "position": 10
         }
       ],
-      "helpText": "<h5><u>Texas Counties</u></h5><p><b>Answer YES to this question, that you were convicted in a county displayed in this help button if you were convicted in any of the following counties:</b></p><ul><li>Aransas</li><li>Armstrong</li><li>Bailey</li><li>Bee</li><li>Bosque</li><li>Brazos</li><li>Briscoe</li><li>Burleson</li><li>Calhoun</li><li>Cameron</li><li>Carson</li><li>Castro</li><li>Childress</li><li>Cochran</li><li>Collingsworth</li><li>Coryell</li><li>Cottle</li><li>Crosby</li><li>Dallam</li><li>De Witt</li><li>Deaf Smith</li><li>Dickens</li><li>Donley</li><li>Ellis</li><li>Falls</li><li>Floyd</li><li>Foard</li><li>Freestone</li><li>Garza</li><li>Goliad</li><li>Gonzales</li><li>Gray</li><li>Hale</li><li>Hall</li><li>Hamilton</li><li>Hansford</li><li>Hardeman</li><li>Hartley</li><li>Hemphill</li><li>Hidalgo</li><li>Hill</li><li>Hockley</li><li>Hutchinson</li><li>Jackson</li><li>Johnson</li><li>Kennedy</li><li>Kent</li><li>King</li><li>Kleberg</li><li>Lamb</li><li>Lavaca</li><li>Leon</li><li>Limestone</li><li>Lipscomb</li><li>Live Oak</li><li>Lubbock</li><li>Lynn</li><li>Madison</li><li>Matagorda</li><li>McLennan</li><li>Moore</li><li>Motley</li><li>Navarro</li><li>Nueces</li><li>Ochiltree</li><li>Oldham</li><li>Parmer</li><li>Potter</li><li>Randall</li><li>Refugio</li><li>Roberts</li><li>Robertson</li><li>San Patricio</li><li>Sherman</li><li>Somervell</li><li>Swisher</li><li>Terry</li><li>Victoria</li><li>Walker</li><li>Wharton</li><li>Wheeler</li><li>Wilbarger</li><li>Willacy</li><li>Yoakum</li>",
+      "helpText": "<h5><u>Texas Counties</u></h5><p><b>Answer YES to this question if you were convicted in any of the following counties:</b></p><ul><li>Aransas</li><li>Armstrong</li><li>Bailey</li><li>Bee</li><li>Bosque</li><li>Brazos</li><li>Briscoe</li><li>Burleson</li><li>Calhoun</li><li>Cameron</li><li>Carson</li><li>Castro</li><li>Childress</li><li>Cochran</li><li>Collingsworth</li><li>Coryell</li><li>Cottle</li><li>Crosby</li><li>Dallam</li><li>De Witt</li><li>Deaf Smith</li><li>Dickens</li><li>Donley</li><li>Ellis</li><li>Falls</li><li>Floyd</li><li>Foard</li><li>Freestone</li><li>Garza</li><li>Goliad</li><li>Gonzales</li><li>Gray</li><li>Hale</li><li>Hall</li><li>Hamilton</li><li>Hansford</li><li>Hardeman</li><li>Hartley</li><li>Hemphill</li><li>Hidalgo</li><li>Hill</li><li>Hockley</li><li>Hutchinson</li><li>Jackson</li><li>Johnson</li><li>Kennedy</li><li>Kent</li><li>King</li><li>Kleberg</li><li>Lamb</li><li>Lavaca</li><li>Leon</li><li>Limestone</li><li>Lipscomb</li><li>Live Oak</li><li>Lubbock</li><li>Lynn</li><li>Madison</li><li>Matagorda</li><li>McLennan</li><li>Moore</li><li>Motley</li><li>Navarro</li><li>Nueces</li><li>Ochiltree</li><li>Oldham</li><li>Parmer</li><li>Potter</li><li>Randall</li><li>Refugio</li><li>Roberts</li><li>Robertson</li><li>San Patricio</li><li>Sherman</li><li>Somervell</li><li>Swisher</li><li>Terry</li><li>Victoria</li><li>Walker</li><li>Wharton</li><li>Wheeler</li><li>Wilbarger</li><li>Willacy</li><li>Yoakum</li>",
       "questionsLeft": 3,
       "endpoint": false
     },
@@ -1924,7 +1924,7 @@
       "success": true,
       "new_question": {
         "id": 2,
-        "question": "<p>Was this conviction for a crime that was violent or sexual in nature?</p><p>Please see the help button to learn what counts. For example, misdemeanor simple assault does not count under these rules.</p>"
+        "question": "<p>Was this conviction for a crime that was violent or sexual in nature?</p><p>For example, misdemeanor simple assault does not count under these rules.</p>"
       },
       "new_answers": [
         {
