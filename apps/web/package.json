@@ -12,10 +12,12 @@
     "lint": "biome check src/",
     "lint:fix": "biome check --write src/",
     "check:styles": "node --import tsx/esm scripts/checkStyleConventions.ts",
+    "help:review": "node --import tsx/esm scripts/reviewHelpRule.ts",
     "test": "find src scripts -name '*.test.ts' | sed 's/[][]/?/g' | xargs node --import tsx/esm --test"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
+    "htmlparser2": "^10.1.0",
     "next": "^15.3.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
