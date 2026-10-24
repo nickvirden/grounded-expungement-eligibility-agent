@@ -11,12 +11,10 @@ import {
   type EligibilityReport,
   type IntakeCreate,
   type IntakeCreateResponse,
-  type StateInfo,
   type StateTree,
   assessResponseSchema,
   eligibilityReportSchema,
   intakeCreateResponseSchema,
-  stateInfoSchema,
   stateTreeSchema,
 } from './schemas';
 
@@ -70,11 +68,6 @@ export async function listStates(): Promise<string[]> {
   // API returns list[StateInfo] — extract just the state key
   const data = await fetchJson<Array<{ state: string }>>('/api/states');
   return data.map((s) => s.state);
-}
-
-export async function getStateInfo(state: string): Promise<StateInfo> {
-  const data = await fetchJson<unknown>(`/api/states/${state}`);
-  return stateInfoSchema.parse(data);
 }
 
 export async function getStateTree(state: string, init?: RequestInit): Promise<StateTree> {
