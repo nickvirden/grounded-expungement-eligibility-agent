@@ -68,15 +68,15 @@
       },
       "new_answers": [
         {
-          "value": "I was convicted of other charges from this incident",
+          "value": "Yes, I was convicted of other charges from this incident",
           "position": 0
         },
         {
-          "value": "I was not convicted of any other charges from this arrest or sequence of events",
+          "value": "No, I was not convicted of any other charges from this arrest or sequence of events",
           "position": 1
         }
       ],
-      "helpText": "<h5><u>The Same Criminal Episode</u></h5><div><b>If you were convicted of ANY of the offenses in the same \"Criminal Episode,\" answer YES to this question.</b></div><p>If the same case number was used, or the charges resulted from the same set of events or subject matter, they will typically be deemed to be part of the same Criminal Episode.</p><p>When you're arrested, it's frequently for more than one offense, even though some of those charges are dismissed or later dropped. In addition, it is not uncommon for prosecutors to file multiple charges as a tactic in negotiating plea bargains, eventually dismissing many of them.</p><div><b>Here is an example you may find helpful in understanding the concept:</b></div><p>If you were pulled over for driving while intoxicated, and the police found drugs in the car, these would be charges from the same arrest. If the drug charges were dismissed, but you were convicted of the driving while intoxicated charges, you would answer YES to this question. If both the driving while intoxicated charge and the drug charges were both dismissed, you would answer NO to this question.</p>",
+      "helpText": "<h5><u>The Same Criminal Episode</u></h5><div><b>If you were convicted of ANY of the offenses in the same \"Criminal Episode,\" answer YES to this question.</b></div><p>If the same case number was used, or the charges resulted from the same set of events or subject matter, they will typically be deemed to be part of the same Criminal Episode.</p><p>When you're arrested, it's frequently for more than one offense, even though some of those charges are dismissed or later dropped. In addition, it is not uncommon for prosecutors to file multiple charges as a tactic in negotiating plea bargains, eventually dismissing many of them.</p><div><b>Here is an example you may find helpful in understanding the concept:</b></div><p>If you were pulled over for driving while intoxicated, and the police found drugs in the car, these would be charges from the same arrest. If the drug charges were dismissed, but you were convicted of the driving while intoxicated charges, the answer to this question is YES. If both the driving while intoxicated charge and the drug charges were both dismissed, the answer to this question is NO.</p>",
       "questionsLeft": 10,
       "endpoint": false
     },
@@ -109,7 +109,7 @@
       "success": true,
       "new_question": {
         "id": 4,
-        "question": "<p>Great! Now we need to figure out whether the Statute of Limitations have passed for the charges you had dismissed. </p><p>Please pay attention to the help buttons during the next few questions, unless you're sure you know the statute of limitations for the offense you were arrested for.</p>"
+        "question": "<p>Great! Now we need to figure out whether the Statute of Limitations have passed for the charges you had dismissed. </p><p>Please pay attention to the help button on the next question, unless you're sure you know the statute of limitations for the offense you were arrested for.</p>"
       },
       "new_answers": [
         {
@@ -117,7 +117,7 @@
           "position": 0
         }
       ],
-      "helpText": "<h5><u>What is a Statute of Limitations?</u></h5>A <b>\"Statute of Limitations\"</b> is the time allowed to file charges against you. The statute of limitations for some cases is as short as one year, while some serious criminal offenses have no limit and can be filed at any time, even decades after the crime occurred (an example would be murder). In Texas, most criminal offenses have statutes of limitation ranging from 2 to 10 years.</p><p>These time periods can vary quite a bit, so you often need to do a little research to find the right statute of limitation for your criminal offense. A good place to start here would be the Texas Code of Criminal Procedure Art. 12.01, et seq. However, here are some general time periods that should be helpful in answering this question: </p><p><b>Felonies With NO Statute of Limitations:</b> Answer NO to this question if you were charged with any of the following crimes: Murder, Manslaughter, Sexual Assault, Human Trafficking, Compelling Prostitution of a Minor, Leaving the Scene of an Accident when a Death has Taken Place</p><p><b>Felonies With 10 Year Statutes of Limitations:</b> Answer NO to this question if it has not yet been 10 years since one of these criminal events occurred. Examples of these types of felonies would be: Compelling Prostitution, Arson, Crimes Involving Injury to the Elderly or Disabled, Forgery, and Theft offenses by government employees. </p><p><b>Felonies with 7 Year Statutes of Limitations:</b> Answer NO to this question if it has not yet been 7 years since one of these criminal events occurred. Examples of these types of felonies include: Identity Theft, Money Laundering, Fraud, Bigamy, and certain financial and tax crimes. </p><p><b>Felonies with 5 Year Statutes of Limitations:</b> Answer NO to this question of it has not yet been 5 years since one of these criminal events occurred. Examples of these types of felonies would be: Insurance Fraud, many Theft offenses, Robbery, Burglary, and Endangering or Abandoning a Child.</p><p><b>All Other Felonies Have a 3 Year Statute of Limitations:</b> Answer NO to this question if it has not yet been 3 years since one of these criminal events has occurred.</p><p><b>Most Misdemeanors have a 2 Year Statute of Limitation:</b> Answer NO to this question if it has not yet been 2 years since one of these criminal events has occurred.</p>",
+      "helpText": "<h5><u>What is a Statute of Limitations?</u></h5><p>A <b>\"Statute of Limitations\"</b> is the time allowed to file charges against you. The statute of limitations for some cases is as short as one year, while some serious criminal offenses have no limit and can be filed at any time, even decades after the crime occurred (an example would be murder). In Texas, most criminal offenses have statutes of limitation ranging from 2 to 10 years.</p><p>These time periods can vary quite a bit, so you often need to do a little research to find the right statute of limitation for your criminal offense. A good place to start here would be the Texas Code of Criminal Procedure Art. 12.01, et seq.</p>",
       "questionsLeft": 8,
       "endpoint": false
     },
@@ -163,7 +163,7 @@
           "position": 0
         },
         {
-          "value": "My charges were dismissed for another reason",
+          "value": "No, my charges were dismissed for another reason",
           "position": 1
         }
       ],
@@ -421,7 +421,7 @@
           "position": 0
         },
         {
-          "value": "My charges were dismissed for another reason",
+          "value": "No, my charges were dismissed for another reason",
           "position": 3
         }
       ],
@@ -1213,7 +1213,7 @@
       },
       "new_answers": [
         {
-          "value": "Yes, I was placed on a deferred sentence for one of the weapons crimes on that list",
+          "value": "Yes, I was placed on a deferred sentence for one of the crimes on that list",
           "position": 8
         },
         {
@@ -1361,7 +1361,7 @@
           "position": 3
         }
       ],
-      "helpText": "<h5><u>Disorderly Conduct Offenses</u></h5><p><b>Answer YES to this question if you were convicted of a violation of Texas Penal Code Chapter 42, which covers Disorderly Conduct Offenses.</b></p><p>The following is a list of criminal offenses listed in Chapter 42:</p><ul><li>Disorderly Conduct</li><li>Obstructing a Highway or Other Passageway</li><li>Riot</li><li>Disrupting Meeting or Procession</li><li>Funeral Service Disruptions</li><li>False Alarm or Report</li><li>Silent or Abusive Calls to 911</li><li>Interference with Emergency Request</li><li>Harassment</li><li>Stalking</li><li>Abuse of a Corpse</li><li>Cruelty to Animals</li><li>Dog Fighting and Cockfighting</li><li>Destruction of a Flag</li><li>Use of Laser Pointers and</li><li>Illumination of Aircraft by Intense Light</li></ul>",
+      "helpText": "<h5><u>Disorderly Conduct Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for a violation of Texas Penal Code Chapter 42, which covers Disorderly Conduct Offenses.</b></p><p>The following is a list of criminal offenses listed in Chapter 42:</p><ul><li>Disorderly Conduct</li><li>Obstructing a Highway or Other Passageway</li><li>Riot</li><li>Disrupting Meeting or Procession</li><li>Funeral Service Disruptions</li><li>False Alarm or Report</li><li>Silent or Abusive Calls to 911</li><li>Interference with Emergency Request</li><li>Harassment</li><li>Stalking</li><li>Abuse of a Corpse</li><li>Cruelty to Animals</li><li>Dog Fighting and Cockfighting</li><li>Destruction of a Flag</li><li>Use of Laser Pointers and</li><li>Illumination of Aircraft by Intense Light</li></ul>",
       "questionsLeft": 7,
       "endpoint": false
     },
@@ -1517,7 +1517,7 @@
           "position": 1
         }
       ],
-      "helpText": "<h5><u>Offenses Against the Family</u></h5><p><b>Answer YES to this question if you were convicted of a violation of Texas Penal Code Chapter 25, which covers Offenses Against the Family.</b></p><p>The following is a list of criminal offenses listed in Chapter 25:</p><ul><li>Criminal Nonsupport</li><li>Continuous Violence Against the Family</li><li>Interference with Child Custody</li><li>Harboring Runaway Child</li><li>Enticing a Child</li><li>Agreement to Abduct From Custody</li><li>Prohibited Sexual Conduct</li><li>Bigamy</li><li>Violations of Certain Family-Related Court Orders</li><li>Violation of Certain Protective Orders</li><li>Sale or Purchase of a Child</li><li>Unregulated Transfer of Adopted Child</li><li>Advertising for Placement of Child</li><li>Interference with Rights of Guardian of the Person</li></ul>",
+      "helpText": "<h5><u>Offenses Against the Family</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for a violation of Texas Penal Code Chapter 25, which covers Offenses Against the Family.</b></p><p>The following is a list of criminal offenses listed in Chapter 25:</p><ul><li>Criminal Nonsupport</li><li>Continuous Violence Against the Family</li><li>Interference with Child Custody</li><li>Harboring Runaway Child</li><li>Enticing a Child</li><li>Agreement to Abduct From Custody</li><li>Prohibited Sexual Conduct</li><li>Bigamy</li><li>Violations of Certain Family-Related Court Orders</li><li>Violation of Certain Protective Orders</li><li>Sale or Purchase of a Child</li><li>Unregulated Transfer of Adopted Child</li><li>Advertising for Placement of Child</li><li>Interference with Rights of Guardian of the Person</li></ul>",
       "questionsLeft": 3,
       "endpoint": false
     },
@@ -1610,7 +1610,7 @@
       },
       "new_answers": [
         {
-          "value": "Yes, I was placed on a deferred sentence for one of the weapons crimes on that list",
+          "value": "Yes, I was placed on a deferred sentence for one of the crimes on that list",
           "position": 8
         },
         {
@@ -1887,11 +1887,11 @@
           "position": 9
         },
         {
-          "value": "My conviction was not in one of the counties on that list",
+          "value": "No, my conviction was not in one of the counties on that list",
           "position": 10
         }
       ],
-      "helpText": "<h5><u>Texas Counties</u></h5><p><b>Answer YES to this question, that you were convicted in a county displayed in this help button if you were convicted in any of the following counties:</b></p><ul><li>Aransas</li><li>Armstrong</li><li>Bailey</li><li>Bee</li><li>Bosque</li><li>Brazos</li><li>Briscoe</li><li>Burleson</li><li>Calhoun</li><li>Cameron</li><li>Carson</li><li>Castro</li><li>Childress</li><li>Cochran</li><li>Collingsworth</li><li>Coryell</li><li>Cottle</li><li>Crosby</li><li>Dallam</li><li>De Witt</li><li>Deaf Smith</li><li>Dickens</li><li>Donley</li><li>Ellis</li><li>Falls</li><li>Floyd</li><li>Foard</li><li>Freestone</li><li>Garza</li><li>Goliad</li><li>Gonzales</li><li>Gray</li><li>Hale</li><li>Hall</li><li>Hamilton</li><li>Hansford</li><li>Hardeman</li><li>Hartley</li><li>Hemphill</li><li>Hidalgo</li><li>Hill</li><li>Hockley</li><li>Hutchinson</li><li>Jackson</li><li>Johnson</li><li>Kennedy</li><li>Kent</li><li>King</li><li>Kleberg</li><li>Lamb</li><li>Lavaca</li><li>Leon</li><li>Limestone</li><li>Lipscomb</li><li>Live Oak</li><li>Lubbock</li><li>Lynn</li><li>Madison</li><li>Matagorda</li><li>McLennan</li><li>Moore</li><li>Motley</li><li>Navarro</li><li>Nueces</li><li>Ochiltree</li><li>Oldham</li><li>Parmer</li><li>Potter</li><li>Randall</li><li>Refugio</li><li>Roberts</li><li>Robertson</li><li>San Patricio</li><li>Sherman</li><li>Somervell</li><li>Swisher</li><li>Terry</li><li>Victoria</li><li>Walker</li><li>Wharton</li><li>Wheeler</li><li>Wilbarger</li><li>Willacy</li><li>Yoakum</li>",
+      "helpText": "<h5><u>Texas Counties</u></h5><p><b>Answer YES to this question if you were convicted in any of the following counties:</b></p><ul><li>Aransas</li><li>Armstrong</li><li>Bailey</li><li>Bee</li><li>Bosque</li><li>Brazos</li><li>Briscoe</li><li>Burleson</li><li>Calhoun</li><li>Cameron</li><li>Carson</li><li>Castro</li><li>Childress</li><li>Cochran</li><li>Collingsworth</li><li>Coryell</li><li>Cottle</li><li>Crosby</li><li>Dallam</li><li>De Witt</li><li>Deaf Smith</li><li>Dickens</li><li>Donley</li><li>Ellis</li><li>Falls</li><li>Floyd</li><li>Foard</li><li>Freestone</li><li>Garza</li><li>Goliad</li><li>Gonzales</li><li>Gray</li><li>Hale</li><li>Hall</li><li>Hamilton</li><li>Hansford</li><li>Hardeman</li><li>Hartley</li><li>Hemphill</li><li>Hidalgo</li><li>Hill</li><li>Hockley</li><li>Hutchinson</li><li>Jackson</li><li>Johnson</li><li>Kennedy</li><li>Kent</li><li>King</li><li>Kleberg</li><li>Lamb</li><li>Lavaca</li><li>Leon</li><li>Limestone</li><li>Lipscomb</li><li>Live Oak</li><li>Lubbock</li><li>Lynn</li><li>Madison</li><li>Matagorda</li><li>McLennan</li><li>Moore</li><li>Motley</li><li>Navarro</li><li>Nueces</li><li>Ochiltree</li><li>Oldham</li><li>Parmer</li><li>Potter</li><li>Randall</li><li>Refugio</li><li>Roberts</li><li>Robertson</li><li>San Patricio</li><li>Sherman</li><li>Somervell</li><li>Swisher</li><li>Terry</li><li>Victoria</li><li>Walker</li><li>Wharton</li><li>Wheeler</li><li>Wilbarger</li><li>Willacy</li><li>Yoakum</li>",
       "questionsLeft": 3,
       "endpoint": false
     },
@@ -1924,7 +1924,7 @@
       "success": true,
       "new_question": {
         "id": 2,
-        "question": "<p>Was this conviction for a crime that was violent or sexual in nature?</p><p>Please see the help button to learn what counts. For example, misdemeanor simple assault does not count under these rules.</p>"
+        "question": "<p>Was this conviction for a crime that was violent or sexual in nature?</p><p>For example, misdemeanor simple assault does not count for this question.</p>"
       },
       "new_answers": [
         {
@@ -2197,7 +2197,7 @@
       },
       "new_answers": [
         {
-          "value": "Yeah, I was convicted of one of the weapons charges listed in the help button",
+          "value": "Yes, I was convicted of one of the weapons charges listed in the help button",
           "position": 10
         },
         {
@@ -2361,7 +2361,7 @@
           "position": 3
         }
       ],
-      "helpText": "<h5><u>Kidnapping, Unlawful Restraint, and Smuggling of Persons Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for a violation of Texas Penal Code Chapter 20, which covers Kidnapping, Unlawful Restraint, and Smuggling of Persons Offenses.</b></p><p>The following is a list of criminal offenses listed in Chapter 20:</p><ul><li>Unlawful Restraint</li><li>Kidnapping</li><li>Smuggling of Persons and</li><li>Operation of a Stash House</li></ul>",
+      "helpText": "<h5><u>Kidnapping, Unlawful Restraint, and Smuggling of Persons Offenses</u></h5><p><b>Answer YES to this question if you were convicted of a violation of Texas Penal Code Chapter 20, which covers Kidnapping, Unlawful Restraint, and Smuggling of Persons Offenses.</b></p><p>The following is a list of criminal offenses listed in Chapter 20:</p><ul><li>Unlawful Restraint</li><li>Kidnapping</li><li>Smuggling of Persons and</li><li>Operation of a Stash House</li></ul>",
       "questionsLeft": 3,
       "endpoint": false
     },
