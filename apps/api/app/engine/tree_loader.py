@@ -4,6 +4,10 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
+import structlog
+
+log = structlog.get_logger()
+
 
 def _infer_repo_root(start: Path) -> Path | None:
     """Walk up from `start` to find a monorepo root containing packages/shared/."""
@@ -45,7 +49,10 @@ def load_tree(state: str, trees_dir: str = "") -> dict[str, Any]:
     base = Path(trees_dir) if trees_dir else _DEFAULT_TREES_DIR
     path = base / f"{state.lower()}.json"
     if not path.exists():
-        raise FileNotFoundError(f"No decision tree found for state '{state}'. Path: {path}")
+        # The message reaches unauthenticated API clients as a 404 detail, so it
+        # must not carry the filesystem path; the path goes to the log instead.
+        log.warning("state_tree_not_found", state=state, trees_dir=str(base))
+        raise FileNotFoundError(f"No decision tree found for state '{state}'")
     with path.open() as f:
         return json.load(f)  # type: ignore[no-any-return]
 
