@@ -25,7 +25,7 @@
           "position": 2
         },
         {
-          "value": "I was convicted as a juvenile",
+          "value": "I had a juvenile case (referred to juvenile probation or juvenile court, whether or not it was adjudicated)",
           "position": 3
         },
         {
@@ -1221,7 +1221,7 @@
           "position": 9
         }
       ],
-      "helpText": "<h5><u>Sexual Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for or convicted of a violation of Texas Penal Code Chapter 21, which covers Sexual Offenses.</b></p><p>The offenses in this chapter are Sexual Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 21:</p><ul><li>Public Lewdness</li><li>Indecent Exposure </li><li>Beastiality</li><li>Indecency with a Child</li><li>Improper Relationship Between Educator and Student</li><li>Invasive Visual Recording</li><li>Unlawful Disclosure or Promotion of Intimate Visual Material</li><li>Voyeurism</li><li>Sexual Coercion</li><li>Unlawful Electronic Transmission of Sexually Explicit Visual Material and</li><li>Continuous Sexual Abuse of a Child</li></ul>",
+      "helpText": "<h5><u>Sexual Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for a violation of Texas Penal Code Chapter 21, which covers Sexual Offenses.</b></p><p>The offenses in this chapter are Sexual Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 21:</p><ul><li>Public Lewdness</li><li>Indecent Exposure </li><li>Beastiality</li><li>Indecency with a Child</li><li>Improper Relationship Between Educator and Student</li><li>Invasive Visual Recording</li><li>Unlawful Disclosure or Promotion of Intimate Visual Material</li><li>Voyeurism</li><li>Sexual Coercion</li><li>Unlawful Electronic Transmission of Sexually Explicit Visual Material and</li><li>Continuous Sexual Abuse of a Child</li></ul>",
       "questionsLeft": 9,
       "endpoint": false
     },
@@ -1322,7 +1322,7 @@
           "position": 3
         }
       ],
-      "helpText": "<h5><u>Weapons Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for or convicted of a violation of Texas Penal Code Chapter 46, which covers Weapons-Related Offenses.</b></p><p>The offenses in this chapter are Weapons-Related Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 46:</p><ul><li>Unlawful Carrying of Handgun by License Holder</li><li>Unlawful Possession of a Firearm</li><li>Unlawful Possession of Metal or Body Armor by a Felon</li><li>Prohibited Weapons</li><li>Unlawful Transfer of Certain Weapons</li><li>Hoax Bombs</li><li>Components of Explosives</li><li>Deadly Weapon in Penal Institution</li><li>Making a Firearm Accessible to a Child and</li><li>Firearm Smuggling</li></ul>",
+      "helpText": "<h5><u>Weapons Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for a violation of Texas Penal Code Chapter 46, which covers Weapons-Related Offenses.</b></p><p>The offenses in this chapter are Weapons-Related Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 46:</p><ul><li>Unlawful Carrying of Handgun by License Holder</li><li>Unlawful Possession of a Firearm</li><li>Unlawful Possession of Metal or Body Armor by a Felon</li><li>Prohibited Weapons</li><li>Unlawful Transfer of Certain Weapons</li><li>Hoax Bombs</li><li>Components of Explosives</li><li>Deadly Weapon in Penal Institution</li><li>Making a Firearm Accessible to a Child and</li><li>Firearm Smuggling</li></ul>",
       "questionsLeft": 8,
       "endpoint": false
     },
@@ -1400,7 +1400,7 @@
           "position": 3
         }
       ],
-      "helpText": "<h5><u>Assaultive Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for or convicted of a violation of Texas Penal Code Chapter 22, which covers Assaultive Offenses.</b></p><p>The following is a list of criminal offenses listed in Chapter 22:</p><ul><li>Assault and Aggravated Assault</li><li>Sexual Assault and Aggravated Sexual Assault</li><li>Terroristic Threats</li><li>Injury to a Child, Elderly Individual or Disabled Person</li><li>Abandoning or Endangering a Child</li><li>Leaving a Child in a Vehicle</li><li>Deadly Conduct</li><li>Aiding Suicide</li><li>Tampering with Consumer Product</li><li>Harassment in Certain Facilities and</li><li>Harassment of Public Servant</li></ul>",
+      "helpText": "<h5><u>Assaultive Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for a violation of Texas Penal Code Chapter 22, which covers Assaultive Offenses.</b></p><p>The following is a list of criminal offenses listed in Chapter 22:</p><ul><li>Assault and Aggravated Assault</li><li>Sexual Assault and Aggravated Sexual Assault</li><li>Terroristic Threats</li><li>Injury to a Child, Elderly Individual or Disabled Person</li><li>Abandoning or Endangering a Child</li><li>Leaving a Child in a Vehicle</li><li>Deadly Conduct</li><li>Aiding Suicide</li><li>Tampering with Consumer Product</li><li>Harassment in Certain Facilities and</li><li>Harassment of Public Servant</li></ul>",
       "questionsLeft": 6,
       "endpoint": false
     },
@@ -1439,7 +1439,7 @@
           "position": 1
         }
       ],
-      "helpText": "<h5><u>Obscenity-Related Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for or convicted of a violation of Texas Penal Code Chapter 43, which covers Prostitution and Obscenity-Related Offenses.</b></p><p>The offenses in this chapter are Prostitution and Obscenity-Related Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 43:</p><ul><li>Prostitution</li><li>Promotion of Prostitution (all types)</li><li>Compelling Prostitution</li><li>Obscene Display or Distribution</li><li>Obscenity</li><li>Sale, Distribution, Display of Harmful Material to a Minor</li><li>Sexual Performance by a Child</li><li>Employment Harmful to Children and</li><li>Child Pornography Crimes</li></ul>",
+      "helpText": "<h5><u>Obscenity-Related Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for a violation of Texas Penal Code Chapter 43, which covers Prostitution and Obscenity-Related Offenses.</b></p><p>The offenses in this chapter are Prostitution and Obscenity-Related Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 43:</p><ul><li>Prostitution</li><li>Promotion of Prostitution (all types)</li><li>Compelling Prostitution</li><li>Obscene Display or Distribution</li><li>Obscenity</li><li>Sale, Distribution, Display of Harmful Material to a Minor</li><li>Sexual Performance by a Child</li><li>Employment Harmful to Children and</li><li>Child Pornography Crimes</li></ul>",
       "questionsLeft": 5,
       "endpoint": false
     },
@@ -1618,7 +1618,7 @@
           "position": 9
         }
       ],
-      "helpText": "<h5><u>Sexual Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for or convicted of a violation of Texas Penal Code Chapter 21, which covers Sexual Offenses.</b></p><p>The offenses in this chapter are Sexual Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 21:</p><ul><li>Public Lewdness</li><li>Indecent Exposure </li><li>Beastiality</li><li>Indecency with a Child</li><li>Improper Relationship Between Educator and Student</li><li>Invasive Visual Recording</li><li>Unlawful Disclosure or Promotion of Intimate Visual Material</li><li>Voyeurism</li><li>Sexual Coercion</li><li>Unlawful Electronic Transmission of Sexually Explicit Visual Material and</li><li>Continuous Sexual Abuse of a Child</li></ul>",
+      "helpText": "<h5><u>Sexual Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for a violation of Texas Penal Code Chapter 21, which covers Sexual Offenses.</b></p><p>The offenses in this chapter are Sexual Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 21:</p><ul><li>Public Lewdness</li><li>Indecent Exposure </li><li>Beastiality</li><li>Indecency with a Child</li><li>Improper Relationship Between Educator and Student</li><li>Invasive Visual Recording</li><li>Unlawful Disclosure or Promotion of Intimate Visual Material</li><li>Voyeurism</li><li>Sexual Coercion</li><li>Unlawful Electronic Transmission of Sexually Explicit Visual Material and</li><li>Continuous Sexual Abuse of a Child</li></ul>",
       "questionsLeft": 9,
       "endpoint": false
     },
@@ -1943,7 +1943,7 @@
       "success": true,
       "new_question": {
         "id": 3,
-        "question": "<p>Do you have any other convictions for offenses that didn't just result in a fine? </p><p>When answering this question, count any deferred adjudication sentences as a conviction.</p>"
+        "question": "Before this case, were you ever convicted of, or placed on deferred adjudication for, any offense other than a traffic offense punishable by fine only?"
       },
       "new_answers": [
         {
@@ -1951,7 +1951,7 @@
           "position": 12
         },
         {
-          "value": "Nope, this was the first time that I've got in any trouble",
+          "value": "No, never (not counting fine-only traffic tickets)",
           "position": 13
         }
       ],
@@ -2166,7 +2166,7 @@
           "position": 9
         }
       ],
-      "helpText": "<h5><u>Sexual Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for or convicted of a violation of Texas Penal Code Chapter 21, which covers Sexual Offenses.</b></p><p>The offenses in this chapter are Sexual Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 21:</p><ul><li>Public Lewdness</li><li>Indecent Exposure </li><li>Beastiality</li><li>Indecency with a Child</li><li>Improper Relationship Between Educator and Student</li><li>Invasive Visual Recording</li><li>Unlawful Disclosure or Promotion of Intimate Visual Material</li><li>Voyeurism</li><li>Sexual Coercion</li><li>Unlawful Electronic Transmission of Sexually Explicit Visual Material and</li><li>Continuous Sexual Abuse of a Child</li></ul>",
+      "helpText": "<h5><u>Sexual Offenses</u></h5><p><b>Answer YES to this question if you were convicted of a violation of Texas Penal Code Chapter 21, which covers Sexual Offenses.</b></p><p>The offenses in this chapter are Sexual Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 21:</p><ul><li>Public Lewdness</li><li>Indecent Exposure </li><li>Beastiality</li><li>Indecency with a Child</li><li>Improper Relationship Between Educator and Student</li><li>Invasive Visual Recording</li><li>Unlawful Disclosure or Promotion of Intimate Visual Material</li><li>Voyeurism</li><li>Sexual Coercion</li><li>Unlawful Electronic Transmission of Sexually Explicit Visual Material and</li><li>Continuous Sexual Abuse of a Child</li></ul>",
       "questionsLeft": 8,
       "endpoint": false
     },
@@ -2205,7 +2205,7 @@
           "position": 11
         }
       ],
-      "helpText": "<h5><u>Weapons Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for or convicted of a violation of Texas Penal Code Chapter 46, which covers Weapons-Related Offenses.</b></p><p>The offenses in this chapter are Weapons-Related Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 46:</p><ul><li>Unlawful Carrying of Handgun by License Holder</li><li>Unlawful Possession of a Firearm</li><li>Unlawful Possession of Metal or Body Armor by a Felon</li><li>Prohibited Weapons</li><li>Unlawful Transfer of Certain Weapons</li><li>Hoax Bombs</li><li>Components of Explosives</li><li>Deadly Weapon in Penal Institution</li><li>Making a Firearm Accessible to a Child and</li><li>Firearm Smuggling</li></ul>",
+      "helpText": "<h5><u>Weapons Offenses</u></h5><p><b>Answer YES to this question if you were convicted of a violation of Texas Penal Code Chapter 46, which covers Weapons-Related Offenses.</b></p><p>The offenses in this chapter are Weapons-Related Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 46:</p><ul><li>Unlawful Carrying of Handgun by License Holder</li><li>Unlawful Possession of a Firearm</li><li>Unlawful Possession of Metal or Body Armor by a Felon</li><li>Prohibited Weapons</li><li>Unlawful Transfer of Certain Weapons</li><li>Hoax Bombs</li><li>Components of Explosives</li><li>Deadly Weapon in Penal Institution</li><li>Making a Firearm Accessible to a Child and</li><li>Firearm Smuggling</li></ul>",
       "questionsLeft": 7,
       "endpoint": false
     },
@@ -2283,7 +2283,7 @@
           "position": 5
         }
       ],
-      "helpText": "<h5><u>Assaultive Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for or convicted of a violation of Texas Penal Code Chapter 22, which covers Assaultive Offenses.</b></p><p>The following is a list of criminal offenses listed in Chapter 22:</p><ul><li>Assault and Aggravated Assault</li><li>Sexual Assault and Aggravated Sexual Assault</li><li>Terroristic Threats</li><li>Injury to a Child, Elderly Individual or Disabled Person</li><li>Abandoning or Endangering a Child</li><li>Leaving a Child in a Vehicle</li><li>Deadly Conduct</li><li>Aiding Suicide</li><li>Tampering with Consumer Product</li><li>Harassment in Certain Facilities and</li><li>Harassment of Public Servant</li></ul>",
+      "helpText": "<h5><u>Assaultive Offenses</u></h5><p><b>Answer YES to this question if you were convicted of a violation of Texas Penal Code Chapter 22, which covers Assaultive Offenses.</b></p><p>The following is a list of criminal offenses listed in Chapter 22:</p><ul><li>Assault and Aggravated Assault</li><li>Sexual Assault and Aggravated Sexual Assault</li><li>Terroristic Threats</li><li>Injury to a Child, Elderly Individual or Disabled Person</li><li>Abandoning or Endangering a Child</li><li>Leaving a Child in a Vehicle</li><li>Deadly Conduct</li><li>Aiding Suicide</li><li>Tampering with Consumer Product</li><li>Harassment in Certain Facilities and</li><li>Harassment of Public Servant</li></ul>",
       "questionsLeft": 5,
       "endpoint": false
     },
@@ -2322,7 +2322,7 @@
           "position": 5
         }
       ],
-      "helpText": "<h5><u>Obscenity-Related Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication for or convicted of a violation of Texas Penal Code Chapter 43, which covers Prostitution and Obscenity-Related Offenses.</b></p><p>The offenses in this chapter are Prostitution and Obscenity-Related Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 43:</p><ul><li>Prostitution</li><li>Promotion of Prostitution (all types)</li><li>Compelling Prostitution</li><li>Obscene Display or Distribution</li><li>Obscenity</li><li>Sale, Distribution, Display of Harmful Material to a Minor</li><li>Sexual Performance by a Child</li><li>Employment Harmful to Children and</li><li>Child Pornography Crimes</li></ul>",
+      "helpText": "<h5><u>Obscenity-Related Offenses</u></h5><p><b>Answer YES to this question if you were convicted of a violation of Texas Penal Code Chapter 43, which covers Prostitution and Obscenity-Related Offenses.</b></p><p>The offenses in this chapter are Prostitution and Obscenity-Related Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 43:</p><ul><li>Prostitution</li><li>Promotion of Prostitution (all types)</li><li>Compelling Prostitution</li><li>Obscene Display or Distribution</li><li>Obscenity</li><li>Sale, Distribution, Display of Harmful Material to a Minor</li><li>Sexual Performance by a Child</li><li>Employment Harmful to Children and</li><li>Child Pornography Crimes</li></ul>",
       "questionsLeft": 4,
       "endpoint": false
     },
@@ -2502,7 +2502,7 @@
           "position": 12
         }
       ],
-      "helpText": "<h5>Engaging in Organized Criminal Activity</h5><p><b>Answer YES to this question if you were put on deferred adjudication for or convicted of a violation of Texas Penal Code Chapter 71, which covers Engaging in Organized Criminal Activity.</b></p><p>The following is a list of criminal offenses listed in Chapter 71:</p><ul><li>Engaging in Organized Criminal Activity;</li><li>Violation of Related Court Orders;</li><li>Soliciting Membership in a Street Gang; and</li><li>Directing Activities of a Street Gang;</li></ul>",
+      "helpText": "<h5>Engaging in Organized Criminal Activity</h5><p><b>Answer YES to this question if you were convicted of a violation of Texas Penal Code Chapter 71, which covers Engaging in Organized Criminal Activity.</b></p><p>The following is a list of criminal offenses listed in Chapter 71:</p><ul><li>Engaging in Organized Criminal Activity;</li><li>Violation of Related Court Orders;</li><li>Coercing, Inducing, or Soliciting Membership in a Criminal Street Gang or Foreign Terrorist Organization; and</li><li>Directing Activities of Criminal Street Gangs or Foreign Terrorist Organizations</li></ul>",
       "questionsLeft": 4,
       "endpoint": false
     },
@@ -2774,19 +2774,19 @@
       "success": true,
       "new_question": {
         "id": 8,
-        "question": "Have you received a \"Determinate Sentence\" (found guilty) for one of the crimes listed in the help button?"
+        "question": "Have you received a \"Determinate Sentence\" for one of the crimes listed in the help button?"
       },
       "new_answers": [
         {
-          "value": "Yes, I got a Determinate Sentence (found guilty) of one of the crimes on that list",
+          "value": "Yes, I got a Determinate Sentence of one of the crimes on that list",
           "position": 2
         },
         {
-          "value": "No, I have not got a Determinate Sentence (found guilty) of any of those offenses",
+          "value": "No, I have not got a Determinate Sentence of any of those offenses",
           "position": 13
         }
       ],
-      "helpText": "<h5>Determinate Sentence Offenses</h5><p><b>Answer YES to this question if you have been found to have engaged in delinquent conduct for an offense eligible for a Determinate Sentence for one of the offenses listed below:</b></p><ul><li>Murder, capital murder, manslaughter</li><li>Aggravated kidnapping</li><li>Sexual assault</li><li>Aggravated assault</li><li>Aggravated robbery</li><li>Injury to a child, elderly individual, or disabled individual</li><li>An aggravated controlled substance felony</li><li>Criminal solicitation</li><li>Indecency with a child</li><li>Criminal solicitation of a minor and</li><li>Arson</li></ul>",
+      "helpText": "<h5>Determinate Sentence Offenses</h5><p><b>Answer YES only if a juvenile court gave you a determinate sentence for one of the offenses listed below:</b></p><ul><li>Murder, capital murder, manslaughter</li><li>Aggravated kidnapping</li><li>Sexual assault</li><li>Aggravated assault</li><li>Aggravated robbery</li><li>Injury to a child, elderly individual, or disabled individual</li><li>An aggravated controlled substance felony</li><li>Criminal solicitation</li><li>Indecency with a child</li><li>Criminal solicitation of a minor and</li><li>Arson</li></ul>",
       "questionsLeft": 3,
       "endpoint": false
     },
@@ -2806,7 +2806,7 @@
           "position": 12
         }
       ],
-      "helpText": "<h5>Engaging in Organized Criminal Activity</h5><p><b>Answer YES to this question if you were put on deferred adjudication for or convicted of a violation of Texas Penal Code Chapter 71, which covers Engaging in Organized Criminal Activity.</b></p><p>The following is a list of criminal offenses listed in Chapter 71:</p><ul><li>Engaging in Organized Criminal Activity;</li><li>Violation of Related Court Orders;</li><li>Soliciting Membership in a Street Gang; and</li><li>Directing Activities of a Street Gang;</li></ul>",
+      "helpText": "<h5>Engaging in Organized Criminal Activity</h5><p><b>Answer YES to this question if you were convicted of a violation of Texas Penal Code Chapter 71, which covers Engaging in Organized Criminal Activity.</b></p><p>The following is a list of criminal offenses listed in Chapter 71:</p><ul><li>Engaging in Organized Criminal Activity;</li><li>Violation of Related Court Orders;</li><li>Coercing, Inducing, or Soliciting Membership in a Criminal Street Gang or Foreign Terrorist Organization; and</li><li>Directing Activities of Criminal Street Gangs or Foreign Terrorist Organizations</li></ul>",
       "questionsLeft": 4,
       "endpoint": false
     },
