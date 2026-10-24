@@ -558,8 +558,7 @@ issue is opened and by a weekly schedule, applies the rules in `.github/TRIAGE.m
 - The maintainer is told only when the workflow changed something: one comment on a rolling issue
   labeled `triage-digest`, mentioning the maintainer, lists every issue it labeled, demoted or
   closed, with the reason and the classifier's probability. A run that changes nothing posts
-  nothing, except one short heartbeat comment on the first run of each month. No issue is assigned
-  to the maintainer.
+  nothing. No issue is assigned to the maintainer.
 
 The classification step sits behind one function so the classifier can be replaced. Tracked in #165
 (workflow), #173 (choosing the classifier), #166 (monthly demotion and closing) and #167 (the
@@ -594,13 +593,11 @@ Claude API call with structured output is the fallback behind the same function.
 repository secret. Issue text in this repository is public; if the app ever handles real intakes,
 revisit what is sent to a third party.
 
-**Silent stop:** a quiet run sends nothing, so without more a stopped workflow looks like a quiet
-week. Dropped runs and the automatic disabling of scheduled workflows after 60 days without
-repository activity are not announced by GitHub, and a failed run is emailed only to whoever last
-edited the cron line. The first run of each month therefore posts a heartbeat comment that mentions
-the maintainer and states the run date and how many issues were labeled, demoted and closed that
-month. The cost is one short notification a month. A month with no heartbeat means the workflow
-stopped. Each run also records its date in the rolling issue's body, which does not notify.
+**Silent stop:** no notification on a quiet run means a stopped workflow looks like a quiet week.
+GitHub emails a failed run to whoever last edited the cron line, and each run records its date in
+the rolling issue's body, which does not notify. Dropped runs and the automatic disabling of
+scheduled workflows after 60 days without repository activity are not announced. A monthly
+heartbeat comment is the remedy if this matters.
 
 **Alternatives rejected:**
 - A digest that only proposes lists, with the maintainer acting on them: it keeps the work with the
