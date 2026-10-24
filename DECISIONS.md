@@ -528,7 +528,14 @@ and references to help that does not apply (2-6, 4-0, 7-10). Four further correc
 statutes: the deferred adjudication sentence in the help at 0-0 and 1-1, the sealing and expungement
 wording in 2-3's help, the offense class in 10-1's question ("most felonies"), and 8-11's question
 ("Are you now at least 21 years old?"). These are statute-derived and approved by the content owner,
-not attorney-reviewed; open questions are tracked in #74. Each correction is applied
+not attorney-reviewed; open questions are tracked in #74. A second set changes which answer applies
+to a user, so reviewers should read each string: the chapter help rules name only the status their
+question asks about (convicted at 9-11, 10-9, 12-5, 13-5 and 8-16; deferred adjudication at 10-7,
+11-9, 13-3 and 14-3); 8-16's list uses the current offense headings; 8-17 asks whether a juvenile
+court gave a determinate sentence and its rule tests the same thing; 3-10 asks about any prior
+conviction or deferred adjudication other than a fine-only traffic offense; and 0-0's fourth answer
+covers a juvenile referral whether or not it was adjudicated. These are likewise statute-derived and
+approved by the content owner, not attorney-reviewed. Each correction is applied
 identically to the tree, its committed mirror in `apps/api/shared_data/`, and
 `apps/api/tests/fixtures/texas_legacy_trace.json`, so the parity tests that replay every
 `(questionId, answerPosition)` pair keep agreeing. No transition, answer position, `group`,

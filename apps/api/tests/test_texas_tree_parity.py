@@ -13,6 +13,7 @@ original legacy file produces, so the tree and the fixture are changed together
 Wording corrections to a handful of nodes are applied the same way (DECISIONS.md
 section 21).
 """
+
 import json
 from pathlib import Path
 from typing import Any
@@ -131,6 +132,38 @@ _DEFERRED_ADJUDICATION_HELP = (
 )
 
 
+# (answer reaching the node, node id, chapter, status the node asks about). Sibling nodes share
+# one rule sentence apart from the status word, so each carries its own.
+_CHAPTER_RULE_NODES = [
+    (8, 11, "9-11", 21, "convicted"),
+    (10, 6, "10-7", 21, "deferred"),
+    (9, 9, "10-9", 46, "convicted"),
+    (10, 9, "11-9", 46, "deferred"),
+    (11, 5, "12-5", 22, "convicted"),
+    (12, 3, "13-3", 22, "deferred"),
+    (12, 5, "13-5", 43, "convicted"),
+    (13, 3, "14-3", 43, "deferred"),
+    (7, 16, "8-16", 71, "convicted"),
+]
+_CHAPTER_RULE_IDS = [f"{node}-chapter-rule" for _, _, node, _, _ in _CHAPTER_RULE_NODES]
+
+
+def _chapter_rule_rows() -> list[tuple[int, int, str, str, str]]:
+    rows = []
+    for question_id, answer_position, _, chapter, status in _CHAPTER_RULE_NODES:
+        if status == "deferred":
+            absent = "deferred adjudication for or convicted of"
+            present = (
+                "if you were put on deferred adjudication for a violation of "
+                f"Texas Penal Code Chapter {chapter}"
+            )
+        else:
+            absent = "put on deferred adjudication for or"
+            present = f"if you were convicted of a violation of Texas Penal Code Chapter {chapter}"
+        rows.append((question_id, answer_position, "next_question_help", absent, present))
+    return rows
+
+
 @pytest.mark.parametrize(
     ("question_id", "answer_position", "field", "absent_fragment", "present_fragment"),
     [
@@ -159,8 +192,53 @@ _DEFERRED_ADJUDICATION_HELP = (
             "most felonies in Texas is 3 years",
         ),
         (7, 11, "next_question_text", "over 21", "Are you now at least 21 years old?"),
+        *_chapter_rule_rows(),
+        (
+            7,
+            17,
+            "next_question_help",
+            "eligible for a Determinate Sentence",
+            "<b>Answer YES only if a juvenile court gave you a determinate sentence for one of "
+            "the offenses listed below:</b>",
+        ),
+        (7, 17, "next_question_text", "(found guilty)", 'received a "Determinate Sentence" for'),
+        (
+            7,
+            16,
+            "next_question_help",
+            "Soliciting Membership in a Street Gang; and",
+            "Coercing, Inducing, or Soliciting Membership in a Criminal Street Gang or Foreign "
+            "Terrorist Organization; and",
+        ),
+        (
+            7,
+            16,
+            "next_question_help",
+            "Directing Activities of a Street Gang",
+            "Directing Activities of Criminal Street Gangs or Foreign Terrorist Organizations",
+        ),
+        (
+            2,
+            10,
+            "next_question_text",
+            "didn't just result in a fine",
+            "Before this case, were you ever convicted of, or placed on deferred adjudication for, "
+            "any offense other than a traffic offense punishable by fine only?",
+        ),
     ],
-    ids=["2-3-sealing", "2-3-expunction", "1-1-deferred-adjudication", "10-1-felonies", "8-11-age"],
+    ids=[
+        "2-3-sealing",
+        "2-3-expunction",
+        "1-1-deferred-adjudication",
+        "10-1-felonies",
+        "8-11-age",
+        *_CHAPTER_RULE_IDS,
+        "8-17-rule",
+        "8-17-question",
+        "8-16-gang-solicitation",
+        "8-16-gang-directing",
+        "3-10-question",
+    ],
 )
 def test_corrected_wording_replaces_legacy_text(
     question_id: int,
@@ -184,3 +262,44 @@ def test_corrected_wording_replaces_legacy_text_at_entry_question() -> None:
     assert help_text is not None
     assert "ENTER A GUILTY PLEA" not in help_text
     assert _DEFERRED_ADJUDICATION_HELP in help_text
+
+
+@pytest.mark.parametrize(
+    ("question_id", "answer_position", "expected_values"),
+    [
+        (
+            7,
+            17,
+            [
+                "Yes, I got a Determinate Sentence of one of the crimes on that list",
+                "No, I have not got a Determinate Sentence of any of those offenses",
+            ],
+        ),
+        (
+            2,
+            10,
+            [
+                "Yes, I have been convicted or placed on deferred adjudication for a different "
+                "offense",
+                "No, never (not counting fine-only traffic tickets)",
+            ],
+        ),
+    ],
+    ids=["8-17-answers", "3-10-answers"],
+)
+def test_corrected_wording_replaces_legacy_answers(
+    question_id: int, answer_position: int, expected_values: list[str]
+) -> None:
+    result = step("texas", question_id, answer_position)
+
+    assert [a["value"] for a in result.next_answers] == expected_values
+
+
+def test_juvenile_entry_answer_covers_cases_that_were_never_adjudicated() -> None:
+    values = [a["value"] for a in get_entry_question("texas").next_answers]
+
+    assert "I was convicted as a juvenile" not in values
+    assert (
+        values[3] == "I had a juvenile case (referred to juvenile probation or juvenile court, "
+        "whether or not it was adjudicated)"
+    )
