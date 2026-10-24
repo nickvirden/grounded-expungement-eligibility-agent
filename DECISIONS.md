@@ -524,7 +524,11 @@ by hand and therefore differs from what `scripts/extract_state_tree.mjs` produce
 `states/texas.js`: the help rules at 12-3, 16-1 and 14-5 and the 10-7 answer label, yes/no
 answer buttons that do not read as answers to their question (2-0, 5-2, 6-1, 7-10, 10-9), the
 worked example in 2-0's help, 4-0's help (reduced to the statute-of-limitations introduction),
-and references to help that does not apply (2-6, 4-0, 7-10). Each correction is applied
+and references to help that does not apply (2-6, 4-0, 7-10). Four further corrections follow the
+statutes: the deferred adjudication sentence in the help at 0-0 and 1-1, the sealing and expungement
+wording in 2-3's help, the offense class in 10-1's question ("most felonies"), and 8-11's question
+("Are you now at least 21 years old?"). These are statute-derived and approved by the content owner,
+not attorney-reviewed; open questions are tracked in #74. Each correction is applied
 identically to the tree, its committed mirror in `apps/api/shared_data/`, and
 `apps/api/tests/fixtures/texas_legacy_trace.json`, so the parity tests that replay every
 `(questionId, answerPosition)` pair keep agreeing. No transition, answer position, `group`,

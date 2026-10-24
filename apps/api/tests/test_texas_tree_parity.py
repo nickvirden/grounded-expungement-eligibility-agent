@@ -122,3 +122,65 @@ def test_answering_that_deferred_probation_is_ongoing_ends_the_walk() -> None:
 
     assert result.is_terminal
     assert result.result_label == "Does Not Qualify Yet"
+
+
+_DEFERRED_ADJUDICATION_HELP = (
+    "To get deferred adjudication you plead guilty or no contest at the start. "
+    "If you violate the terms, you are entitled to a hearing, and the judge can find you guilty "
+    "on that plea and sentence you."
+)
+
+
+@pytest.mark.parametrize(
+    ("question_id", "answer_position", "field", "absent_fragment", "present_fragment"),
+    [
+        (
+            1,
+            3,
+            "next_question_help",
+            "sealing/expunging",
+            "disqualify you from sealing your record",
+        ),
+        (
+            1,
+            3,
+            "next_question_help",
+            "until you either seal or expunge them",
+            "unless you get an order of nondisclosure (record sealing). "
+            "Except for Class C misdemeanors, deferred adjudication generally cannot be expunged. "
+            "Hopefully, you qualify for sealing!",
+        ),
+        (0, 1, "next_question_help", "ENTER A GUILTY PLEA", _DEFERRED_ADJUDICATION_HELP),
+        (
+            9,
+            1,
+            "next_question_text",
+            "most misdemeanors in Texas",
+            "most felonies in Texas is 3 years",
+        ),
+        (7, 11, "next_question_text", "over 21", "Are you now at least 21 years old?"),
+    ],
+    ids=["2-3-sealing", "2-3-expunction", "1-1-deferred-adjudication", "10-1-felonies", "8-11-age"],
+)
+def test_corrected_wording_replaces_legacy_text(
+    question_id: int,
+    answer_position: int,
+    field: str,
+    absent_fragment: str,
+    present_fragment: str,
+) -> None:
+    """Statute-derived wording corrections replace the legacy strings; the legacy trace
+    fixture is edited by hand to match (DECISIONS.md section 21)."""
+    text = getattr(step("texas", question_id, answer_position), field)
+
+    assert text is not None
+    assert absent_fragment not in text
+    assert present_fragment in text
+
+
+def test_corrected_wording_replaces_legacy_text_at_entry_question() -> None:
+    help_text = get_entry_question("texas").next_question_help
+
+    assert help_text is not None
+    assert "ENTER A GUILTY PLEA" not in help_text
+    assert _DEFERRED_ADJUDICATION_HELP in help_text

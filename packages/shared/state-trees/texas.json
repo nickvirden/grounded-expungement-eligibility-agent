@@ -9,7 +9,7 @@
       "group": 0,
       "variant": 0,
       "question": "What best describes this Texas case?",
-      "help": "<h5><u>Types of Texas Cases</u></h5><p>Some of the reasons you would answer that you were arrested without being convicted are the following situations:</p><ol><li>Your charges were dismissed, sometimes called \"nolle prosequi\";</li><li>You were acquitted, or deemed \"not guilty\" of a crime; or</li><li>You were never formally charged with a crime after your arrest; or</li><li>The grand jury returned a \"no bill,\" and you were not indicted of a crime</li></ol><p>There are several types of Alternative Sentencing in Texas, but the most common types are the following:</p><p><b>\"Deferred Adjudication\"</b> is a form of probation granted by the court where if you abide by the terms of your probation, the court will dismiss the charges against you. However, in exchange for giving you the opportunity to have your charges dismissed, the court requires you to ENTER A GUILTY PLEA if you violate the terms of your probation, the court will proceed directly to sentencing you.</p><p><b>\"Deferred Prosecution\"</b> or <b>\"Pre-Trial Diversion\"</b> is an informal type of probation, where if you complete the terms of your probation, the prosecutor will drop the charges against you before requiring you to enter a plea of guilt. It is less formal than Deferred Adjudication and typically agreed to with the prosecutor instead of a judge.</p>",
+      "help": "<h5><u>Types of Texas Cases</u></h5><p>Some of the reasons you would answer that you were arrested without being convicted are the following situations:</p><ol><li>Your charges were dismissed, sometimes called \"nolle prosequi\";</li><li>You were acquitted, or deemed \"not guilty\" of a crime; or</li><li>You were never formally charged with a crime after your arrest; or</li><li>The grand jury returned a \"no bill,\" and you were not indicted of a crime</li></ol><p>There are several types of Alternative Sentencing in Texas, but the most common types are the following:</p><p><b>\"Deferred Adjudication\"</b> is a form of probation granted by the court where if you abide by the terms of your probation, the court will dismiss the charges against you. To get deferred adjudication you plead guilty or no contest at the start. If you violate the terms, you are entitled to a hearing, and the judge can find you guilty on that plea and sentence you.</p><p><b>\"Deferred Prosecution\"</b> or <b>\"Pre-Trial Diversion\"</b> is an informal type of probation, where if you complete the terms of your probation, the prosecutor will drop the charges against you before requiring you to enter a plea of guilt. It is less formal than Deferred Adjudication and typically agreed to with the prosecutor instead of a judge.</p>",
       "answers": [
         {
           "value": "I was arrested, but it didn't end up resulting in a conviction",
@@ -211,7 +211,7 @@
     "10-1": {
       "group": 10,
       "variant": 1,
-      "question": "<p>The Statute of Limitations of most misdemeanors in Texas is 3 years.</p><p>Has it almost been 3 years since the event that led to your charges or arrest?</p>",
+      "question": "<p>The Statute of Limitations of most felonies in Texas is 3 years.</p><p>Has it almost been 3 years since the event that led to your charges or arrest?</p>",
       "help": null,
       "answers": [
         {
@@ -420,7 +420,7 @@
       "group": 1,
       "variant": 1,
       "question": "Which type of deferred sentencing were you granted?",
-      "help": "<h5><u>Deferred Sentencing</u></h5><p><b>\"Deferred Adjudication\"</b> is a form of probation granted by the court where if you abide by the terms of your probation, the court will dismiss the charges against you. However, in exchange for giving you the opportunity to have your charges dismissed, the court requires you to ENTER A GUILTY PLEA if you violate the terms of your probation, the court will proceed directly to sentencing you. Deferred Adjudication is far more common than Deferred Prosecution, but our firm sees both all of the time.</p><p><b>\"Deferred Prosecution\"</b> or <b>\"Pre-Trial Diversion\"</b> is an informal type of probation, where if you complete the terms of your probation, the prosecutor will drop the charges against you before requiring you to enter a plea of guilt. It is less formal than Deferred Adjudication and typically agreed to with the prosecutor instead of a judge.",
+      "help": "<h5><u>Deferred Sentencing</u></h5><p><b>\"Deferred Adjudication\"</b> is a form of probation granted by the court where if you abide by the terms of your probation, the court will dismiss the charges against you. To get deferred adjudication you plead guilty or no contest at the start. If you violate the terms, you are entitled to a hearing, and the judge can find you guilty on that plea and sentence you. Deferred Adjudication is far more common than Deferred Prosecution, but our firm sees both all of the time.</p><p><b>\"Deferred Prosecution\"</b> or <b>\"Pre-Trial Diversion\"</b> is an informal type of probation, where if you complete the terms of your probation, the prosecutor will drop the charges against you before requiring you to enter a plea of guilt. It is less formal than Deferred Adjudication and typically agreed to with the prosecutor instead of a judge.",
       "answers": [
         {
           "value": "I was given Deferred Adjudication",
@@ -437,7 +437,7 @@
       "group": 2,
       "variant": 3,
       "question": "Did you successfully complete your deferred adjudication sentence and have your charges dismissed?",
-      "help": "<p><b><u>Completion of Deferred Adjudication</u></b></p><div><b>If your deferred adjudication sentence was revoked, answer NO to this question.</b><p>Once you complete the terms of a deferred adjudication sentence, the court dismisses the original charges. If your charges have not been dismissed, you probably have not successfully completed deferred adjudication. Sometimes the courts make mistakes and do not update records in a timely manner, but your charges should be dismissed if you've successfully completed deferred adjudication.</p><p>Additionally, if you violate the terms of your deferred adjudication, this can disqualify you from sealing/expunging your record. If you violated the terms of your deferred adjudication, answer NO to this question.</p><p>Although your charges have been dismissed, they will continue to appear on background checks until you either seal or expunge them. Hopefully, you qualify to do so!</p>",
+      "help": "<p><b><u>Completion of Deferred Adjudication</u></b></p><div><b>If your deferred adjudication sentence was revoked, answer NO to this question.</b><p>Once you complete the terms of a deferred adjudication sentence, the court dismisses the original charges. If your charges have not been dismissed, you probably have not successfully completed deferred adjudication. Sometimes the courts make mistakes and do not update records in a timely manner, but your charges should be dismissed if you've successfully completed deferred adjudication.</p><p>Additionally, if you violate the terms of your deferred adjudication, this can disqualify you from sealing your record. If you violated the terms of your deferred adjudication, answer NO to this question.</p><p>Although your charges have been dismissed, they will continue to appear on many background checks unless you get an order of nondisclosure (record sealing). Except for Class C misdemeanors, deferred adjudication generally cannot be expunged. Hopefully, you qualify for sealing!</p>",
       "answers": [
         {
           "value": "Yes, I successfully finished all of the terms of my sentence",
@@ -1323,7 +1323,7 @@
     "8-11": {
       "group": 8,
       "variant": 11,
-      "question": "Are you now over 21?",
+      "question": "Are you now at least 21 years old?",
       "help": null,
       "answers": [
         {
