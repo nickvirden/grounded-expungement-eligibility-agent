@@ -1,6 +1,7 @@
 """Integration tests for the eligibility API router."""
 from fastapi.testclient import TestClient
 
+from app.engine.tree_loader import _DEFAULT_TREES_DIR
 from app.main import app
 from app.security.csrf import CSRF_COOKIE, CSRF_HEADER, generate_csrf_token
 
@@ -44,6 +45,24 @@ class TestStatesEndpoints:
     def test_get_tree_unknown_state(self) -> None:
         resp = client.get("/api/states/unknownstate/tree")
         assert resp.status_code == 404
+
+    def test_unknown_state_404_does_not_disclose_the_server_path(self) -> None:
+        c, token = _csrf_client()
+        responses = [
+            client.get("/api/states/unknownstate/tree"),
+            client.get("/api/states/unknownstate/entry"),
+            c.post(
+                "/api/eligibility/assess",
+                headers={CSRF_HEADER: token},
+                json={"state": "unknownstate", "question_id": 0, "answer_position": 0},
+            ),
+        ]
+        for resp in responses:
+            assert resp.status_code == 404
+            detail = resp.json()["detail"]
+            assert "unknownstate" in detail
+            assert str(_DEFAULT_TREES_DIR) not in detail
+            assert "/" not in detail
 
     def test_get_entry_texas(self) -> None:
         resp = client.get("/api/states/texas/entry")
