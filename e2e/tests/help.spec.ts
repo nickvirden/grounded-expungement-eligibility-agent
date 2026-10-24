@@ -10,7 +10,7 @@ import { gotoNode, nodeHasHelp, reachableNodesWithHelp } from '../helpTree';
  *
  * Nodes are reached by clicking the real answer buttons along a path computed from the
  * committed tree (see helpTree.ts). Node ids used below: 0-0 (short title, no rule), 11-11
- * (a rule in the first paragraph), 12-3 (the same, not yet reviewed), 2-6 (no help), 7-10 (84
+ * (a rule in the first paragraph), 10-7 (the same, not yet reviewed), 2-6 (no help), 7-10 (84
  * counties), 4-11 (a numbered list) and 7-14 (a quoted statute).
  */
 
@@ -722,11 +722,11 @@ test.describe('Help content', () => {
     await expect(d.locator('blockquote')).toHaveCount(0);
   });
 
-  test('12-3 has no "How to answer" box and its rule is plain bold text inside the dialog', async ({
+  test('10-7 has no "How to answer" box and its rule is plain bold text inside the dialog', async ({
     page,
   }) => {
     await page.setViewportSize(MOBILE);
-    await gotoNode(page, '12-3');
+    await gotoNode(page, '10-7');
     await expect(answerBox(page)).toHaveCount(0);
     const d = await openByClick(page);
     const rule = d.locator('b, strong').filter({ hasText: /answer (yes|no)/i });
@@ -794,17 +794,6 @@ test.describe('"How to answer" box', () => {
     test(`texas:${id} cannot be promoted by any ledger entry`, async ({ page }) => {
       const reason = withHelp.find((n) => n.id === id)?.decision.reason;
       expect(['no-rule', 'more-than-one-rule', 'rule-not-in-first-paragraph']).toContain(reason);
-      await gotoNode(page, id);
-      await expect(answerBox(page)).toHaveCount(0);
-    });
-  }
-
-  // 2-0, 12-3, 14-5 and 16-1 state one rule in the first paragraph that agrees with the question
-  // and its buttons, so a reviewer can approve them. Until the ledger holds an entry for them
-  // they show no box.
-  for (const id of ['2-0', '12-3', '14-5', '16-1']) {
-    test(`texas:${id} stays unapproved and shows no box`, async ({ page }) => {
-      expect(withHelp.find((n) => n.id === id)?.decision.promoted).toBe(false);
       await gotoNode(page, id);
       await expect(answerBox(page)).toHaveCount(0);
     });
