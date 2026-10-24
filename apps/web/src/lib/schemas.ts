@@ -92,17 +92,6 @@ export const eligibilityReportSchema = z.object({
 
 export type EligibilityReport = z.infer<typeof eligibilityReportSchema>;
 
-// ─── States ───────────────────────────────────────────────────────────────────
-
-export const stateInfoSchema = z.object({
-  state: z.string(),
-  node_count: z.number().int(),
-  transition_count: z.number().int(),
-  result_keys: z.array(z.string()),
-});
-
-export type StateInfo = z.infer<typeof stateInfoSchema>;
-
 // ─── State tree (decision path decoding) ──────────────────────────────────────
 
 // Mirrors packages/shared/state-trees/<state>.json, trimmed to only the fields
