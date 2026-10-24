@@ -542,3 +542,53 @@ not recorded here.
 build step and a second representation of the same wording whose only consumer is a rarely run
 script. The cost is that re-extraction needs the re-apply step above. A CI guard that detects a
 re-extraction silently reverting a correction is a possible follow-up.
+
+---
+
+## 22. Triage Cadence: A Scheduled Workflow Posts a Weekly Digest and Never Acts
+
+**Decision:** The weekly pass and monthly sweep in `.github/TRIAGE.md` are prompted by a scheduled
+GitHub Actions workflow that runs the queries already written there and posts the results as a
+comment on one rolling issue labeled `triage-digest`. The workflow only reads issues and writes
+that one comment; it never closes, relabels or edits any other issue, and a check in the repo fails
+if its script contains a closing or labeling call. Each comment states its run date and whether the
+previous digest was acknowledged, so a skipped pass is visible. The monthly sweep section appears in
+the first digest of each month and proposes lists with the commands to run, which the maintainer
+runs. Tracked in #165 (digest), #166 (monthly sweep) and #167 (whether to add judgment later).
+
+**Why this shape:** every check in the weekly pass is a deterministic `gh` query, so the part that
+decays without a prompt needs no model. The workflow uses the built-in `GITHUB_TOKEN`, adds no
+secret, costs nothing on a public repository, and its output is an ordinary issue that the
+maintainer and any coding agent read with `gh issue view`. The no-unattended-closing rule is
+enforced by reviewable code rather than by a prompt. The monthly sweep has no candidates until
+2027-01-11 (the first P3 to reach 90 idle days) and 2027-04-10 (the first P2 to reach 180), so the
+weekly digest ships first.
+
+**Known failure modes and their mitigation:** scheduled workflows run only from the default branch,
+can be delayed or dropped under load, and are disabled after 60 days without repository activity;
+failure emails go only to the user who last edited the cron line. A silent stop is caught by the
+heartbeat: an unacknowledged previous digest, or no new digest at all, means the cadence broke.
+`issues: write` cannot be split into comment and close, so the token could close issues; only the
+script and its guard check prevent it.
+
+**Alternatives rejected:**
+- A Claude Code scheduled task (`/schedule`): it can judge (is a blocker still real?) but it is a
+  research preview, tied to one account, and runs with the maintainer's full GitHub identity, so
+  "never close" would rest on the prompt and the auto-mode classifier alone. Kept as a possible
+  layer on top of the digest (#167), not the foundation.
+- `actions/stale` restricted to labeling: closing can be turned off, but the action still relabels
+  unattended; adding its label changes the issue's last-update date, which skews the idle queries
+  in TRIAGE.md; it can remove labels but not add one, so it cannot demote P2 to P3; it cannot honor
+  the exemptions (issues cited in this document, issues naming an unfired trigger); and it produces
+  no digest.
+- A calendar reminder alone: free, but it is the dependence on remembering that this decision
+  replaces. It remains a fine complement.
+- A local cron job or `/loop`: runs only while the laptop is on and the session is open, misses are
+  silent, and recurring `/loop` tasks expire after seven days.
+- A new issue each week instead of a rolling issue: TRIAGE.md requires exactly one P label on every
+  open issue, so each one would need a label or the same exemption, and the issue list would fill
+  with digests.
+
+**When to revisit:** if the digest is skipped for several weeks despite the heartbeat, if the weekly
+pass is dominated by judgment calls the digest cannot make (see #167), or if GitHub changes how
+scheduled workflows are disabled or notified.
