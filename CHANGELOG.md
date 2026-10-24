@@ -1,3 +1,14 @@
+## [2.4.2](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.1...v2.4.2) (2026-10-24)
+
+### Bug Fixes
+
+* **shared:** align Texas deferred-adjudication help rules with their questions ([a8497f1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/a8497f182c83391f58852d32bbe6adfe1a7d094e)), closes [#67](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/67)
+* **shared:** drop weapons wording from the 10-7 deferred-sentence button ([265665b](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/265665bfa7783144d29d2f7640f158b5457e8ebd)), closes [#70](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/70)
+* **shared:** lead the 10-9 Yes button with Yes and point 4-0 at the next question's Help ([680be7c](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/680be7c7403a145445a057c49aea99f1aecb4338)), closes [#69](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/69) [#68](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/68)
+* **shared:** make Texas answer buttons and 4-0 help answer their questions ([25b2193](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/25b2193d22072defae805891d655ccc239467713)), closes [#69](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/69)
+* **shared:** match house phrasing in the 2-0, 2-6 and 4-0 copy ([c814af7](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/c814af72bae6898447b7b040ad12c9da96bb1001)), closes [#68](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/68) [#69](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/69)
+* **shared:** remove help-button copy that points at help that does not apply ([8492e5f](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/8492e5f463f9dd829236dfb1b25132229ebcc23e)), closes [#68](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/68)
+
 ## [2.4.1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.0...v2.4.1) (2026-10-23)
 
 ### Bug Fixes
