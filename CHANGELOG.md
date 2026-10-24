@@ -1,3 +1,9 @@
+## [2.4.3](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.2...v2.4.3) (2026-10-24)
+
+### Bug Fixes
+
+* **shared:** correct the Texas deferred-adjudication, sealing, limitations and age wording ([e63093e](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/e63093eab3624d01695b2ccf73773ca272334ba4)), closes [#126](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/126) [#124](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/124) [#139](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/139) [#140](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/140)
+
 ## [2.4.2](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.1...v2.4.2) (2026-10-24)
 
 ### Bug Fixes
