@@ -1,3 +1,9 @@
+## [2.4.4](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.3...v2.4.4) (2026-10-24)
+
+### Bug Fixes
+
+* **api:** keep the server file path out of unknown-state 404 responses ([e24f5c1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/e24f5c111431c5ddb83f665ca1bb665f1b988159)), closes [#169](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/169)
+
 ## [2.4.3](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.2...v2.4.3) (2026-10-24)
 
 ### Bug Fixes
