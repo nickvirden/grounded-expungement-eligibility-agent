@@ -1,3 +1,9 @@
+## [2.4.5](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.4...v2.4.5) (2026-10-25)
+
+### Bug Fixes
+
+* **shared:** align the Texas chapter rules, 8-16/8-17 lists, 3-10 and the juvenile answer with the statutes ([3cc49cc](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/3cc49cc4ef699a80172b1ea235c89ce0efb68270)), closes [#80](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/80) [#135](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/135) [#75](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/75) [#127](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/127) [#133](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/133)
+
 ## [2.4.4](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.3...v2.4.4) (2026-10-24)
 
 ### Bug Fixes
