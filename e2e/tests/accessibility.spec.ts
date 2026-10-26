@@ -87,6 +87,39 @@ test.describe('Accessibility — Quick Form', () => {
     });
     expectNoViolations(await runAxe(page));
   });
+
+  test('loop exit state has no violations', async ({ page }) => {
+    await page.goto('/intake/texas/quick');
+    await expect(page.getByRole('heading', { level: 2 })).toBeVisible({ timeout: 10_000 });
+
+    // A question sequence that returns to one already answered, which the live tree never does.
+    const question = (id: number) => ({
+      is_terminal: false,
+      next_question_id: id,
+      next_question_text: `Mocked question ${id}`,
+      next_question_help: null,
+      next_answers: [{ value: `Answer to ${id}`, position: 1 }],
+      questions_left: 3,
+      traversed_path: [],
+    });
+    const responses = [question(1), question(2), question(1)];
+    await page.route('**/eligibility/assess', async (route) => {
+      const body = responses.shift();
+      if (!body) throw new Error('assess called more often than the mock expects');
+      await route.fulfill({ json: body });
+    });
+    // Each click waits for the previous mocked question, so a click lost before hydration fails
+    // at the missing heading instead of timing out on a later step.
+    for (const heading of [null, 'Mocked question 1', 'Mocked question 2']) {
+      if (heading) await expect(page.getByRole('heading', { name: heading })).toBeVisible();
+      const button = page.locator('button[aria-pressed]').first();
+      await expect(button).toBeEnabled({ timeout: 10_000 });
+      await button.click();
+    }
+
+    await expect(page.getByRole('heading', { name: "We can't finish this check" })).toBeFocused();
+    expectNoViolations(await runAxe(page, [...RULES, 'button-name', 'link-name', 'heading-order']));
+  });
 });
 
 // The help dialog scans add the dialog, button and heading-order rules and the one-main check,

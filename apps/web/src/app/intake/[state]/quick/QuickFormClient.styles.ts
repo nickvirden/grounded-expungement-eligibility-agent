@@ -261,3 +261,83 @@ export const PathCrumbItem = styled.li`
     color: var(--color-navy-600);
   }
 `;
+
+// ─── Loop exit ────────────────────────────────────────────────────────────────
+
+export const ExitPanel = styled.section`
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+`;
+
+export const ExitTitle = styled.h2`
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--color-navy-900);
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-blue-500);
+    outline-offset: 4px;
+    border-radius: var(--radius-md);
+  }
+`;
+
+export const ExitText = styled.p`
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-navy-800);
+`;
+
+export const ExitActions = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: var(--space-2);
+`;
+
+// Both actions carry a text label and a border or fill, so neither depends on colour alone.
+const exitAction = css`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: var(--space-3) var(--space-6);
+  font-size: 0.9375rem;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+
+  &:focus-visible {
+    outline: 2px solid var(--color-blue-500);
+    outline-offset: 2px;
+  }
+`;
+
+export const ExitPrimaryAction = styled.button`
+  ${exitAction}
+  background: var(--color-blue-600);
+  border: 2px solid var(--color-blue-600);
+  color: var(--color-white);
+  font-weight: 600;
+
+  &:hover {
+    background: var(--color-blue-700);
+    border-color: var(--color-blue-700);
+  }
+`;
+
+export const ExitSecondaryAction = styled.a`
+  ${exitAction}
+  background: var(--color-white);
+  border: 2px solid var(--color-navy-600);
+  color: var(--color-navy-700);
+  font-weight: 500;
+
+  &:hover {
+    background: var(--color-slate-100);
+  }
+`;
