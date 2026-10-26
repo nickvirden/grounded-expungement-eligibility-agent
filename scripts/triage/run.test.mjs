@@ -1,8 +1,10 @@
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
+import { fileURLToPath } from 'node:url';
 import { createGitHub } from './github.mjs';
 import { readMode, runTriage, transportDryRun } from './run.mjs';
 
@@ -384,4 +386,25 @@ test('a label write GitHub accepted is reported even when it used up the rate li
   assert.equal(calls.filter((c) => c.url.endsWith('/labels')).length, 1);
   assert.equal(exitCode, 1);
   assert.match(summary, /rate limit/);
+});
+
+// A request that never settles leaves Node with nothing to wait for, so the process exits on its own.
+// The exit code must already be red at that point, or the job would pass without having run.
+test('the process exits non-zero when a request never settles', () => {
+  const hang = 'data:text/javascript,globalThis.fetch=()=>new Promise(()=>{})';
+  const result = spawnSync(
+    process.execPath,
+    ['--import', hang, fileURLToPath(new URL('./run.mjs', import.meta.url))],
+    {
+      env: {
+        PATH: process.env.PATH,
+        GITHUB_TOKEN: 'x',
+        GITHUB_REPOSITORY: 'o/r',
+        TRIAGE_DRY_RUN: '1',
+      },
+      encoding: 'utf8',
+      timeout: 20_000,
+    },
+  );
+  assert.equal(result.status, 1);
 });
