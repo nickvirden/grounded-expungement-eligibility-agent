@@ -1,3 +1,9 @@
+## [2.4.7](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.6...v2.4.7) (2026-10-26)
+
+### Bug Fixes
+
+* **web:** stop the Quick Form at a question the user has already answered ([a7c2817](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/a7c2817a6b4be37ebbb1a876d0e2f57c111b5b88))
+
 ## [2.4.6](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.5...v2.4.6) (2026-10-26)
 
 ### Bug Fixes
