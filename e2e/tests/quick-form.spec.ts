@@ -1,3 +1,4 @@
+import type { Page } from '@playwright/test';
 import { expect, test } from '../cspGuard';
 
 /**
@@ -240,5 +241,92 @@ test.describe('Quick Form — Texas happy path', () => {
       const newValue = await progressBar.getAttribute('aria-valuenow');
       expect(Number(newValue)).toBeGreaterThan(Number(initialValue));
     }
+  });
+});
+
+// The live Texas tree has no cycle, so the loop exit is reached by mocking the assess endpoint
+// with a question sequence that returns to one already answered.
+test.describe('Quick Form — loop exit', () => {
+  const question = (id: number, text: string) => ({
+    is_terminal: false,
+    next_question_id: id,
+    next_question_text: text,
+    next_question_help: null,
+    next_answers: [
+      { value: `Yes to ${text}`, position: 1 },
+      { value: `No to ${text}`, position: 2 },
+    ],
+    questions_left: 5,
+    traversed_path: [],
+  });
+
+  async function mockCycle(page: Page) {
+    const responses = [
+      question(1, 'Mocked question X'),
+      question(2, 'Mocked question Y'),
+      question(1, 'Mocked question X'),
+    ];
+    await page.route('**/eligibility/assess', async (route) => {
+      const body = responses.shift();
+      if (!body) throw new Error('assess called more often than the mock expects');
+      await route.fulfill({ json: body });
+    });
+  }
+
+  // Waits for each mocked question to render before the next click, so a click lost before
+  // hydration fails at the missing heading instead of timing out on a later step.
+  async function answerThroughCycle(page: Page) {
+    for (const heading of [null, 'Mocked question X', 'Mocked question Y']) {
+      if (heading) await expect(page.getByRole('heading', { name: heading })).toBeVisible();
+      const button = page.locator('button[aria-pressed]').first();
+      await expect(button).toBeEnabled({ timeout: 15_000 });
+      await button.click();
+    }
+  }
+
+  test('a question that comes back ends the form with an explanation and a way out', async ({
+    page,
+  }) => {
+    await page.goto('/intake/texas/quick');
+    await expect(page.getByRole('heading', { level: 2 })).toBeVisible({ timeout: 10_000 });
+    await mockCycle(page);
+    await answerThroughCycle(page);
+
+    const heading = page.getByRole('heading', { name: "We can't finish this check" });
+    await expect(heading).toBeFocused();
+    await expect(page.getByText(/led back to a question you already answered/i)).toBeVisible();
+    await expect(page.locator('button[aria-pressed]')).toHaveCount(0);
+    await expect(page.getByText('3 answered', { exact: true })).toBeVisible();
+    await expect(page.getByRole('list', { name: /decision path so far/i })).toBeVisible();
+
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('button', { name: 'Start over' })).toBeFocused();
+    await page.keyboard.press('Tab');
+    const talk = page.getByRole('link', { name: 'Talk to the agent instead' });
+    await expect(talk).toBeFocused();
+    await expect(talk).toHaveAttribute('href', '/intake/texas/talk');
+  });
+
+  test('Start over shows the entry question again with the path cleared', async ({ page }) => {
+    await page.goto('/intake/texas/quick');
+    const heading = page.getByRole('heading', { level: 2 });
+    await expect(heading).toBeVisible({ timeout: 10_000 });
+    const entryText = await heading.innerText();
+    await mockCycle(page);
+    await answerThroughCycle(page);
+
+    await page.getByRole('button', { name: 'Start over' }).click();
+    await expect(page.getByRole('heading', { level: 2 })).toHaveText(entryText);
+    await expect(page.getByRole('heading', { level: 2 })).toBeFocused();
+    await expect(page.getByRole('list', { name: /decision path so far/i })).toHaveCount(0);
+    await expect(page.locator('button[aria-pressed]').first()).toBeEnabled();
+  });
+
+  test('a path with no repeated question is unaffected', async ({ page }) => {
+    await page.goto('/intake/texas/quick');
+    await expect(page.getByRole('heading', { level: 2 })).toBeVisible({ timeout: 10_000 });
+    await page.getByRole('button', { name: /didn't end up resulting in a conviction/i }).click();
+    await expect(page.getByRole('heading', { level: 2 })).toContainText(/outcome|criminal record/i);
+    await expect(page.getByRole('heading', { name: "We can't finish this check" })).toHaveCount(0);
   });
 });

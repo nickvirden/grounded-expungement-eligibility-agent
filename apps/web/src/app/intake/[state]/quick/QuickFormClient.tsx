@@ -7,13 +7,19 @@ import { sanitizeLegacyHtml } from '@/lib/sanitizeLegacyHtml';
 import type { AssessResponse } from '@/lib/schemas';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useCallback, useId, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import {
   AnswerButton,
   AnswerList,
   AnswerListItem,
   BackButton,
   ErrorBanner,
+  ExitActions,
+  ExitPanel,
+  ExitPrimaryAction,
+  ExitSecondaryAction,
+  ExitText,
+  ExitTitle,
   FormBody,
   FormCard,
   FormHeader,
@@ -31,6 +37,8 @@ import {
 import {
   computeProgress,
   describeProgress,
+  isRepeatedQuestion,
+  questionKey,
   responseToStep,
   stepToPathEntry,
 } from './QuickFormClient.utils';
@@ -50,9 +58,31 @@ interface Props {
   entry: EntryQuestion;
 }
 
-export default function QuickFormClient({ state, stateName, entry }: Props) {
+// Remounting the stepper under a new key discards every piece of local state at once, so
+// "Start over" cannot leave a stale path, question or error behind.
+export default function QuickFormClient(props: Props) {
+  const [attempt, setAttempt] = useState(0);
+  return (
+    <QuickFormStepper
+      key={attempt}
+      {...props}
+      restarted={attempt > 0}
+      onRestart={() => setAttempt((n) => n + 1)}
+    />
+  );
+}
+
+interface StepperProps extends Props {
+  restarted: boolean;
+  onRestart: () => void;
+}
+
+function QuickFormStepper({ state, stateName, entry, restarted, onRestart }: StepperProps) {
   const router = useRouter();
   const headingId = useId();
+  const exitHeadingId = useId();
+  const exitHeadingRef = useRef<HTMLHeadingElement>(null);
+  const questionHeadingRef = useRef<HTMLHeadingElement>(null);
 
   const [questionId, setQuestionId] = useState(entry.question_id);
   const [questionText, setQuestionText] = useState(entry.question);
@@ -62,9 +92,12 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
   // Single source of truth for the traversed path: the URL-encoded entry code
   // and the answer text shown in the breadcrumb are derived from the same
   // array, instead of being tracked in two parallel arrays that could drift.
-  const [answeredSteps, setAnsweredSteps] = useState<Array<{ entry: string; answerLabel: string }>>(
-    [],
-  );
+  const [answeredSteps, setAnsweredSteps] = useState<
+    Array<{ entry: string; answerLabel: string; questionKey: string }>
+  >([]);
+  // Set when the engine returns a question already answered on this path. The engine keeps no
+  // memory of the path, so continuing would revisit steps the user already took.
+  const [loopExit, setLoopExit] = useState(false);
   const [stepNumber, setStepNumber] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -105,7 +138,11 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
 
         const newSteps = [
           ...answeredSteps,
-          { entry: stepToPathEntry(questionId, position), answerLabel },
+          {
+            entry: stepToPathEntry(questionId, position),
+            answerLabel,
+            questionKey: questionKey({ questionId, questionText, answers }),
+          },
         ];
         setAnsweredSteps(newSteps);
 
@@ -121,6 +158,15 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
         }
 
         const next = responseToStep(result);
+        if (
+          isRepeatedQuestion(
+            newSteps.map((s) => s.questionKey),
+            questionKey(next),
+          )
+        ) {
+          setLoopExit(true);
+          return;
+        }
         setQuestionId(next.questionId);
         setQuestionText(next.questionText);
         setQuestionHelp(next.questionHelp);
@@ -136,8 +182,18 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
         inFlight.current = false;
       }
     },
-    [isLoading, questionId, state, answeredSteps, router],
+    [isLoading, questionId, questionText, answers, state, answeredSteps, router],
   );
+
+  // Focus would otherwise be left on an answer button that has just been removed.
+  useEffect(() => {
+    if (loopExit) exitHeadingRef.current?.focus();
+  }, [loopExit]);
+
+  // After "Start over" the control that held focus is gone; the first question takes it.
+  useEffect(() => {
+    if (restarted) questionHeadingRef.current?.focus();
+  }, [restarted]);
 
   const safeQuestionHtml = useMemo(() => sanitizeLegacyHtml(questionText), [questionText]);
 
@@ -150,7 +206,9 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
 
         <HeaderTitle id={headingId}>Eligibility Check — {stateName}</HeaderTitle>
 
-        <StepCounter aria-live="polite">{progressDescription.summary}</StepCounter>
+        <StepCounter aria-live="polite">
+          {loopExit ? `${answeredCount} answered` : progressDescription.summary}
+        </StepCounter>
       </FormHeader>
 
       <ProgressTrack
@@ -166,61 +224,93 @@ export default function QuickFormClient({ state, stateName, entry }: Props) {
 
       <FormBody>
         <FormCard aria-labelledby={headingId} key={`step-${stepNumber}`}>
-          {/* Tree questions and answers carry legacy inline markup (bold, lists, line breaks).
-              Each string passes through sanitizeLegacyHtml, an attribute-free tag allowlist,
-              before it reaches dangerouslySetInnerHTML. Help text has its own transform and
-              sanitizer profile (see HelpDialog). */}
-          <QuestionText
-            role="heading"
-            aria-level={2}
-            // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized by sanitizeLegacyHtml
-            dangerouslySetInnerHTML={{ __html: safeQuestionHtml }}
-          />
-
-          <HelpSection
-            state={state}
-            question={questionText}
-            help={questionHelp}
-            answers={answers}
-            disabled={isLoading}
-          />
-
-          {isLoading ? (
-            <LoadingRow aria-label="Loading next question">
-              <LoadingDot />
-              <LoadingDot />
-              <LoadingDot />
-            </LoadingRow>
+          {loopExit ? (
+            <ExitPanel aria-labelledby={exitHeadingId}>
+              <ExitTitle id={exitHeadingId} ref={exitHeadingRef} tabIndex={-1}>
+                We can't finish this check
+              </ExitTitle>
+              <ExitText>
+                Your answers led back to a question you already answered, so this form can't reach a
+                result. That's a problem with our questions, not your answers.
+              </ExitText>
+              <ExitActions>
+                <ExitPrimaryAction type="button" onClick={onRestart}>
+                  Start over
+                </ExitPrimaryAction>
+                <ExitSecondaryAction as={Link} href={`/intake/${state}/talk`}>
+                  Talk to the agent instead
+                </ExitSecondaryAction>
+              </ExitActions>
+            </ExitPanel>
           ) : (
-            <AnswerList>
-              {/* answer.position isn't unique within a question (two answers can share a
-                  position), and this list fully remounts on every question change via
-                  FormCard's own step key above, so an index key is safe here. */}
-              {answers.map((answer, index) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: see comment above
-                <AnswerListItem key={index}>
-                  <AnswerButton
-                    onClick={() =>
-                      void handleAnswer(index, answer.position, answer.label ?? answer.value ?? '')
-                    }
-                    $selected={selectedIndex === index}
-                    $disabled={isLoading}
-                    disabled={isLoading}
-                    aria-pressed={selectedIndex === index}
-                  >
-                    <span
-                      // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized by sanitizeLegacyHtml
-                      dangerouslySetInnerHTML={{
-                        __html: sanitizeLegacyHtml(answer.label ?? answer.value ?? ''),
-                      }}
-                    />
-                    {selectedIndex === index && (
-                      <ArrowRightIcon size={16} color="var(--color-blue-600)" aria-hidden="true" />
-                    )}
-                  </AnswerButton>
-                </AnswerListItem>
-              ))}
-            </AnswerList>
+            <>
+              {/* Tree questions and answers carry legacy inline markup (bold, lists, line breaks).
+                  Each string passes through sanitizeLegacyHtml, an attribute-free tag allowlist,
+                  before it reaches dangerouslySetInnerHTML. Help text has its own transform and
+                  sanitizer profile (see HelpDialog). */}
+              <QuestionText
+                ref={questionHeadingRef}
+                tabIndex={-1}
+                role="heading"
+                aria-level={2}
+                // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized by sanitizeLegacyHtml
+                dangerouslySetInnerHTML={{ __html: safeQuestionHtml }}
+              />
+
+              <HelpSection
+                state={state}
+                question={questionText}
+                help={questionHelp}
+                answers={answers}
+                disabled={isLoading}
+              />
+
+              {isLoading ? (
+                <LoadingRow aria-label="Loading next question">
+                  <LoadingDot />
+                  <LoadingDot />
+                  <LoadingDot />
+                </LoadingRow>
+              ) : (
+                <AnswerList>
+                  {/* answer.position isn't unique within a question (two answers can share a
+                      position), and this list fully remounts on every question change via
+                      FormCard's own step key above, so an index key is safe here. */}
+                  {answers.map((answer, index) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: see comment above
+                    <AnswerListItem key={index}>
+                      <AnswerButton
+                        onClick={() =>
+                          void handleAnswer(
+                            index,
+                            answer.position,
+                            answer.label ?? answer.value ?? '',
+                          )
+                        }
+                        $selected={selectedIndex === index}
+                        $disabled={isLoading}
+                        disabled={isLoading}
+                        aria-pressed={selectedIndex === index}
+                      >
+                        <span
+                          // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized by sanitizeLegacyHtml
+                          dangerouslySetInnerHTML={{
+                            __html: sanitizeLegacyHtml(answer.label ?? answer.value ?? ''),
+                          }}
+                        />
+                        {selectedIndex === index && (
+                          <ArrowRightIcon
+                            size={16}
+                            color="var(--color-blue-600)"
+                            aria-hidden="true"
+                          />
+                        )}
+                      </AnswerButton>
+                    </AnswerListItem>
+                  ))}
+                </AnswerList>
+              )}
+            </>
           )}
 
           {error && <ErrorBanner role="alert">{error}</ErrorBanner>}
