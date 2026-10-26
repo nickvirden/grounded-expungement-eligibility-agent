@@ -1,0 +1,63 @@
+name: Triage
+
+# Labels open issues that have no P label (DECISIONS.md section 22). The
+# script reads issue text as data and hands it only to the classifier.
+#
+# Writes stay off until .github/triage.json says {"writes": "on"} AND the
+# classifier in scripts/triage/classify.mjs is a real one. Until then every
+# run is a dry run that lists what it would label in the job summary. JSON
+# cannot carry a comment, so the switch is documented here and in run.mjs.
+on:
+  issues:
+    types: [opened]
+  # The weekly run catches issues the event missed. Scheduled workflows run
+  # only from the default branch, and GitHub disables them after 60 days
+  # without repository activity or drops a run under load; none of that is
+  # announced, which is why each run that writes also dates the rolling issue's body.
+  schedule:
+    - cron: '23 7 * * 2'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: List what would be labeled and write nothing
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  issues: write
+
+# Every run scans all open issues whatever triggered it, so a queued run loses
+# nothing when another finishes first. Dry runs get their own group so a
+# manual dry run never waits behind, or delays, a run that writes. No
+# cancel-in-progress: a run stopped between labeling and reporting would
+# label an issue without telling the maintainer.
+concurrency:
+  group: triage-${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && 'dry' || 'write' }}
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # The script does not push, so the checkout credential is dropped.
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # No event payload is interpolated anywhere in this file: issue titles
+      # and bodies are attacker-controlled, and the script fetches what it
+      # needs from the API instead. The script has no dependencies, so there
+      # is no install step. It exits non-zero if any classification failed,
+      # which fails the run and lists the issue in the job summary; an issue
+      # that failed is left unlabeled rather than guessed at. TRIAGE_DRY_RUN
+      # is empty for events and the dispatch input otherwise.
+      - name: Triage
+        run: node scripts/triage/run.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          TRIAGE_DRY_RUN: ${{ inputs.dry_run }}

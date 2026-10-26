@@ -1,9 +1,10 @@
 # Issue triage
 
-Every open issue carries exactly one priority label (`P0`–`P3`). This file defines what each
-level means, how issues get a level, and how low-value issues retire. Issue type labels (`bug`,
-`enhancement`, `accessibility`, ...) are separate and unchanged; `released` is owned by
-semantic-release and ignored by triage.
+Every open issue carries exactly one priority label (`P0`–`P3`), except the rolling `triage-digest`
+issue. This file defines what each level means, how issues get a level, and how low-value issues
+retire. Issue type labels (`bug`, `enhancement`, `accessibility`, ...) are separate and unchanged; `released` is owned by
+semantic-release and ignored by triage. `triage-digest` marks the one rolling issue the triage
+workflow reports to; it is exempt from P labels.
 
 ## Why the bar is shaped this way
 
@@ -25,8 +26,7 @@ the lower one for everything else.
 | **P2** | Planned. Real defect with a workaround, or meaningful friction. **Default for a triaged issue.** | Misleading copy; a11y gaps that do not block; degraded or unstyled failure pages; defense-in-depth hardening with no demonstrated path; flaky tests, slow CI, and DX papercuts that cost time every week. | This quarter. No commitment. |
 | **P3** | Nice-to-have. Nobody is hurt if this never ships. | Polish; cosmetic console noise; a second-line guard for a risk another control already catches; design explorations gated on a future trigger. | None. Subject to stale retirement. |
 
-Soft WIP cap: at most 5 open P1s that are not `blocked`. Above that, demote one or finish one
-before adding another.
+Advisory: aim for at most 5 non-`blocked` P1s. Nothing reports the count.
 
 ## Labels
 
@@ -39,6 +39,7 @@ before adding another.
 | `needs-verification` | `#D4C5F9` | The claim or its priority depends on behavior not yet observed (runtime, deployment, a user path). A defect visible directly in committed code or data counts as verified. |
 | `spike` | `#5319E7` | Time-boxed investigation or design. The deliverable is a decision, not code. |
 | `blocked` | `#24292F` | Cannot proceed until something outside the code changes. The issue body or a comment must say `Blocked on: ...` (content owner, legal review, another issue). |
+| `triage-digest` | `#BFD4F2` | The rolling issue the triage workflow reports to. Exempt from P labels. |
 
 `needs-verification` asks "is this even true?"; `spike` asks "what should we do?". To recreate
 the labels (idempotent):
@@ -51,27 +52,34 @@ gh label create P3 --color C5DEF5 --description "Nice-to-have: subject to stale 
 gh label create needs-verification --color D4C5F9 --description "The claim or priority depends on behavior not yet observed. Priority is provisional." --force
 gh label create spike --color 5319E7 --description "Time-boxed investigation or design. The deliverable is a decision, not code." --force
 gh label create blocked --color 24292F --description "Cannot proceed until something outside the code changes. The issue must say 'Blocked on: …'." --force
+gh label create triage-digest --color BFD4F2 --description "Rolling issue the triage workflow reports to. Exempt from P labels." --force
 ```
 
 An issue with no P label is untriaged; find them with:
 
 ```sh
-gh issue list --state open --search "-label:P0 -label:P1 -label:P2 -label:P3"
+gh issue list --state open --limit 500 --search "-label:P0 -label:P1 -label:P2 -label:P3 -label:triage-digest"
 ```
 
 ## Workflow
 
 - **Who sets priority.** The filer (human or agent) suggests a priority and a verification status
-  in the issue body and applies the matching label at filing time. The maintainer owns the final
-  call and overrides it in the next triage pass. Agents file P1–P3 on their own. An agent that
-  suspects a P0 files it and tells the maintainer in the same turn.
+  in the issue body and applies the matching label at filing time. An issue filed without a P label
+  is labeled by `.github/workflows/triage.yml` (`DECISIONS.md` section 22). It never changes a P
+  label that is already set, applies P2 and `needs-verification` when it is below its confidence
+  cutoff, adds `needs-verification` to any issue from a reporter who is not an owner, member or
+  collaborator (without changing its level), and comments on the `triage-digest` issue only when it
+  changed something. Agents file
+  P1–P3 on their own. An agent that suspects a P0 files it and tells the maintainer in the same
+  turn.
 - **At filing.** Every issue gets exactly one P label. Add `needs-verification` if the claim or
   its priority depends on behavior nobody has observed yet. Add `blocked` plus a `Blocked on:` line if it cannot move without a human
   or another issue.
 - **Weekly pass (15 minutes, fixed slot).** In order:
-  1. Untriaged issues.
+  1. Untriaged issues. The workflow labels them once `.github/triage.json` turns writes on; its
+     failed runs list the ones it could not.
   2. Every `needs-verification` issue: reproduce and drop the label, or add `invalid` and close as not planned.
-  3. P0/P1 sanity and the WIP cap.
+  3. P0/P1 sanity and the advisory P1 count.
   4. `blocked` items: is the blocker still real?
 - **Monthly sweep (30 minutes, first pass of the month).** Re-rank P2s, demote P2s idle for
   180 days to P3, and retire stale P3s (below). Idle P2s:
@@ -106,8 +114,9 @@ gh issue list --label P3 --search "-label:blocked updated:<$(date -v-90d +%F 2>/
 Closing is a maintainer action. An agent may run the query and propose the list, and closes only
 what the maintainer approves.
 
-Not adopted: an `actions/stale` workflow. It would close issues unattended and adds CI to
-maintain. Revisit if the manual sweep stops happening.
+Not adopted: an `actions/stale` workflow. It cannot classify, cannot demote P2 to P3 (it can
+remove labels but not add one), cannot honor the exemptions above, and the label it adds changes
+the last-update date that the idle queries here use. See `DECISIONS.md` section 22.
 
 ## Filing from an agent
 

@@ -12,7 +12,8 @@
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
     "check:styles": "pnpm --filter web check:styles",
-    "test": "pnpm --filter web test",
+    "test": "pnpm --filter web test && pnpm test:scripts",
+    "test:scripts": "node --test 'scripts/**/*.test.mjs'",
     "e2e": "pnpm --filter e2e test",
     "e2e:prod": "pnpm --filter web build && E2E_WEB_MODE=production pnpm e2e"
   },
