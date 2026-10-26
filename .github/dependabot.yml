@@ -1,0 +1,15 @@
+# Workflow actions are pinned to commit SHAs, so a moved or compromised tag
+# cannot change what a job runs. Dependabot proposes the pin updates as
+# reviewed PRs; one grouped PR a week keeps the CI cost of them to a single run.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+    groups:
+      actions:
+        patterns:
+          - '*'
