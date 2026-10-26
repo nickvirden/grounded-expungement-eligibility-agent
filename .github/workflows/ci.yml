@@ -21,13 +21,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       # No `version:` input here — pnpm/action-setup errors if both this and
       # package.json's `packageManager` field specify a version.
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: pnpm
@@ -52,7 +52,7 @@ jobs:
       # previous run's cache. Each job has its own prefix so the two parallel
       # builds never race to save the same key.
       - name: Cache Next.js build cache
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: apps/web/.next/cache
           key: ${{ runner.os }}-nextjs-web-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/web/src/**', 'apps/web/public/**', 'apps/web/next.config.ts', 'apps/web/tsconfig.json', 'apps/web/package.json') }}
@@ -66,11 +66,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       # No python-version input — this action version doesn't support it; uv
       # reads apps/api/.python-version itself and provisions that interpreter.
-      - uses: astral-sh/setup-uv@v3
+      - uses: astral-sh/setup-uv@caf0cab7a618c569241d31dcd442f54681755d39 # v3
 
       - name: Install dependencies
         working-directory: apps/api
@@ -131,9 +131,9 @@ jobs:
     env:
       DATABASE_URL: postgresql+psycopg://postgres:ci-test-password@localhost:5432/ci_test
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-      - uses: astral-sh/setup-uv@v3
+      - uses: astral-sh/setup-uv@caf0cab7a618c569241d31dcd442f54681755d39 # v3
 
       - name: Install dependencies
         working-directory: apps/api
@@ -165,20 +165,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       # No `version:` input here — pnpm/action-setup errors if both this and
       # package.json's `packageManager` field specify a version.
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: pnpm
 
       # No python-version input — this action version doesn't support it; uv
       # reads apps/api/.python-version itself and provisions that interpreter.
-      - uses: astral-sh/setup-uv@v3
+      - uses: astral-sh/setup-uv@caf0cab7a618c569241d31dcd442f54681755d39 # v3
 
       - name: Install JS dependencies
         run: pnpm install --frozen-lockfile
@@ -192,7 +192,7 @@ jobs:
       # previous run's cache. Each job has its own prefix so the two parallel
       # builds never race to save the same key.
       - name: Cache Next.js build cache
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: apps/web/.next/cache
           key: ${{ runner.os }}-nextjs-e2e-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/web/src/**', 'apps/web/public/**', 'apps/web/next.config.ts', 'apps/web/tsconfig.json', 'apps/web/package.json') }}
@@ -225,7 +225,7 @@ jobs:
 
       - name: Upload Playwright report
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: playwright-report
           path: e2e/playwright-report/
