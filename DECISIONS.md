@@ -553,3 +553,81 @@ not recorded here.
 build step and a second representation of the same wording whose only consumer is a rarely run
 script. The cost is that re-extraction needs the re-apply step above. A CI guard that detects a
 re-extraction silently reverting a correction is a possible follow-up.
+
+---
+
+## 22. Triage Cadence: A Workflow Classifies, Labels and Retires Issues Without the Maintainer
+
+**Decision:** Issue triage runs without the maintainer. A GitHub Actions workflow, triggered when an
+issue is opened and by a weekly schedule, applies the rules in `.github/TRIAGE.md`:
+
+- An issue with no P label gets one, plus `needs-verification` when its claim depends on behavior
+  nobody has observed. A P label that is already set is never changed.
+- Monthly, a P2 idle for 180 days is demoted to P3, and a P3 idle for 90 days is closed as not
+  planned, subject to the exemptions in TRIAGE.md (`blocked`, cited in this document, names a
+  trigger that has not fired).
+- The maintainer is told only when the workflow changed something: one comment on a rolling issue
+  labeled `triage-digest`, mentioning the maintainer, lists every issue it labeled, demoted or
+  closed, with the reason and the classifier's probability. A run that changes nothing posts
+  nothing. No issue is assigned to the maintainer.
+
+The classification step sits behind one function so the classifier can be replaced. Tracked in #165
+(workflow), #173 (choosing the classifier), #166 (monthly demotion and closing) and #167 (the
+triage work no workflow can do).
+
+**Why the human check is removed:** the maintainer is solo and chose to take triage off their plate,
+including closing. A report that waits for a person has the same decay as an unprompted cadence. The
+cost is that a misclassified issue is acted on without review, so the design bounds the damage:
+
+- Only issues with no P label are classified, so a label set by a human or by an agent at filing is
+  final. Agents already label at filing, so the workflow mainly sees issues from outside.
+- Below a confidence cutoff the workflow applies P2 and `needs-verification` rather than guess a high
+  or low level. A P0 or P1 is listed first in the notification.
+- Closing re-classifies the issue at that moment. If the chance that it affects an eligibility
+  outcome or has a security path is above a cutoff, the issue is skipped and reported instead. At
+  most five issues close per run. Each is closed with a comment and can be reopened.
+- Labels are switched on only after a shadow run over the issues that already carry P labels shows
+  the classifier agrees with them, and in particular never ranks a P0 or P1 as P3 (#173).
+- The token has `issues: write` and `contents: read`. Text from strangers reaches a classifier, never
+  a shell or a tool-using prompt.
+
+**Classifier:** the first candidate is Jev (TypeSafe AI), a non-generative model that answers typed
+questions (Choice, Score, Noul) against some text and returns probabilities. It suits this job
+because TRIAGE.md's rubric breaks into narrow yes/no questions (could this change an eligibility
+outcome, is there an exploitable path, is it a dead end on a core flow, is there a workaround, is it
+cosmetic) that a fixed table in code maps to P0-P3. Because it cannot explain a decision or compare
+dates, the sweep's date arithmetic and exemption checks are plain code, and the notification
+reports the questions that fired. Evidence for it is thin: the vendor launched in September 2026,
+the only published triage test is one self-reported run on bug, feature and question labels, vendor
+sources disagree on its context limit, and its data retention is not documented in the sources reviewed. A
+Claude API call with structured output is the fallback behind the same function. The key is a
+repository secret. Issue text in this repository is public; if the app ever handles real intakes,
+revisit what is sent to a third party.
+
+**Silent stop:** no notification on a quiet run means a stopped workflow looks like a quiet week.
+GitHub emails a failed run to whoever last edited the cron line, and each run records its date in
+the rolling issue's body, which does not notify. Dropped runs and the automatic disabling of
+scheduled workflows after 60 days without repository activity are not announced. A monthly
+heartbeat comment is the remedy if this matters.
+
+**Alternatives rejected:**
+- A digest that only proposes lists, with the maintainer acting on them: it keeps the work with the
+  person who declined it.
+- A Claude Code scheduled task as the runner: it is a research preview tied to one account and runs
+  with the maintainer's full GitHub identity, so unattended write authority would rest on a prompt
+  and a classifier. It remains an option for work that needs judgment (#167).
+- `actions/stale`: it cannot classify, cannot demote P2 to P3 (it can remove labels but not add
+  one), cannot honor the exemptions, and adding its label changes the last-update date that the idle
+  queries in TRIAGE.md use.
+- A calendar reminder, or a local cron job or `/loop`: both depend on a person or an open laptop,
+  and `/loop` tasks expire after seven days.
+- A new issue each week instead of one rolling issue: every open issue needs a P label under
+  TRIAGE.md, and the list fills with digests.
+
+**What stays with a person:** 30 open issues are `blocked` on a content owner or legal review, which
+no workflow can unblock, and reproducing a `needs-verification` claim needs someone to run the
+code. #167 decides who does that.
+
+**When to revisit:** if the backtest in #173 does not clear its thresholds, if a closed issue turns
+out to have mattered, if the workflow stops without anyone noticing, or if the app handles real user
+data.
