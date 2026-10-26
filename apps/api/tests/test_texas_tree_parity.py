@@ -7,7 +7,7 @@ how `rule_engine` represents nodes. Comparing every reachable
 (question_id, answer_position) pair against it is a genuine cross-check,
 not the same code checking itself.
 
-Five (question_id, answer_position) pairs intentionally differ from what the
+Some (question_id, answer_position) pairs intentionally differ from what the
 original legacy file produces, so the tree and the fixture are changed together
 (DECISIONS.md section 16); the fixture's sourceSha256 still pins that file.
 Wording corrections to a handful of nodes are applied the same way (DECISIONS.md
@@ -118,6 +118,19 @@ def test_maintained_routing_differs_from_legacy(
     assert [a["position"] for a in result.next_answers] == answer_positions
 
 
+def test_declining_to_start_early_after_an_unfiled_misdemeanor_arrest_still_qualifies() -> None:
+    """4-4's "No" qualifies the user for expunction: CCP art. 55A.052(a)(2) entitles them to it
+    once a year has passed, and 4-4 is only reachable after they said it has. It has its own
+    answer position so 4-3's "No" (position 4) keeps ending at Does Not Qualify Yet."""
+    declined_early = step("texas", 4, 15)
+    still_waiting = step("texas", 4, 4)
+
+    assert declined_early.is_terminal
+    assert declined_early.result_label == "Texas Expungement"
+    assert still_waiting.is_terminal
+    assert still_waiting.result_label == "Does Not Qualify Yet"
+
+
 def test_answering_that_deferred_probation_is_ongoing_ends_the_walk() -> None:
     result = step("texas", 6, 9)
 
@@ -218,6 +231,14 @@ def _chapter_rule_rows() -> list[tuple[int, int, str, str, str]]:
             "Directing Activities of Criminal Street Gangs or Foreign Terrorist Organizations",
         ),
         (
+            3,
+            4,
+            "next_question_text",
+            "one year isn't a long time",
+            "so if you want to get this incident off your record as soon as possible, you should "
+            "get things started now.</p><p>Do you want to start the legal process now?</p>",
+        ),
+        (
             2,
             10,
             "next_question_text",
@@ -238,6 +259,7 @@ def _chapter_rule_rows() -> list[tuple[int, int, str, str, str]]:
         "8-16-gang-solicitation",
         "8-16-gang-directing",
         "3-10-question",
+        "4-4-question",
     ],
 )
 def test_corrected_wording_replaces_legacy_text(
@@ -284,8 +306,21 @@ def test_corrected_wording_replaces_legacy_text_at_entry_question() -> None:
                 "No, never (not counting fine-only traffic tickets)",
             ],
         ),
+        (
+            3,
+            4,
+            [
+                "Yes, I want to get this off my record as soon as possible!",
+                "No, I'm not ready to start yet",
+            ],
+        ),
+        (
+            8,
+            5,
+            ["Yes, it has almost been 2 years", "No, I have some time to wait still"],
+        ),
     ],
-    ids=["8-17-answers", "3-10-answers"],
+    ids=["8-17-answers", "3-10-answers", "4-4-answers", "9-5-answers"],
 )
 def test_corrected_wording_replaces_legacy_answers(
     question_id: int, answer_position: int, expected_values: list[str]

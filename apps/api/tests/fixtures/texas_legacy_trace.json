@@ -3,7 +3,7 @@
   "sourceFile": "questionnaire-api/states/texas.js",
   "sourceSha256": "cf484f5bde767dcdcf3d39a490f8ccf033f6ad89bb4e1be201c7c685ec148084",
   "tracedAt": "2026-10-01T21:19:58.359Z",
-  "reachableCount": 181,
+  "reachableCount": 182,
   "trace": {
     "root": {
       "success": true,
@@ -546,6 +546,12 @@
       "value": "Does Not Qualify Yet",
       "questionsLeft": 0
     },
+    "4:15": {
+      "success": true,
+      "endpoint": true,
+      "value": "Texas Expungement",
+      "questionsLeft": 0
+    },
     "2:3": {
       "success": true,
       "new_question": {
@@ -569,7 +575,7 @@
       "success": true,
       "new_question": {
         "id": 4,
-        "question": "<p>When you've been arrested for a misdemeanor and haven't been charged, you can expunge your arrest record after one year.</p><p>The expungement process can take a while, and one year isn't a long time.</p><p>Do you want to start the legal process now, or are you going to wait until it has been a full year?</p>"
+        "question": "<p>When you've been arrested for a misdemeanor and haven't been charged, you can expunge your arrest record after one year.</p><p>The expungement process can take a while, so if you want to get this incident off your record as soon as possible, you should get things started now.</p><p>Do you want to start the legal process now?</p>"
       },
       "new_answers": [
         {
@@ -577,8 +583,8 @@
           "position": 1
         },
         {
-          "value": "No, I'm just going to wait until its been a full year",
-          "position": 4
+          "value": "No, I'm not ready to start yet",
+          "position": 15
         }
       ],
       "questionsLeft": 1,
@@ -894,11 +900,11 @@
       },
       "new_answers": [
         {
-          "value": "Yes, I want to get this off my record as soon as possible!",
+          "value": "Yes, it has almost been 2 years",
           "position": 3
         },
         {
-          "value": "No, I'm just going to wait until its been a full 2 years",
+          "value": "No, I have some time to wait still",
           "position": 4
         }
       ],

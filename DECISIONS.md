@@ -216,7 +216,8 @@ to carry and resolve that ID instead of the two plain integers the legacy app al
 larger, separate redesign, deferred to issue #27.
 
 **Maintained routing that differs from the legacy handler:** the legacy override chain
-(`questionnaire-api/states/texas.js`) has two defects, and the maintained tree routes around them.
+(`questionnaire-api/states/texas.js`) has defects in its override chain and in its data, and the maintained tree routes
+around them.
 Each change is applied identically to the tree, its committed mirror in `apps/api/shared_data/`, and
 `apps/api/tests/fixtures/texas_legacy_trace.json`, so the parity tests keep replaying every
 `(questionId, answerPosition)` pair; the fixture's `sourceSha256` still pins the original file.
@@ -231,6 +232,27 @@ that no answer path cycles and every node is reachable from the entry node.
   wording ("any crime that wasn't just a fine-only traffic offense") follows the statute's
   prior-record condition; "Nope" continues to the BAC, accident and interlock chain
   (GV 411.0731).
+- **Unfiled misdemeanor arrest, declined early start (#76).** `4-4` is reachable only by answering
+  "After being arrested, no charges were filed" (`1-0`), "Class A or B Misdemeanor" (`2-2`) and
+  "Yes, it has been at least 1 year since I was arrested" (`3-3`). Code of Criminal Procedure
+  art. 55A.052(a)(2) entitles a person arrested for a Class A or B misdemeanor, with no indictment
+  or information ever presented for the offense or a related felony, to expunction once a year has
+  passed since the arrest, so a user at `4-4` qualifies whichever button they press and nothing is
+  left to check. "No, I'm not ready to start yet" therefore leads to Texas Expungement instead of
+  Does Not Qualify Yet. This is wrong routing in the legacy data rather than an override-chain
+  defect: the legacy "No" shares position 4 with `4-3`'s "No, I still have plenty of time to wait",
+  which correctly ends at Does Not Qualify Yet (a felony arrest has a 3-year wait), and transitions
+  are addressed by `(group, position)` alone. `4-4`'s "No" therefore has its own position (15),
+  whose transition ends at Texas Expungement, and position 4 keeps its legacy destination for `4-3`.
+  A duplicate of position 1 would also reach Texas Expungement, but it would leave two answers on
+  one node that no transition can tell apart, and the parity walk could not exercise the "No"
+  answer. A stored decision path that went through `4-4`'s old "No" (step code `4:4`) does not
+  decode: it shows as an unrecognized step next to its saved result, the fallback section 17
+  accepts. Stored paths through `9-5` decode to its new button labels, so an old "Yes, I want to get
+  this off my record..." step reads as "Yes, it has almost been 2 years". The statute reading comes
+  from a secondary source (texas.public.law's copy of art. 55A.052, not the official
+  statutes.capitol.texas.gov text) and is an AI reading, not legal advice. The routing change, like
+  the wording of `4-4` and `9-5` (section 21), was applied without content-owner review.
 - **Redirects back to answered questions (#26).** Three redirects sent users back to group 1, and
   together with the forward edges formed a connected cycle of 16 question variants with no exit. Two
   changes break every cycle:
@@ -535,11 +557,18 @@ question asks about (convicted at 9-11, 10-9, 12-5, 13-5 and 8-16; deferred adju
 court gave a determinate sentence and its rule tests the same thing; 3-10 asks about any prior
 conviction or deferred adjudication other than a fine-only traffic offense; and 0-0's fourth answer
 covers a juvenile referral whether or not it was adjudicated. These are likewise statute-derived and
-approved by the content owner, not attorney-reviewed. Each correction is applied
-identically to the tree, its committed mirror in `apps/api/shared_data/`, and
-`apps/api/tests/fixtures/texas_legacy_trace.json`, so the parity tests that replay every
-`(questionId, answerPosition)` pair keep agreeing. No transition, answer position, `group`,
-`variant`, or `questionsLeft` value changes.
+approved by the content owner, not attorney-reviewed.
+
+Two more corrections were applied without content-owner review, unlike the others, and need that
+review: 4-4's question and buttons, rewritten so a user who is not ready to start yet is not told
+they do not qualify (its routing change is in section 16), and 9-5's buttons, which read as answers
+to its question ("Yes, it has almost been 2 years" and "No, I have some time to wait still", the
+labels 12-1 uses). The shared tree, its mirror and the fixture entry for 9-5's answers carry the
+correction; 10-8 keeps the old label pair. Each correction is applied identically to the tree, its
+committed mirror in `apps/api/shared_data/`, and `apps/api/tests/fixtures/texas_legacy_trace.json`,
+so the parity tests that replay every `(questionId, answerPosition)` pair keep agreeing. Apart from
+the 4-4 routing change in section 16, no transition, answer position, `group`, `variant`, or
+`questionsLeft` value changes.
 
 **Provenance:** the fixture's `sourceSha256` pins the original, uncorrected `texas.js`. The
 corrected tree and fixture are not what that file produces. The legacy file shares one help string
