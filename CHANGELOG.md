@@ -1,3 +1,9 @@
+## [2.4.6](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.5...v2.4.6) (2026-10-26)
+
+### Bug Fixes
+
+* **shared:** make Texas 4-4 a start-now question and 9-5's buttons answer its own question ([4891ba3](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/4891ba39f36483541212765470d3a9ce5a660fb2))
+
 ## [2.4.5](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.4...v2.4.5) (2026-10-25)
 
 ### Bug Fixes
