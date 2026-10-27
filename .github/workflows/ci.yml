@@ -210,7 +210,23 @@ jobs:
       # browser binaries: the download is fast enough that a cache restore
       # doesn't reliably beat it, and a stale cached binary silently drifts
       # from the @playwright/test version pinned in package.json.
+      #
+      # The install normally takes about 20 seconds but occasionally stalls
+      # (a hung apt or browser download) until the 15-minute job limit cancels
+      # the whole job, which looks like a test failure and leaves no time for
+      # the suite. Each attempt gets its own short limit so a stall fails fast
+      # and is retried once. The first attempt's failure is tolerated only so
+      # the retry can run; if the retry also fails the job fails at its step.
       - name: Install Playwright browsers
+        id: playwright-install
+        continue-on-error: true
+        timeout-minutes: 3
+        working-directory: e2e
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Retry Playwright browser install
+        if: steps.playwright-install.outcome != 'success'
+        timeout-minutes: 3
         working-directory: e2e
         run: pnpm exec playwright install --with-deps chromium
 
