@@ -46,23 +46,23 @@ jobs:
         with:
           node-version: 22
 
-      # semantic-release and its non-bundled plugins (changelog, git) are
-      # pulled on demand via npx rather than declared in package.json, so
-      # this workflow doesn't force release tooling on local installs.
+      # This job holds a token that can push to main, so the release tooling
+      # is installed from a committed lockfile (.github/release) with exact
+      # versions and integrity hashes, transitive dependencies included. A
+      # newly published or compromised package version cannot reach it until a
+      # reviewed Dependabot PR bumps the lockfile. The manifest lives outside
+      # the root package.json and pnpm workspace so local installs don't carry
+      # release tooling. Lifecycle scripts stay off: nothing here needs them.
       #
-      # conventional-changelog-conventionalcommits is pinned to 8.x because
+      # conventional-changelog-conventionalcommits stays on 8.x because
       # commit-analyzer/release-notes-generator resolve the preset package by
       # name at runtime (not as a declared dependency), and newer preset
       # majors require conventional-changelog-writer@9+ while the bundled
-      # writer here is 8.x — an unpinned install throws "Missing helper"
-      # mid-release instead of failing the recognizable way.
+      # writer here is 8.x — a mismatch throws "Missing helper" mid-release.
+      - name: Install release tooling
+        run: npm ci --ignore-scripts --prefix .github/release
+
       - name: Release
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: >
-          npx
-          --package semantic-release
-          --package @semantic-release/changelog
-          --package @semantic-release/git
-          --package conventional-changelog-conventionalcommits@8
-          -- semantic-release
+        run: ./.github/release/node_modules/.bin/semantic-release
