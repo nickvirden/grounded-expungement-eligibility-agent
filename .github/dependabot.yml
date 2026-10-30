@@ -13,3 +13,21 @@ updates:
       actions:
         patterns:
           - '*'
+
+  # The release job's lockfile (.github/release) is updated the same way. The
+  # conventionalcommits preset stays below its next major, which needs a newer
+  # conventional-changelog-writer than the one semantic-release bundles.
+  - package-ecosystem: npm
+    directory: /.github/release
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+    groups:
+      release-tooling:
+        patterns:
+          - '*'
+    ignore:
+      - dependency-name: conventional-changelog-conventionalcommits
+        update-types:
+          - version-update:semver-major
