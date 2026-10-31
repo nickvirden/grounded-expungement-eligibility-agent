@@ -1,3 +1,9 @@
+## [2.4.9](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.8...v2.4.9) (2026-10-31)
+
+### Bug Fixes
+
+* **web:** answer unmatched /api/* requests with a JSON 404 ([56e1ed3](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/56e1ed32e5246aa20adf98725a139505c7042a6f))
+
 ## [2.4.8](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.7...v2.4.8) (2026-10-31)
 
 ### Bug Fixes
