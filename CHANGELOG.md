@@ -1,3 +1,9 @@
+## [2.4.8](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.7...v2.4.8) (2026-10-31)
+
+### Bug Fixes
+
+* **web:** keep keyboard focus in the Quick Form and stop the header overflowing at 320px ([afc9d64](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/afc9d644db1f4aa96d18822bd39802f95a1669fa))
+
 ## [2.4.7](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.6...v2.4.7) (2026-10-26)
 
 ### Bug Fixes
