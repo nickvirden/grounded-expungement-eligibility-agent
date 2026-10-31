@@ -3,7 +3,8 @@ import { expect, test } from '../cspGuard';
 /**
  * The not-found page replaces Next's built-in 404, whose inline <style> and
  * style attributes the nonce CSP blocks. These tests hold on both the dev
- * server and a production build.
+ * server and a production build. Unmatched /api/* requests are the other case:
+ * they answer JSON under the fixed /api CSP instead of the page.
  */
 
 const MISSING = '/does-not-exist';
@@ -52,5 +53,43 @@ test.describe('Not-found page', () => {
     const response = await page.goto('/intake/no-such-state/quick');
     expect(response?.status()).toBe(404);
     await expect(page.getByRole('heading', { level: 1, name: 'Page not found' })).toBeVisible();
+  });
+});
+
+test.describe('Unmatched API route', () => {
+  test('answers 404 JSON under the locked-down API CSP', async ({ request }) => {
+    const res = await request.get('/api/nope');
+    expect(res.status()).toBe(404);
+    expect(res.headers()['content-type']).toContain('application/json');
+    expect(await res.json()).toEqual({ detail: 'Not Found' });
+
+    const csp = res.headers()['content-security-policy'];
+    expect(csp).toBe("default-src 'none'; frame-ancestors 'none'");
+    expect(csp).not.toContain('nonce-');
+    expect(res.headers()['x-content-type-options']).toBe('nosniff');
+  });
+
+  test('answers 404, not 403, to a POST from a foreign origin', async ({ request }) => {
+    const res = await request.post('/api/nope', { headers: { Origin: 'https://evil.example' } });
+    expect(res.status()).toBe(404);
+    expect(await res.json()).toEqual({ detail: 'Not Found' });
+  });
+
+  test('answers 404 JSON for an unknown path under /api/chat', async ({ request }) => {
+    const res = await request.get('/api/chat/x');
+    expect(res.status()).toBe(404);
+    expect(res.headers()['content-type']).toContain('application/json');
+  });
+
+  test('does not shadow the proxy route', async ({ request }) => {
+    const res = await request.get('/api/backend/api/states');
+    expect(res.status()).toBe(200);
+    expect(Array.isArray(await res.json())).toBe(true);
+  });
+
+  test('does not shadow the chat route', async ({ request }) => {
+    const res = await request.post('/api/chat');
+    expect(res.status()).toBe(403);
+    expect(await res.json()).toEqual({ error: 'Origin not allowed' });
   });
 });
