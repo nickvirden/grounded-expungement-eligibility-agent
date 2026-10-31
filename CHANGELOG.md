@@ -1,3 +1,9 @@
+## [2.4.10](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.9...v2.4.10) (2026-10-31)
+
+### Bug Fixes
+
+* **api:** give unhandled 500 responses the API's security headers ([2beb459](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/2beb459d2a6407409b79a5e2e03b1dfd7a7527bf))
+
 ## [2.4.9](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.8...v2.4.9) (2026-10-31)
 
 ### Bug Fixes
