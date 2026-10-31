@@ -28,17 +28,32 @@ export const PageShell = styled.div`
 export const FormHeader = styled.header`
   background: var(--color-white);
   border-bottom: 1px solid var(--color-slate-200);
-  padding: 0 var(--space-6);
-  height: 64px;
-  display: flex;
+  padding-inline: var(--space-6);
+  padding-block: var(--space-2);
+  min-height: 64px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas: 'back title counter';
   align-items: center;
-  gap: var(--space-4);
+  column-gap: var(--space-4);
+  row-gap: var(--space-1);
   position: sticky;
   top: 0;
   z-index: 10;
+
+  /* The counter text ("12 answered · about 88 left") does not fit beside the back link and the
+     title on a narrow screen or at large text sizes, so it drops to its own row instead of
+     overflowing the viewport. */
+  @media (max-width: 30em) {
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      'back title'
+      'counter counter';
+  }
 `;
 
 export const BackButton = styled.a`
+  grid-area: back;
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -61,15 +76,19 @@ export const HeaderTitle = styled.h1`
   font-size: 0.9375rem;
   font-weight: 600;
   color: var(--color-navy-800);
-  flex: 1;
+  grid-area: title;
+  min-width: 0;
   text-align: center;
+  overflow-wrap: break-word;
 `;
 
 export const StepCounter = styled.span`
   font-size: 0.8125rem;
   font-weight: 500;
   color: var(--color-navy-600);
-  white-space: nowrap;
+  grid-area: counter;
+  min-width: 0;
+  text-align: end;
 `;
 
 // ─── Progress bar ─────────────────────────────────────────────────────────────
@@ -122,6 +141,16 @@ export const FormCard = styled.div`
 
 // ─── Question area ────────────────────────────────────────────────────────────
 
+// Both headings take focus programmatically when the card changes, so the ring marks where
+// reading resumes.
+const headingFocusRing = css`
+  &:focus-visible {
+    outline: 2px solid var(--color-blue-500);
+    outline-offset: 4px;
+    border-radius: var(--radius-md);
+  }
+`;
+
 export const QuestionText = styled.h2`
   font-size: 1.375rem;
   font-weight: 700;
@@ -129,6 +158,9 @@ export const QuestionText = styled.h2`
   line-height: 1.35;
   letter-spacing: -0.02em;
   margin-bottom: var(--space-3);
+  /* Keeps the focused heading out from under the sticky header when focus scrolls it into view. */
+  scroll-margin-top: var(--space-24);
+  ${headingFocusRing}
   & > *:first-child {
     margin-top: 0;
   }
@@ -276,12 +308,7 @@ export const ExitTitle = styled.h2`
   color: var(--color-navy-900);
   line-height: 1.35;
   letter-spacing: -0.02em;
-
-  &:focus-visible {
-    outline: 2px solid var(--color-blue-500);
-    outline-offset: 4px;
-    border-radius: var(--radius-md);
-  }
+  ${headingFocusRing}
 `;
 
 export const ExitText = styled.p`

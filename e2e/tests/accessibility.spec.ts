@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { type Page, expect, test } from '@playwright/test';
 import { gotoNode } from '../helpTree';
 
 /**
@@ -26,13 +26,11 @@ const RULES = [
   'scrollable-region-focusable',
 ];
 
-async function runAxe(page: import('@playwright/test').Page, rules: string[] = RULES) {
-  await page.addScriptTag({ path: require.resolve('axe-core/axe.min.js') });
-
-  // Let finite CSS animations (card fade-ins, slide-ins) settle before
-  // measuring contrast, so a scan doesn't race a mid-transition opacity.
-  // Infinite animations (loading dots, the typing cursor) never resolve, so
-  // they're excluded rather than awaited.
+// Lets finite CSS animations (card fade-ins, slide-ins) settle before measuring contrast or
+// layout, so a scan doesn't race a mid-transition opacity or the slide-in's extra width.
+// Infinite animations (loading dots, the typing cursor) never resolve, so they're excluded
+// rather than awaited.
+async function settleAnimations(page: Page) {
   await page.evaluate(() =>
     Promise.all(
       document
@@ -41,6 +39,11 @@ async function runAxe(page: import('@playwright/test').Page, rules: string[] = R
         .map((a) => a.finished),
     ),
   );
+}
+
+async function runAxe(page: Page, rules: string[] = RULES) {
+  await page.addScriptTag({ path: require.resolve('axe-core/axe.min.js') });
+  await settleAnimations(page);
 
   return page.evaluate(
     (runOnly) =>
@@ -120,6 +123,86 @@ test.describe('Accessibility — Quick Form', () => {
     await expect(page.getByRole('heading', { name: "We can't finish this check" })).toBeFocused();
     expectNoViolations(await runAxe(page, [...RULES, 'button-name', 'link-name', 'heading-order']));
   });
+});
+
+// The header counter is the widest element in the Quick Form header; it must wrap or drop to
+// its own row rather than push the page sideways on a narrow screen or at large text sizes.
+test.describe('Accessibility — Quick Form reflow', () => {
+  const REFLOW_RULES = [...RULES, 'button-name', 'link-name', 'heading-order', 'target-size'];
+  const configs = [
+    { name: '320x640', size: { width: 320, height: 640 }, fontSize: null },
+    { name: '360x640', size: { width: 360, height: 640 }, fontSize: null },
+    // Media queries use the browser's 16px root, not the page's font-size, so a 640px window
+    // stays in the single-row header layout while large text stresses it.
+    {
+      name: '640x800 single-row layout with 200% text',
+      size: { width: 640, height: 800 },
+      fontSize: 32,
+    },
+    // The narrow layout (below 30em) with large text.
+    {
+      name: '320x640 narrow layout with 150% text',
+      size: { width: 320, height: 640 },
+      fontSize: 24,
+    },
+  ];
+
+  const question = (id: number, questionsLeft: number) => ({
+    is_terminal: false,
+    next_question_id: id,
+    next_question_text: `Mocked question ${id}`,
+    next_question_help: null,
+    next_answers: [{ value: `Answer to ${id}`, position: 1 }],
+    questions_left: questionsLeft,
+    traversed_path: [],
+  });
+
+  async function expectHeaderFits(page: Page) {
+    await settleAnimations(page);
+    const overflow = await page.evaluate(() => {
+      const el = document.scrollingElement as Element;
+      return { scrollWidth: el.scrollWidth, clientWidth: el.clientWidth };
+    });
+    expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth);
+    await expect(page.locator('header [aria-live="polite"]')).toBeInViewport({ ratio: 1 });
+    expectNoViolations(await runAxe(page, REFLOW_RULES));
+  }
+
+  for (const { name, size, fontSize } of configs) {
+    test(`${name} keeps the header on screen across the form states`, async ({ page }) => {
+      await page.setViewportSize(size);
+      await page.goto('/intake/texas/quick');
+      await expect(page.getByRole('heading', { level: 2 })).toBeVisible({ timeout: 10_000 });
+      if (fontSize) await page.addStyleTag({ content: `html { font-size: ${fontSize}px; }` });
+
+      // 88 questions left gives the widest counter text; the third response repeats the first
+      // question, which ends the form.
+      const responses = [question(1, 88), question(2, 88), question(1, 88)];
+      await page.route('**/eligibility/assess', async (route) => {
+        const body = responses.shift();
+        if (!body) throw new Error('assess called more often than the mock expects');
+        await route.fulfill({ json: body });
+      });
+
+      await expectHeaderFits(page);
+
+      const answer = page.locator('button[aria-pressed]').first();
+      await expect(answer).toBeEnabled({ timeout: 10_000 });
+      await answer.click();
+      await expect(page.getByRole('heading', { name: 'Mocked question 1' })).toBeVisible();
+      await expect(page.getByText(/about 88 left/)).toBeVisible();
+      await expectHeaderFits(page);
+
+      for (const heading of ['Mocked question 1', 'Mocked question 2']) {
+        await expect(page.getByRole('heading', { name: heading })).toBeVisible();
+        const button = page.locator('button[aria-pressed]').first();
+        await expect(button).toBeEnabled();
+        await button.click();
+      }
+      await expect(page.getByRole('heading', { name: "We can't finish this check" })).toBeVisible();
+      await expectHeaderFits(page);
+    });
+  }
 });
 
 // The help dialog scans add the dialog, button and heading-order rules and the one-main check,

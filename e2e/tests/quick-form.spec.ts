@@ -244,22 +244,23 @@ test.describe('Quick Form — Texas happy path', () => {
   });
 });
 
+// A mocked non-terminal assess response with two answers.
+const question = (id: number, text: string) => ({
+  is_terminal: false,
+  next_question_id: id,
+  next_question_text: text,
+  next_question_help: null,
+  next_answers: [
+    { value: `Yes to ${text}`, position: 1 },
+    { value: `No to ${text}`, position: 2 },
+  ],
+  questions_left: 5,
+  traversed_path: [],
+});
+
 // The live Texas tree has no cycle, so the loop exit is reached by mocking the assess endpoint
 // with a question sequence that returns to one already answered.
 test.describe('Quick Form — loop exit', () => {
-  const question = (id: number, text: string) => ({
-    is_terminal: false,
-    next_question_id: id,
-    next_question_text: text,
-    next_question_help: null,
-    next_answers: [
-      { value: `Yes to ${text}`, position: 1 },
-      { value: `No to ${text}`, position: 2 },
-    ],
-    questions_left: 5,
-    traversed_path: [],
-  });
-
   async function mockCycle(page: Page) {
     const responses = [
       question(1, 'Mocked question X'),
@@ -328,5 +329,162 @@ test.describe('Quick Form — loop exit', () => {
     await page.getByRole('button', { name: /didn't end up resulting in a conviction/i }).click();
     await expect(page.getByRole('heading', { level: 2 })).toContainText(/outcome|criminal record/i);
     await expect(page.getByRole('heading', { name: "We can't finish this check" })).toHaveCount(0);
+  });
+});
+
+// Answering unmounts the button that held focus, so the next question's heading has to take it.
+test.describe('Quick Form — focus after answering', () => {
+  const heading = (page: Page) => page.getByRole('heading', { level: 2 });
+  const answers = (page: Page) => page.locator('button[aria-pressed]');
+
+  async function mockQuestions(page: Page, ...responses: Array<ReturnType<typeof question>>) {
+    await page.route('**/eligibility/assess', async (route) => {
+      const body = responses.shift();
+      if (!body) throw new Error('assess called more often than the mock expects');
+      await route.fulfill({ json: body });
+    });
+  }
+
+  async function loadQuickForm(page: Page) {
+    await page.goto('/intake/texas/quick');
+    await expect(heading(page)).toBeVisible({ timeout: 10_000 });
+    await expect(answers(page).first()).toBeEnabled({ timeout: 15_000 });
+  }
+
+  test('nothing takes focus on first load', async ({ page }) => {
+    await loadQuickForm(page);
+    await page.waitForLoadState('networkidle');
+    expect(await page.evaluate(() => document.activeElement?.tagName)).toBe('BODY');
+  });
+
+  test('answering with the keyboard focuses the next question, and Tab reaches its answers', async ({
+    page,
+  }) => {
+    await loadQuickForm(page);
+    await mockQuestions(page, question(1, 'Mocked question X'));
+
+    await answers(page).first().focus();
+    await page.keyboard.press('Enter');
+
+    await expect(page.getByRole('heading', { name: 'Mocked question X' })).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(answers(page).first()).toBeFocused();
+  });
+
+  test('answering with the mouse focuses the next question, and Tab reaches its answers', async ({
+    page,
+  }) => {
+    await loadQuickForm(page);
+    await mockQuestions(page, question(1, 'Mocked question X'));
+
+    await answers(page).first().click();
+
+    await expect(page.getByRole('heading', { name: 'Mocked question X' })).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(answers(page).first()).toBeFocused();
+  });
+
+  test('answering after opening and closing Help focuses the next question', async ({ page }) => {
+    await loadQuickForm(page);
+    await mockQuestions(
+      page,
+      { ...question(1, 'Mocked question X'), next_question_help: 'Some plain help text.' },
+      question(2, 'Mocked question Y'),
+    );
+
+    await answers(page).first().click();
+    await expect(page.getByRole('heading', { name: 'Mocked question X' })).toBeFocused();
+
+    await page.getByRole('button', { name: /^Help/ }).click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('dialog')).toBeHidden();
+
+    await answers(page).first().click();
+    await expect(page.getByRole('heading', { name: 'Mocked question Y' })).toBeFocused();
+  });
+
+  // Chromium centres an off-screen focus target, so the position check alone cannot tell
+  // whether the heading's scroll margin is doing any work. The margin is asserted directly: it
+  // must clear the sticky header, which is what start-aligned scrolling (other browsers, and
+  // scroll anchoring) relies on.
+  test('a long answer list scrolled to its end leaves the next heading below the sticky header', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 375, height: 640 });
+    await loadQuickForm(page);
+    const longQuestion = (id: number) => ({
+      ...question(id, `Mocked question ${id}`),
+      next_answers: Array.from({ length: 30 }, (_, i) => ({
+        value: `Answer ${i + 1} of question ${id}`,
+        position: i + 1,
+      })),
+    });
+    await mockQuestions(page, longQuestion(1), longQuestion(2));
+
+    await answers(page).first().click();
+    await expect(page.getByRole('heading', { name: 'Mocked question 1' })).toBeFocused();
+    const last = answers(page).last();
+    await last.scrollIntoViewIfNeeded();
+    await last.click();
+
+    const next = page.getByRole('heading', { name: 'Mocked question 2' });
+    await expect(next).toBeFocused();
+    const header = await page.locator('header').boundingBox();
+    const box = await next.boundingBox();
+    if (!header || !box) throw new Error('header or heading has no layout box');
+    expect(box.y).toBeGreaterThanOrEqual(header.y + header.height);
+    const margin = await next.evaluate((el) =>
+      Number.parseFloat(getComputedStyle(el).scrollMarginTop),
+    );
+    expect(margin).toBeGreaterThanOrEqual(header.height);
+  });
+
+  test('a failed answer focuses the question heading, which is described by the visible alert', async ({
+    page,
+  }) => {
+    await loadQuickForm(page);
+    await page.route('**/eligibility/assess', (route) =>
+      route.fulfill({ status: 500, json: { detail: 'boom' } }),
+    );
+
+    const entryText = await heading(page).innerText();
+    await answers(page).first().click();
+
+    const alert = page.getByRole('alert').filter({ hasText: /\S/ });
+    await expect(alert).toBeVisible();
+    await expect(heading(page)).toHaveText(entryText);
+    await expect(heading(page)).toBeFocused();
+    await expect(heading(page)).toHaveAccessibleDescription(
+      (await alert.innerText()).replace(/\s+/g, ' ').trim(),
+    );
+  });
+
+  test('a response arriving while focus is on a link leaves focus there', async ({ page }) => {
+    await loadQuickForm(page);
+    let release: () => void = () => {};
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    await page.route('**/eligibility/assess', async (route) => {
+      await gate;
+      await route.fulfill({ json: question(1, 'Mocked question X') });
+    });
+
+    await answers(page).first().click();
+    await expect(page.getByLabel('Loading next question')).toBeVisible();
+    // Tab from the disabled answer's old position lands on the body in Chromium, so the link is
+    // focused directly, as a user would by tabbing back to it.
+    await page.getByRole('link', { name: /back/i }).focus();
+    const focusedTag = () => page.evaluate(() => document.activeElement?.tagName);
+    expect(await focusedTag()).toBe('A');
+    const focusedHref = await page.evaluate(() => document.activeElement?.getAttribute('href'));
+
+    release();
+    await expect(page.getByRole('heading', { name: 'Mocked question X' })).toBeVisible();
+    expect(await focusedTag()).toBe('A');
+    expect(await page.evaluate(() => document.activeElement?.getAttribute('href'))).toBe(
+      focusedHref,
+    );
   });
 });
