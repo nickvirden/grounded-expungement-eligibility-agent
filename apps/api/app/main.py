@@ -13,7 +13,7 @@ from app.config import settings
 from app.db import create_db_and_tables
 from app.routers import eligibility, health, intakes, states
 from app.security.csrf import CSRFMiddleware
-from app.security.headers import SecurityHeadersMiddleware
+from app.security.headers import SecurityHeadersMiddleware, server_error_handler
 from app.security.origin import StrictOriginMiddleware
 from app.security.rate_limit import limiter
 from app.security.redaction import redact_pii
@@ -66,13 +66,15 @@ app = FastAPI(
 # State for slowapi
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # type: ignore[arg-type]
+app.add_exception_handler(Exception, server_error_handler)
 
 # Starlette wraps each added middleware around the previous ones, so the last one
 # added is outermost: it sees the request first and the response last. Security
 # headers are added last so they also cover rejections the other middleware
 # produce (CSRF and origin 403s, CORS preflights, rate-limit 429s). Unhandled
-# exceptions bypass them: Starlette's ServerErrorMiddleware wraps all user
-# middleware and answers with a fixed plain-text 500.
+# exceptions propagate past those middleware, which never post-process a 500:
+# Starlette's ServerErrorMiddleware wraps them all and builds it through
+# server_error_handler, which applies the same headers.
 app.add_middleware(StrictOriginMiddleware)
 app.add_middleware(CSRFMiddleware)
 app.add_middleware(SlowAPIMiddleware)

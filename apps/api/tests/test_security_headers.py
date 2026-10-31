@@ -1,8 +1,10 @@
 """Security middleware tests: headers, CSRF, origin enforcement, rate limiting."""
+from collections.abc import Iterator
 from typing import ClassVar
 
 import httpx
 import pytest
+import structlog
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.testclient import TestClient
@@ -82,6 +84,72 @@ class TestSecurityHeaders:
         assert resp.headers.get("content-security-policy") == (
             "default-src 'none'; frame-ancestors 'none'"
         )
+
+
+_LEAK_MARKER = "secret-detail-7f3a"
+
+
+def _boom() -> None:
+    raise RuntimeError(_LEAK_MARKER)
+
+
+@pytest.fixture
+def boom_route() -> Iterator[None]:
+    """Temporarily mount a route that raises an unhandled exception on the real app."""
+    app.add_api_route("/__test__/boom", _boom, methods=["GET"])
+    route = app.router.routes[-1]
+    try:
+        yield
+    finally:
+        app.router.routes.remove(route)
+
+
+@pytest.mark.usefixtures("boom_route")
+class TestUnhandledServerError:
+    """ServerErrorMiddleware sits outside the header middleware, so a handler covers it."""
+
+    def test_500_carries_security_headers_and_fixed_body(self) -> None:
+        resp = TestClient(app, raise_server_exceptions=False).get("/__test__/boom")
+        assert resp.status_code == 500
+        assert resp.text == "Internal Server Error"
+        assert "secret-detail" not in resp.text
+        _assert_security_headers(resp)
+        assert "strict-transport-security" in resp.headers
+        assert resp.headers.get_list("content-security-policy") == [
+            "default-src 'none'; frame-ancestors 'none'"
+        ]
+
+    def test_500_logs_exception_type_without_message(self) -> None:
+        with structlog.testing.capture_logs() as logs:
+            TestClient(app, raise_server_exceptions=False).get("/__test__/boom")
+        events = [e for e in logs if e["event"] == "unhandled_exception"]
+        assert len(events) == 1
+        assert events[0]["exc_type"] == "RuntimeError"
+        assert _LEAK_MARKER not in repr(events[0])
+        assert set(events[0]) == {"event", "log_level", "method", "path", "exc_type"}
+
+    def test_malformed_host_still_gets_headers_and_log_event(self) -> None:
+        with structlog.testing.capture_logs() as logs:
+            resp = TestClient(app, raise_server_exceptions=False).get(
+                "/__test__/boom", headers={"host": "["}
+            )
+        assert resp.status_code == 500
+        _assert_security_headers(resp)
+        assert [e["event"] for e in logs].count("unhandled_exception") == 1
+
+    def test_exception_propagates_past_the_handler_to_the_server(self) -> None:
+        # Guards against an outer middleware swallowing the exception the server logs.
+        with pytest.raises(RuntimeError):
+            TestClient(app, raise_server_exceptions=True).get("/__test__/boom")
+
+    def test_validation_errors_stay_422_with_the_handler_installed(self) -> None:
+        # Regression guard for a future handler change that widens to catch HTTPException.
+        token = generate_csrf_token()
+        c = TestClient(app, cookies={CSRF_COOKIE: token}, raise_server_exceptions=False)
+        resp = c.post(
+            "/api/eligibility/assess", headers={CSRF_HEADER: token}, json={"state": "texas"}
+        )
+        assert resp.status_code == 422
 
 
 class TestCSRFMiddleware:
