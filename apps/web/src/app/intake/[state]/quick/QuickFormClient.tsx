@@ -72,6 +72,14 @@ export default function QuickFormClient(props: Props) {
   );
 }
 
+// Focus moves only when nothing else holds it. A user who tabbed to the skip link or Back link
+// while a response was pending keeps their place; an answer button that unmounted leaves focus
+// on the body.
+function focusIsFree(card: HTMLElement | null): boolean {
+  const active = document.activeElement;
+  return !active || active === document.body || !!card?.contains(active);
+}
+
 interface StepperProps extends Props {
   restarted: boolean;
   onRestart: () => void;
@@ -81,6 +89,8 @@ function QuickFormStepper({ state, stateName, entry, restarted, onRestart }: Ste
   const router = useRouter();
   const headingId = useId();
   const exitHeadingId = useId();
+  const errorId = useId();
+  const cardRef = useRef<HTMLDivElement>(null);
   const exitHeadingRef = useRef<HTMLHeadingElement>(null);
   const questionHeadingRef = useRef<HTMLHeadingElement>(null);
 
@@ -195,6 +205,18 @@ function QuickFormStepper({ state, stateName, entry, restarted, onRestart }: Ste
     if (restarted) questionHeadingRef.current?.focus();
   }, [restarted]);
 
+  // The answer that held focus unmounts when the next question replaces the card. Loop-exit and
+  // terminal answers return before the step advances, so the exit heading keeps its focus.
+  useEffect(() => {
+    if (stepNumber > 0 && focusIsFree(cardRef.current)) questionHeadingRef.current?.focus();
+  }, [stepNumber]);
+
+  // A failed answer also unmounts the answer list while it loads, so focus returns to the
+  // question. The heading is described by the error banner, so focusing it reads the error too.
+  useEffect(() => {
+    if (error && focusIsFree(cardRef.current)) questionHeadingRef.current?.focus();
+  }, [error]);
+
   const safeQuestionHtml = useMemo(() => sanitizeLegacyHtml(questionText), [questionText]);
 
   return (
@@ -223,7 +245,7 @@ function QuickFormStepper({ state, stateName, entry, restarted, onRestart }: Ste
       </ProgressTrack>
 
       <FormBody>
-        <FormCard aria-labelledby={headingId} key={`step-${stepNumber}`}>
+        <FormCard ref={cardRef} aria-labelledby={headingId} key={`step-${stepNumber}`}>
           {loopExit ? (
             <ExitPanel aria-labelledby={exitHeadingId}>
               <ExitTitle id={exitHeadingId} ref={exitHeadingRef} tabIndex={-1}>
@@ -253,6 +275,7 @@ function QuickFormStepper({ state, stateName, entry, restarted, onRestart }: Ste
                 tabIndex={-1}
                 role="heading"
                 aria-level={2}
+                aria-describedby={error ? errorId : undefined}
                 // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized by sanitizeLegacyHtml
                 dangerouslySetInnerHTML={{ __html: safeQuestionHtml }}
               />
@@ -313,7 +336,11 @@ function QuickFormStepper({ state, stateName, entry, restarted, onRestart }: Ste
             </>
           )}
 
-          {error && <ErrorBanner role="alert">{error}</ErrorBanner>}
+          {error && (
+            <ErrorBanner id={errorId} role="alert">
+              {error}
+            </ErrorBanner>
+          )}
 
           {answeredSteps.length > 0 && (
             <PathCrumb aria-label="Decision path so far">
