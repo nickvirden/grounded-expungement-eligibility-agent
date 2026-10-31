@@ -132,14 +132,10 @@ test.describe('Accessibility — Quick Form reflow', () => {
   const configs = [
     { name: '320x640', size: { width: 320, height: 640 }, fontSize: null },
     { name: '360x640', size: { width: 360, height: 640 }, fontSize: null },
-    // Media queries use the browser's 16px root, not the page's font-size, so a 640px window
-    // stays in the single-row header layout while large text stresses it.
-    {
-      name: '640x800 single-row layout with 200% text',
-      size: { width: 640, height: 800 },
-      fontSize: 32,
-    },
-    // The narrow layout (below 30em) with large text.
+    // The narrow layout (below 30em) with large text. Raising only the page's root font-size in
+    // a wider window is not a user scenario: the header's breakpoint is a media query, which
+    // measures em against the browser's default font size, and zoom shrinks the viewport in CSS
+    // pixels as it enlarges text.
     {
       name: '320x640 narrow layout with 150% text',
       size: { width: 320, height: 640 },
