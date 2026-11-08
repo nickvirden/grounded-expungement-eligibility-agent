@@ -1,5 +1,6 @@
 import { type Page, expect, test } from '@playwright/test';
 import { gotoNode } from '../helpTree';
+import { webMode } from '../webMode';
 
 /**
  * Accessibility specification tests, driven by axe-core.
@@ -296,5 +297,21 @@ test.describe('Accessibility — Not-found page', () => {
     const link = page.getByRole('link', { name: 'Go to the home page' });
     await expect(link).toBeFocused();
     await expect(link).toHaveCSS('outline-style', 'solid');
+  });
+});
+
+test.describe('Accessibility — Error page', () => {
+  // The broken-API web server exists only in production mode (see playwright.config.ts).
+  test.skip(webMode !== 'production', 'needs the broken-API web server');
+  test.use({ baseURL: 'http://127.0.0.1:3001' });
+
+  test('has no violations', async ({ page }) => {
+    await page.goto('/intake/texas/quick');
+    await expect(page.getByRole('heading', { level: 1, name: 'Something went wrong' })).toBeVisible(
+      {
+        timeout: 10_000,
+      },
+    );
+    expectNoViolations(await runAxe(page));
   });
 });
