@@ -700,3 +700,32 @@ code. #167 decides who does that.
 **When to revisit:** if the backtest in #173 does not clear its thresholds, if a closed issue turns
 out to have mattered, if the workflow stops without anyone noticing, or if the app handles real user
 data.
+
+---
+
+## 23. Question Text Is a Named Group With a Short Hidden Heading, Not One Long Heading
+
+**Decision:** The Quick Form renders each question in a focusable `role="group"` container. The
+container is named (`aria-labelledby`) by two elements: a visually hidden `<h2>` reading
+"Question N", and a body `<div>` that receives the sanitized question HTML. When an answer
+unmounts the button that held focus, focus moves to the group, so a screen reader announces the
+full question text. A failed answer points `aria-describedby` at the error banner, so the group
+reads the alert too. The page's heading outline is the page title followed by "Question N".
+
+**Why:** 21 Texas questions carry `<p>`, `<ul>` or `<ol>` markup (section 21), which is not valid
+inside a heading. Rendering that markup as an `<h2>` also exposed the whole question as one long
+heading in assistive technology's heading list, and the global reset (`margin: 0`) removed the
+spacing between paragraphs. With a body `div` the paragraphs and lists are ordinary blocks, and the
+body styles restore the spacing and list indentation. The focus ring and the sticky-header scroll
+margin sit on the group, so the ring outlines the whole question.
+
+**Rejected alternatives:**
+- Flattening the block markup in `packages/shared/state-trees/texas.json`: it edits content that the
+  tree parity tests pin, and it would lose the paragraph and list structure the authors wrote.
+- A visible "Question N" heading: it duplicates the step counter in the header, which already shows
+  progress to sighted users.
+- A `<fieldset>`/`<legend>`: fieldsets group form controls, and the answers are not inside this
+  container.
+
+**Consequence:** the question text is no longer a heading, so heading navigation moves between
+questions by their number, not by their wording.

@@ -141,8 +141,8 @@ export const FormCard = styled.div`
 
 // ─── Question area ────────────────────────────────────────────────────────────
 
-// Both headings take focus programmatically when the card changes, so the ring marks where
-// reading resumes.
+// The question group and the loop-exit heading take focus programmatically when the card
+// changes, so the ring marks where reading resumes.
 const headingFocusRing = css`
   &:focus-visible {
     outline: 2px solid var(--color-blue-500);
@@ -151,21 +151,52 @@ const headingFocusRing = css`
   }
 `;
 
-export const QuestionText = styled.h2`
+// The question is a focusable group so focus lands on the whole card text, and the group is named
+// by a short heading plus the body. The body holds legacy block markup (paragraphs, lists), which
+// is not valid inside a heading, so it is never the heading itself.
+export const QuestionGroup = styled.div`
+  margin-bottom: var(--space-3);
+  /* Keeps the focused question out from under the sticky header when focus scrolls it into view. */
+  scroll-margin-top: var(--space-24);
+  ${headingFocusRing}
+`;
+
+// Heading navigation lands on "Question N" while the visible step counter carries the progress
+// for sighted users. Clipped rather than display:none so assistive tech still exposes it.
+export const QuestionNumber = styled.h2`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+`;
+
+export const QuestionBody = styled.div`
   font-size: 1.375rem;
   font-weight: 700;
   color: var(--color-navy-900);
   line-height: 1.35;
   letter-spacing: -0.02em;
-  margin-bottom: var(--space-3);
-  /* Keeps the focused heading out from under the sticky header when focus scrolls it into view. */
-  scroll-margin-top: var(--space-24);
-  ${headingFocusRing}
+  /* The global reset zeroes margins, so block children get their paragraph spacing here. */
+  & > * + * {
+    margin-top: var(--space-3);
+  }
   & > *:first-child {
     margin-top: 0;
   }
   & > *:last-child {
     margin-bottom: 0;
+  }
+  & ul,
+  & ol {
+    padding-inline-start: var(--space-6);
+  }
+  & li + li {
+    margin-top: var(--space-1);
   }
 `;
 

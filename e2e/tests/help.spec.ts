@@ -23,6 +23,11 @@ const LEDGER_PATH = join(__dirname, '../../apps/web/src/lib/helpRuleLedger.json'
 
 const trigger = (page: Page) => page.getByRole('button', { name: /^Help/ });
 const dialog = (page: Page) => page.getByRole('dialog');
+// The question text without the visually hidden "Question N" heading, so comparisons see only
+// the question. The body is the group's one div child.
+const questionBody = (page: Page) =>
+  page.getByRole('group', { name: /^Question \d+/ }).locator(':scope > div');
+const questionText = async (page: Page) => (await questionBody(page).textContent()) ?? '';
 const answerButtons = (page: Page) => page.locator('button[aria-pressed]');
 const answerBox = (page: Page) => page.getByText('How to answer', { exact: true });
 
@@ -372,7 +377,7 @@ test.describe('Help dialog: touch and in-flight requests', { tag: CROSS_BROWSER 
       }
     });
     await gotoNode(page, '5-8');
-    const questionBefore = await page.getByRole('heading', { level: 2 }).textContent();
+    const questionBefore = await questionBody(page).textContent();
     assessRequests.length = 0;
 
     await page.locator('button[aria-pressed]').first().scrollIntoViewIfNeeded();
@@ -397,7 +402,7 @@ test.describe('Help dialog: touch and in-flight requests', { tag: CROSS_BROWSER 
     await expect(page.locator('dialog')).not.toHaveAttribute('open', '');
     await page.waitForTimeout(800);
     expect(assessRequests).toEqual([]);
-    await expect(page.getByRole('heading', { level: 2 })).toHaveText(questionBefore ?? '');
+    await expect(questionBody(page)).toHaveText(questionBefore ?? '');
   });
 
   test('a tap on the backdrop over the Back link closes the dialog and stays on the form', async ({
@@ -452,11 +457,6 @@ test.describe('Help dialog: double activation does not reach the page behind', (
     requests.length = 0;
     return requests;
   }
-
-  // The question heading, by its explicit role attribute: a closing dialog stays exposed for the
-  // length of its exit transition, so a role query for level-2 headings can match two elements.
-  const questionHeading = (page: Page) => page.locator('h2[role="heading"]');
-  const questionText = async (page: Page) => (await questionHeading(page).textContent()) ?? '';
 
   async function openByTap(page: Page) {
     await trigger(page).tap();
@@ -540,7 +540,7 @@ test.describe('Help dialog: double activation does not reach the page behind', (
     await page.waitForTimeout(800);
     expect(requests).toEqual([]);
     expect(new URL(page.url()).pathname).toBe('/intake/texas/quick');
-    await expect(questionHeading(page)).toHaveText(questionBefore);
+    await expect(questionBody(page)).toHaveText(questionBefore);
     // The swallowed press must not move focus onto the control under the pointer either.
     await expect(trigger(page)).toBeFocused();
   }
@@ -672,7 +672,7 @@ test.describe('Help dialog: double activation does not reach the page behind', (
     // Answer by keyboard (not delayed); the next question replaces the card and its dialog.
     await page.locator('button[aria-pressed]').first().focus();
     await page.keyboard.press('Enter');
-    await expect(questionHeading(page)).not.toHaveText(before);
+    await expect(questionBody(page)).not.toHaveText(before);
     await page.locator('button[aria-pressed]:enabled').first().tap();
     await expect.poll(() => requests.length).toBe(2);
   });
