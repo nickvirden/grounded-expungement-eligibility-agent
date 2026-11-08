@@ -1,3 +1,9 @@
+## [2.4.11](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.10...v2.4.11) (2026-11-08)
+
+### Bug Fixes
+
+* **web:** render error pages under the production CSP and stop the quick page swallowing notFound ([5c4503d](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/5c4503df464b6f1bf71e192835c41f1bc12fa59b))
+
 ## [2.4.10](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.9...v2.4.10) (2026-10-31)
 
 ### Bug Fixes
