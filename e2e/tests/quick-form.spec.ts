@@ -249,7 +249,7 @@ const question = (id: number, text: string) => ({
   is_terminal: false,
   next_question_id: id,
   next_question_text: text,
-  next_question_help: null,
+  next_question_help: null as string | null,
   next_answers: [
     { value: `Yes to ${text}`, position: 1 },
     { value: `No to ${text}`, position: 2 },

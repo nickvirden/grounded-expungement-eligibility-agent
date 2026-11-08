@@ -7,7 +7,7 @@
     "node": ">=22.0.0"
   },
   "scripts": {
-    "typecheck": "pnpm --filter web typecheck",
+    "typecheck": "pnpm --filter web typecheck && pnpm --filter e2e typecheck",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
