@@ -257,8 +257,12 @@ jobs:
   # It serves the dev server, not the production build: the production CSP's
   # `upgrade-insecure-requests` makes WebKit rewrite http://localhost requests to https,
   # so the page never hydrates. Production-policy assertions stay in the Chromium job.
+  #
+  # Pinned to 24.04: `ubuntu-latest` is 26.04, where Playwright 1.59.1 supports Chromium only
+  # ("does not support firefox on ubuntu26.04-x64"). Move to `ubuntu-latest` once the
+  # pinned Playwright supports it.
   e2e-cross-browser:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
