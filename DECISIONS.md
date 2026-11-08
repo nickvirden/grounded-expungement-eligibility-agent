@@ -302,8 +302,9 @@ global-first-match lookup, not an approximation of it.
 **Tree version:** every tree has a version id, the first 12 hex characters of the SHA-256 of its
 *decode projection*: `entryNodeId`, each node's `group`, `question` and answers' `value`/`position`,
 and the transitions in file order, serialized as JSON with sorted keys, no whitespace and
-`ensure_ascii=False`, encoded as UTF-8. Two trees share a version exactly when every saved path
-decodes identically against both. Help text, `variant`, `questionsLeft` and `extractedAt` are
+`ensure_ascii=False`, encoded as UTF-8. Two trees with the same version decode every saved path
+identically; the converse does not hold, since an edit invisible to readers (a renamed node id)
+still yields a new version, at the cost of one extra snapshot. Help text, `variant`, `questionsLeft` and `extractedAt` are
 excluded because they never change which question or answer a code resolves to; correcting a help
 paragraph must not strand every stamped path. Only the API computes the id
 (`app/engine/tree_version.py`); clients treat it as opaque. The API returns it as `tree_version` on

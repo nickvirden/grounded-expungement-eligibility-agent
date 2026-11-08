@@ -188,16 +188,19 @@ def test_shared_and_api_copies_are_identical() -> None:
     cmp = filecmp.dircmp(shared_src / "state-trees", shared_dest / "state-trees")
     mismatch: list[str] = []
     errors: list[str] = []
+    orphans: list[str] = []
 
     def _collect(d: "filecmp.dircmp[str]") -> None:
         mismatch.extend(str(Path(d.left) / f) for f in d.diff_files)
         errors.extend(str(Path(d.left) / f) for f in d.left_only)
+        orphans.extend(str(Path(d.right) / f) for f in d.right_only)
         for sub in d.subdirs.values():
             _collect(sub)
 
     _collect(cmp)
     assert not mismatch, f"state-trees differ: {mismatch}"
     assert not errors, f"packages/shared/state-trees has files missing from shared_data: {errors}"
+    assert not orphans, f"shared_data/state-trees has files absent from packages/shared: {orphans}"
 
     catalog_src = shared_src / "service-catalog.json"
     catalog_dest = shared_dest / "service-catalog.json"

@@ -133,4 +133,3 @@ class TestSnapshotStore:
     )
     def test_unknown_or_malformed_input_returns_none(self, state: str, version: str) -> None:
         assert load_snapshot(state, version) is None
-

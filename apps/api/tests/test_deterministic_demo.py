@@ -39,7 +39,6 @@ def test_deterministic_demo_not_always_expungement() -> None:
     assert r1.result_label != r2.result_label
 
 
-
 def test_emitted_and_persisted_report_carry_the_tree_version() -> None:
     """Both the SSE `final` event and the stored AgentStep must name the tree the path was
     decoded against; the persisted copy is what a later view reads."""

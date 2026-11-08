@@ -1,8 +1,10 @@
 """Content-addressed versions for state decision trees.
 
 A saved decision path is a list of `questionId:answerPosition` codes that is decoded against a
-tree at display time. The version id names exactly the part of the tree that decoding reads, so
-two trees share a version if and only if every saved path reads back identically from both.
+tree at display time. The version id covers exactly the part of the tree that decoding reads, so
+two trees with the same version decode every saved path identically. The converse does not hold:
+edits that change nothing a reader sees (a renamed node id, reordered answers) also change the
+version, which costs one extra snapshot and nothing else.
 """
 import hashlib
 import json
