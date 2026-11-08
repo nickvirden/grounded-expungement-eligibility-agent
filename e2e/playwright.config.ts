@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { CROSS_BROWSER_GREP } from './crossBrowser';
 import { webMode } from './webMode';
 
 const isCI = !!process.env.CI;
@@ -60,6 +61,11 @@ const brokenApiWebServer = {
  *   - `dev` (default): `next dev`, whose relaxed CSP differs from production.
  *   - `production`: the standalone build that ships. CI uses this, and
  *     `pnpm e2e:prod` opts in locally. It requires `pnpm --filter web build` first.
+ *
+ * WebKit cannot run against `production` over plain http: the production CSP carries
+ * `upgrade-insecure-requests`, which WebKit also applies to localhost, so every script
+ * request is rewritten to https, fails, and the page never hydrates. The cross-browser
+ * run therefore uses `dev` mode, and its specs must not assert the production policy.
  */
 export default defineConfig({
   testDir: './tests',
@@ -76,10 +82,25 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
 
+  // Chromium runs the whole suite. Firefox and WebKit run only the specs tagged
+  // `@cross-browser`: the ones that exercise engine-specific behaviour (dialog and focus
+  // handling, viewport units, forced colors, pointer and touch input). The rest is
+  // markup and header assertions an engine cannot change, so repeating them costs CI time
+  // for no added signal.
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'firefox',
+      grep: CROSS_BROWSER_GREP,
+      use: { ...devices['Desktop Firefox'] },
+    },
+    {
+      name: 'webkit',
+      grep: CROSS_BROWSER_GREP,
+      use: { ...devices['Desktop Safari'] },
     },
   ],
 

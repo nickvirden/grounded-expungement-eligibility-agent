@@ -1,4 +1,5 @@
 import { type Page, expect, test } from '@playwright/test';
+import { CROSS_BROWSER } from '../crossBrowser';
 import { gotoNode } from '../helpTree';
 import { webMode } from '../webMode';
 
@@ -128,7 +129,7 @@ test.describe('Accessibility — Quick Form', () => {
 
 // The header counter is the widest element in the Quick Form header; it must wrap or drop to
 // its own row rather than push the page sideways on a narrow screen or at large text sizes.
-test.describe('Accessibility — Quick Form reflow', () => {
+test.describe('Accessibility — Quick Form reflow', { tag: CROSS_BROWSER }, () => {
   const REFLOW_RULES = [...RULES, 'button-name', 'link-name', 'heading-order', 'target-size'];
   const configs = [
     { name: '320x640', size: { width: 320, height: 640 }, fontSize: null },

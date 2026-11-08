@@ -432,6 +432,15 @@ any injected markup execute. A nonce makes the policy meaningful against XSS.
   the Dockerfile runs), and local `pnpm e2e` uses the dev server, with `pnpm e2e:prod` to opt in.
   CI therefore no longer runs the Turbopack dev server, so dev-only breakage shows up only for
   developers running `pnpm dev`; a CI matrix over both modes would cover it.
+- Firefox and WebKit run only the specs tagged `@cross-browser` (`e2e/crossBrowser.ts`), in a separate
+  `e2e-cross-browser` CI job (`pnpm e2e:cross-browser`) against the dev server. WebKit applies
+  `upgrade-insecure-requests` to http://localhost, so against the production build over plain http
+  no script loads and the page never hydrates; production-policy assertions therefore stay in the
+  Chromium job. Rejected: a TLS terminator in front of the production build (certificate setup and
+  an extra process for every run) and running the whole suite in each engine (the markup and header
+  checks cannot differ by engine, and the timing-based double-activation matrix more than doubles
+  the run). Tag a `test.describe` when it covers dialog or focus handling, viewport units, forced
+  colors or pointer input.
 
 **Alternatives rejected:**
 - `'unsafe-inline'` for scripts via static `headers()`: keeps `/` static and is a one-line change,

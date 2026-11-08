@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test';
+import { CROSS_BROWSER } from '../crossBrowser';
 import { expect, test } from '../cspGuard';
 
 /**
@@ -333,7 +334,11 @@ test.describe('Quick Form — loop exit', () => {
 });
 
 // Answering unmounts the button that held focus, so the next question's heading has to take it.
-test.describe('Quick Form — focus after answering', () => {
+// Safari on macOS leaves buttons out of the Tab order unless Full Keyboard Access is on, and
+// Playwright's WebKit build follows it. Linux WebKit tabs to buttons, so CI still covers it.
+const MAC_WEBKIT_TAB_SKIP = 'macOS WebKit does not Tab onto buttons by default';
+
+test.describe('Quick Form — focus after answering', { tag: CROSS_BROWSER }, () => {
   const heading = (page: Page) => page.getByRole('heading', { level: 2 });
   const answers = (page: Page) => page.locator('button[aria-pressed]');
 
@@ -359,7 +364,9 @@ test.describe('Quick Form — focus after answering', () => {
 
   test('answering with the keyboard focuses the next question, and Tab reaches its answers', async ({
     page,
+    browserName,
   }) => {
+    test.skip(browserName === 'webkit' && process.platform === 'darwin', MAC_WEBKIT_TAB_SKIP);
     await loadQuickForm(page);
     await mockQuestions(page, question(1, 'Mocked question X'));
 
@@ -373,7 +380,9 @@ test.describe('Quick Form — focus after answering', () => {
 
   test('answering with the mouse focuses the next question, and Tab reaches its answers', async ({
     page,
+    browserName,
   }) => {
+    test.skip(browserName === 'webkit' && process.platform === 'darwin', MAC_WEBKIT_TAB_SKIP);
     await loadQuickForm(page);
     await mockQuestions(page, question(1, 'Mocked question X'));
 
