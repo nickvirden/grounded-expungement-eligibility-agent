@@ -17,6 +17,7 @@ from app.agents.guardrails import GuardrailError, check_confidence, check_max_st
 from app.config import settings
 from app.db import engine
 from app.engine import rule_engine
+from app.engine.tree_version import tree_version
 from app.models import AgentRun, AgentStep, Intake
 
 if TYPE_CHECKING:
@@ -139,6 +140,15 @@ def _choose_answer_position(
             return int(ans.get("position", 0))
 
     return int(answers[0].get("position", 0)) if answers else 0
+
+
+def _stamped_report(report: EligibilityReport, state: str) -> dict[str, Any]:
+    """The report as emitted and persisted, plus the tree version its path was decoded against.
+
+    The version is stamped here rather than declared on `EligibilityReport`: that model is the
+    schema the LLM fills in, and server-owned fields must not be something a model can write.
+    """
+    return {**report.model_dump(mode="json"), "tree_version": tree_version(state.lower())}
 
 
 def _run_deterministic_demo(state: str, narrative: str) -> tuple[EligibilityReport, list[str]]:
@@ -308,6 +318,7 @@ class AgentRunner:
 
                     final, _traversed = _run_deterministic_demo(state, narrative)
                     final = final.model_copy(update={"intake_id": intake_id, "state": state})
+                    stamped = _stamped_report(final, state)
 
                     with Session(engine) as session:
                         run_rec = session.get(AgentRun, run_id)
@@ -320,13 +331,13 @@ class AgentRunner:
                             run_id=run_id,
                             step_idx=step_count + 1,
                             type="final",
-                            payload_json=final.model_dump_json(),
+                            payload_json=json.dumps(stamped),
                         )
                         session.add(step)
                         session.commit()
 
                     intake_final_status = "completed"
-                    yield {"type": "final", "report": final.model_dump()}
+                    yield {"type": "final", "report": stamped}
                     return
 
                 user_prompt = (
@@ -383,6 +394,7 @@ class AgentRunner:
                         # Never trust a model to echo state/intake correctly.
                         final = final.model_copy(update={"intake_id": intake_id, "state": state})
                         check_confidence(final.confidence)
+                        stamped = _stamped_report(final, state)
 
                         with Session(engine) as session:
                             run_rec = session.get(AgentRun, run_id)
@@ -395,13 +407,13 @@ class AgentRunner:
                                 run_id=run_id,
                                 step_idx=step_count + 1,
                                 type="final",
-                                payload_json=final.model_dump_json(),
+                                payload_json=json.dumps(stamped),
                             )
                             session.add(step)
                             session.commit()
 
                         intake_final_status = "completed"
-                        yield {"type": "final", "report": final.model_dump()}
+                        yield {"type": "final", "report": stamped}
                     finally:
                         # Captured here, inside the run_stream() context, so
                         # a guardrail/timeout/disconnect exit still records

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 
 from app.engine import rule_engine
+from app.engine.tree_version import tree_version
 from app.schemas import EligibilityAssessRequest, EligibilityAssessResponse
 
 router = APIRouter(prefix="/api/eligibility", tags=["eligibility"])
@@ -31,4 +32,5 @@ async def assess(req: EligibilityAssessRequest) -> EligibilityAssessResponse:
         next_answers=result.next_answers or [],
         questions_left=result.questions_left,
         traversed_path=[f"{req.question_id}:{req.answer_position}"],
+        tree_version=tree_version(req.state.lower()),
     )
