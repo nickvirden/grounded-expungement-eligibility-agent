@@ -86,7 +86,9 @@ export default async function ResultPage({ params, searchParams }: Props) {
     }
   }
   const resolved = resolveTreeProvenance(sp.tree, requestedVersion ? tree : null);
-  const note = provenanceNote(resolved);
+  // With no tree at all the path renders as raw codes, so a claim about
+  // which wording is shown would be false.
+  const note = tree ? provenanceNote(resolved) : null;
   const decodedPath = decodeDecisionPath(path, tree);
 
   const OutcomeIcon = meta.outcome === 'negative' ? XCircleIcon : CheckCircleIcon;

@@ -41,9 +41,10 @@ export default function CaseFileCard({ state, intakeId, status, report, decision
   );
   // The tree on hand is always the current one, so a report stamped with any
   // other version (or none) is decoded against wording it may not have seen.
-  const pathNote = report
-    ? provenanceNote(resolveTreeProvenance(report.tree_version, decisionTree))
-    : null;
+  const pathNote =
+    report && decisionTree
+      ? provenanceNote(resolveTreeProvenance(report.tree_version, decisionTree))
+      : null;
 
   return (
     // tabIndex: a decoded decision path can run longer than the panel's
