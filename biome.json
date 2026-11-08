@@ -39,6 +39,7 @@
   },
   "files": {
     "ignore": [
+      ".context",
       "node_modules",
       ".next",
       ".turbo",
