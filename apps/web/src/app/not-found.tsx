@@ -1,13 +1,13 @@
+import {
+  PrimaryAction,
+  StatusBody,
+  StatusCard,
+  StatusEyebrow,
+  StatusHeadline,
+  StatusShell,
+} from '@/components/StatusCard.styles';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import {
-  HomeLink,
-  NotFoundBody,
-  NotFoundCard,
-  NotFoundHeadline,
-  NotFoundShell,
-  StatusEyebrow,
-} from './not-found.styles';
 
 export const metadata: Metadata = { title: 'Page not found' };
 
@@ -21,17 +21,17 @@ export const metadata: Metadata = { title: 'Page not found' };
  */
 export default function NotFound() {
   return (
-    <NotFoundShell>
-      <NotFoundCard aria-labelledby="not-found-heading">
+    <StatusShell>
+      <StatusCard aria-labelledby="not-found-heading">
         <StatusEyebrow>Error 404</StatusEyebrow>
-        <NotFoundHeadline id="not-found-heading">Page not found</NotFoundHeadline>
-        <NotFoundBody>
+        <StatusHeadline id="not-found-heading">Page not found</StatusHeadline>
+        <StatusBody>
           We could not find that page. Check the address, or start again from the home page.
-        </NotFoundBody>
-        <HomeLink as={Link} href="/">
+        </StatusBody>
+        <PrimaryAction as={Link} href="/">
           Go to the home page
-        </HomeLink>
-      </NotFoundCard>
-    </NotFoundShell>
+        </PrimaryAction>
+      </StatusCard>
+    </StatusShell>
   );
 }

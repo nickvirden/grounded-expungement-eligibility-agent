@@ -30,12 +30,28 @@ const webServerByMode = {
   },
 } as const;
 
+// Production only: a second web server whose API is unreachable (port 1 refuses
+// connections), so server-rendered pages that depend on the API fail for real and the
+// error boundary can be exercised without a test hook in product code. `/` still
+// answers because the landing page falls back to a static state list, which is what
+// Playwright polls for readiness.
+const brokenApiWebServer = {
+  command:
+    'cd ../apps/web && INTERNAL_API_URL=http://127.0.0.1:1 PORT=3001 HOSTNAME=127.0.0.1 NEXT_TELEMETRY_DISABLED=1 pnpm run start:standalone',
+  url: 'http://127.0.0.1:3001',
+  reuseExistingServer: false,
+  timeout: 30_000,
+  stdout: 'pipe',
+  stderr: 'pipe',
+} as const;
+
 /**
  * Playwright configuration.
  *
  * The `webServer` block starts real services before the test suite runs:
  *   - FastAPI API on port 8001 (using a dedicated test SQLite DB, LLM stubbed via TestModel)
  *   - Next.js web on port 3000 (pointed at the test API)
+ *   - production mode only: a second Next.js web on port 3001 whose API is unreachable
  *
  * In local dev, `reuseExistingServer: true` lets you pre-start the servers
  * with `make dev` and skip the startup overhead between runs.
@@ -87,5 +103,6 @@ export default defineConfig({
       stderr: 'pipe',
     },
     webServerByMode[webMode],
+    ...(webMode === 'production' ? [brokenApiWebServer] : []),
   ],
 });
