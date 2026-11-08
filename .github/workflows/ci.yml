@@ -162,7 +162,11 @@ jobs:
         run: uv run pytest -q -rs
 
   e2e:
-    runs-on: ubuntu-latest
+    # Pinned: `ubuntu-latest` moved to 26.04, which the pinned Playwright does
+    # not support (`playwright install --with-deps` exits 1 there). Move this
+    # back to `ubuntu-latest` after upgrading Playwright to a release that
+    # lists the new image.
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
