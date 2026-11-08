@@ -64,3 +64,51 @@ export function decodeDecisionPath(
     return step;
   });
 }
+
+// Shape of the API's tree version. The web never computes or interprets one;
+// this only keeps arbitrary URL text out of the tree request.
+const TREE_VERSION_RE = /^[0-9a-f]{12}$/;
+
+export function isTreeVersion(value: string): boolean {
+  return TREE_VERSION_RE.test(value);
+}
+
+/**
+ * How the tree used to decode a path relates to the tree the user answered
+ * against.
+ *  - exact: the tree is the version the path was recorded under.
+ *  - superseded: the recorded version's retained snapshot was used.
+ *  - unversioned: the path carries no version, so the current tree decodes it.
+ *  - unavailable: a version was recorded but its tree could not be loaded.
+ *  - invalid: the recorded version is malformed.
+ */
+export type TreeProvenance = 'exact' | 'superseded' | 'unversioned' | 'unavailable' | 'invalid';
+
+/**
+ * Classify a `tree` search parameter against the tree that loaded for it.
+ * `requested` is the raw parameter (an array when it repeats), `loadedTree`
+ * the fetch result or null on any failure.
+ */
+export function resolveTreeProvenance(
+  requested: string | string[] | undefined,
+  loadedTree: Pick<StateTree, 'treeVersion' | 'superseded'> | null,
+): TreeProvenance {
+  if (requested === undefined || requested === '') return 'unversioned';
+  if (typeof requested !== 'string' || !isTreeVersion(requested)) return 'invalid';
+  // An API that predates versioning ignores ?version= and returns the current
+  // tree without a treeVersion, which must not read as a match.
+  if (!loadedTree || loadedTree.treeVersion !== requested) return 'unavailable';
+  return loadedTree.superseded ? 'superseded' : 'exact';
+}
+
+/** Note shown with a decoded path whose wording may differ from what the user saw. */
+export function provenanceNote(provenance: TreeProvenance): string | null {
+  switch (provenance) {
+    case 'exact':
+      return null;
+    case 'superseded':
+      return 'Shown as worded when you answered. Some questions have since been updated.';
+    default:
+      return 'Shown in current wording, which may differ from what you saw.';
+  }
+}

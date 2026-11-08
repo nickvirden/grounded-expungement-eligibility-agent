@@ -5,6 +5,7 @@ import {
   describeProgress,
   isRepeatedQuestion,
   questionKey,
+  stampTreeVersion,
 } from './QuickFormClient.utils.js';
 
 describe('computeProgress', () => {
@@ -142,5 +143,25 @@ describe('questionKey', () => {
   it('differs when only the group differs', () => {
     const a = node('1-1');
     assert.notEqual(questionKey(a), questionKey({ ...a, questionId: 2 }));
+  });
+});
+
+describe('stampTreeVersion', () => {
+  it('returns the version every response agrees on', () => {
+    assert.equal(stampTreeVersion(['abcdef012345', 'abcdef012345']), 'abcdef012345');
+    assert.equal(stampTreeVersion(['abcdef012345']), 'abcdef012345');
+  });
+
+  it('is undefined when two responses name different trees', () => {
+    assert.equal(stampTreeVersion(['abcdef012345', '000000000000']), undefined);
+  });
+
+  it('is undefined when any response lacks a version', () => {
+    assert.equal(stampTreeVersion(['abcdef012345', undefined]), undefined);
+    assert.equal(stampTreeVersion([undefined, 'abcdef012345']), undefined);
+  });
+
+  it('is undefined for no responses', () => {
+    assert.equal(stampTreeVersion([]), undefined);
   });
 });

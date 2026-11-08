@@ -36,6 +36,8 @@ export const assessResponseSchema = z.object({
   next_answers: z.array(answerOptionSchema).nullable().optional(),
   questions_left: z.number().int().nullable().optional(),
   traversed_path: z.array(z.string()).default([]),
+  // Optional so a web deploy that lands before the API still parses.
+  tree_version: z.string().optional(),
 });
 
 export type AssessResponse = z.infer<typeof assessResponseSchema>;
@@ -88,6 +90,7 @@ export const eligibilityReportSchema = z.object({
   traversed_path: z.array(z.string()).default([]),
   recommended_services: z.array(serviceRecSchema).default([]),
   summary: z.string().optional(),
+  tree_version: z.string().optional(),
 });
 
 export type EligibilityReport = z.infer<typeof eligibilityReportSchema>;
@@ -125,6 +128,11 @@ export const stateTreeSchema = z.object({
   entryNodeId: z.string(),
   nodes: z.record(z.string(), stateTreeNodeSchema),
   transitions: z.array(stateTreeTransitionSchema),
+  // Opaque content hash of the tree's decode projection, and whether the tree
+  // is a retained snapshot rather than the current one. Both are absent from
+  // an API that predates tree versioning.
+  treeVersion: z.string().optional(),
+  superseded: z.boolean().optional(),
 });
 
 export type StateTree = z.infer<typeof stateTreeSchema>;

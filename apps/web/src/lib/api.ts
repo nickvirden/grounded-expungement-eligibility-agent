@@ -4,16 +4,15 @@
  * All requests go through this module so base URL resolution and response
  * validation are centralized.
  */
+import { isTreeVersion } from './decisionPath';
 import { internalApiUrl } from './internalApiUrl';
 import {
   type AssessRequest,
   type AssessResponse,
-  type EligibilityReport,
   type IntakeCreate,
   type IntakeCreateResponse,
   type StateTree,
   assessResponseSchema,
-  eligibilityReportSchema,
   intakeCreateResponseSchema,
   stateTreeSchema,
 } from './schemas';
@@ -70,8 +69,19 @@ export async function listStates(): Promise<string[]> {
   return data.map((s) => s.state);
 }
 
-export async function getStateTree(state: string, init?: RequestInit): Promise<StateTree> {
-  const data = await fetchJson<unknown>(`/api/states/${state}/tree`, init);
+/**
+ * Fetch a state's decision tree. With `version`, the API returns the retained
+ * snapshot for that version (404 when none exists). A value that is not a
+ * well-formed version is dropped rather than sent, so it can never reach the
+ * query string.
+ */
+export async function getStateTree(
+  state: string,
+  init?: RequestInit,
+  version?: string,
+): Promise<StateTree> {
+  const query = version && isTreeVersion(version) ? `?version=${version}` : '';
+  const data = await fetchJson<unknown>(`/api/states/${state}/tree${query}`, init);
   return stateTreeSchema.parse(data);
 }
 
@@ -93,11 +103,6 @@ export async function createIntake(body: IntakeCreate): Promise<IntakeCreateResp
     body: JSON.stringify(body),
   });
   return intakeCreateResponseSchema.parse(data);
-}
-
-export async function getIntake(intakeId: string): Promise<EligibilityReport> {
-  const data = await fetchJson<unknown>(`/api/intakes/${intakeId}`);
-  return eligibilityReportSchema.parse(data);
 }
 
 export async function deleteIntake(intakeId: string): Promise<void> {

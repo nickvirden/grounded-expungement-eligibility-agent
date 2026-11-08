@@ -40,6 +40,7 @@ import {
   isRepeatedQuestion,
   questionKey,
   responseToStep,
+  stampTreeVersion,
   stepToPathEntry,
 } from './QuickFormClient.utils';
 
@@ -50,6 +51,7 @@ interface EntryQuestion {
   // API uses 'value'; AssessResponse (after Zod transform) uses 'label'
   answers: Array<{ value?: string; label?: string; position: number }>;
   questions_left: number;
+  tree_version?: string;
 }
 
 interface Props {
@@ -103,7 +105,13 @@ function QuickFormStepper({ state, stateName, entry, restarted, onRestart }: Ste
   // and the answer text shown in the breadcrumb are derived from the same
   // array, instead of being tracked in two parallel arrays that could drift.
   const [answeredSteps, setAnsweredSteps] = useState<
-    Array<{ entry: string; answerLabel: string; questionKey: string }>
+    Array<{
+      entry: string;
+      answerLabel: string;
+      questionKey: string;
+      // Version of the tree that produced the response to this answer.
+      treeVersion: string | undefined;
+    }>
   >([]);
   // Set when the engine returns a question already answered on this path. The engine keeps no
   // memory of the path, so continuing would revisit steps the user already took.
@@ -152,6 +160,7 @@ function QuickFormStepper({ state, stateName, entry, restarted, onRestart }: Ste
             entry: stepToPathEntry(questionId, position),
             answerLabel,
             questionKey: questionKey({ questionId, questionText, answers }),
+            treeVersion: result.tree_version,
           },
         ];
         setAnsweredSteps(newSteps);
@@ -163,6 +172,13 @@ function QuickFormStepper({ state, stateName, entry, restarted, onRestart }: Ste
             state,
             path: newSteps.map((s) => s.entry).join(','),
           });
+          // The first question came from the entry fetch, every later one from
+          // an assess response; all must agree for the path to name one tree.
+          const treeVersion = stampTreeVersion([
+            entry.tree_version,
+            ...newSteps.map((s) => s.treeVersion),
+          ]);
+          if (treeVersion) params.set('tree', treeVersion);
           router.push(`/intake/${state}/result?${params.toString()}`);
           return;
         }
@@ -192,7 +208,16 @@ function QuickFormStepper({ state, stateName, entry, restarted, onRestart }: Ste
         inFlight.current = false;
       }
     },
-    [isLoading, questionId, questionText, answers, state, answeredSteps, router],
+    [
+      isLoading,
+      questionId,
+      questionText,
+      answers,
+      state,
+      answeredSteps,
+      router,
+      entry.tree_version,
+    ],
   );
 
   // Focus would otherwise be left on an answer button that has just been removed.

@@ -32,6 +32,8 @@ export default async function QuickFormPage({ params }: Props) {
     // API (and Texas JSON tree) uses 'value'; normalized to 'label' by Zod on client
     answers: Array<{ value?: string; label?: string; position: number }>;
     questions_left: number;
+    // Absent when the API predates tree versioning.
+    tree_version?: string;
   } | null = null;
 
   try {

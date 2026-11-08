@@ -52,6 +52,14 @@ export const CaseValue = styled.dd`
   font-weight: 500;
 `;
 
+export const PathNote = styled.p`
+  font-size: 0.8125rem;
+  color: var(--color-navy-600);
+  line-height: 1.5;
+  font-weight: 400;
+  margin-bottom: var(--space-2);
+`;
+
 interface StatusPillProps {
   $status: 'pending' | 'running' | 'complete' | 'error';
 }
