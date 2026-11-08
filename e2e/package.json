@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "playwright test",
+    "test": "playwright test --project=chromium",
+    "test:cross-browser": "playwright test --project=firefox --project=webkit",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
     "show-report": "playwright show-report"

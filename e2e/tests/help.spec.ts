@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Locator, Page } from '@playwright/test';
 import { decideHelp } from '../../apps/web/src/lib/helpRuleLedger';
+import { CROSS_BROWSER } from '../crossBrowser';
 import { expect, test } from '../cspGuard';
 import { gotoNode, nodeHasHelp, reachableNodesWithHelp } from '../helpTree';
 
@@ -36,7 +37,7 @@ async function openByClick(page: Page): Promise<Locator> {
 
 const scrollY = (page: Page) => page.evaluate(() => window.scrollY);
 
-test.describe('Help dialog: trigger and opening', () => {
+test.describe('Help dialog: trigger and opening', { tag: CROSS_BROWSER }, () => {
   test.use({ viewport: MOBILE });
 
   test('the Help button is a named popup trigger and the answers stay on screen at 375x812', async ({
@@ -107,7 +108,7 @@ test.describe('Help dialog: trigger and opening', () => {
   });
 });
 
-test.describe('Help dialog: closing and focus', () => {
+test.describe('Help dialog: closing and focus', { tag: CROSS_BROWSER }, () => {
   test.use({ viewport: DESKTOP });
 
   const closers: Array<[string, (page: Page) => Promise<void>]> = [
@@ -218,7 +219,7 @@ test.describe('Help dialog: closing and focus', () => {
     await openByClick(page);
     // Engines that wrap Tab onto the frame do so after a keypress, which is what makes the
     // focus ring apply; the same state is reached here by focusing it after a key.
-    await page.keyboard.press('Shift');
+    await page.keyboard.press('Tab');
     await dialog(page).evaluate((el) => (el as HTMLElement).focus());
     const ring = await dialog(page).evaluate((el) => {
       const s = getComputedStyle(el);
@@ -284,8 +285,12 @@ test.describe('Help dialog: closing and focus', () => {
   });
 });
 
-test.describe('Help dialog: page scroll and fit', () => {
-  test('the page does not scroll while the dialog is open or after it closes', async ({ page }) => {
+test.describe('Help dialog: page scroll and fit', { tag: CROSS_BROWSER }, () => {
+  test('the page does not scroll while the dialog is open or after it closes', async ({
+    page,
+    browserName,
+  }) => {
+    test.fixme(browserName === 'webkit', 'WebKit hit-testing of the dialog body, see #213');
     await page.setViewportSize(MOBILE);
     await gotoNode(page, '7-10');
     await page.evaluate(() => window.scrollTo(0, 120));
@@ -352,7 +357,7 @@ test.describe('Help dialog: page scroll and fit', () => {
   }
 });
 
-test.describe('Help dialog: touch and in-flight requests', () => {
+test.describe('Help dialog: touch and in-flight requests', { tag: CROSS_BROWSER }, () => {
   test.use({ viewport: MOBILE, hasTouch: true });
 
   // A tap on the dimmed backdrop must only dismiss the sheet. If the dialog left the top layer
