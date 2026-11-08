@@ -703,21 +703,22 @@ data.
 
 ---
 
-## 23. Question Text Is a Named Group With a Short Hidden Heading, Not One Long Heading
+## 23. Question Text Is a Group With a Short Hidden Heading, Not One Long Heading
 
 **Decision:** The Quick Form renders each question in a focusable `role="group"` container. The
-container is named (`aria-labelledby`) by two elements: a visually hidden `<h2>` reading
-"Question N", and a body `<div>` that receives the sanitized question HTML. When an answer
-unmounts the button that held focus, focus moves to the group, so a screen reader announces the
-full question text. A failed answer points `aria-describedby` at the error banner, so the group
-reads the alert too. The page's heading outline is the page title followed by "Question N".
+container is named (`aria-labelledby`) by a visually hidden `<h2>` reading "Question N", and
+described (`aria-describedby`) by a body `<div>` that receives the sanitized question HTML. A failed
+answer adds the error banner to the description. When an answer unmounts the button that held
+focus, focus moves to the group, so a screen reader announces "Question N", then the full question
+text, then any error, once. The page's heading outline is the page title followed by "Question N".
 
-**Why:** 21 Texas questions carry `<p>`, `<ul>` or `<ol>` markup (section 21), which is not valid
-inside a heading. Rendering that markup as an `<h2>` also exposed the whole question as one long
-heading in assistive technology's heading list, and the global reset (`margin: 0`) removed the
-spacing between paragraphs. With a body `div` the paragraphs and lists are ordinary blocks, and the
-body styles restore the spacing and list indentation. The focus ring and the sticky-header scroll
-margin sit on the group, so the ring outlines the whole question.
+**Why:** 21 Texas questions carry `<p>`, `<ul>`, `<li>` or `<b>` markup (the issue's 22 included
+3-10, reworded to plain text in section 21). Block markup is not valid inside a heading, and
+rendering it as an `<h2>` exposed the whole question as one long heading in assistive technology's
+heading list. The global reset (`margin: 0`) also removed the spacing between paragraphs. With a
+body `div` the paragraphs and lists are ordinary blocks, and the body styles restore the spacing
+and list indentation. The focus ring and the sticky-header scroll margin sit on the group, so the
+ring outlines the whole question.
 
 **Rejected alternatives:**
 - Flattening the block markup in `packages/shared/state-trees/texas.json`: it edits content that the
@@ -726,6 +727,7 @@ margin sit on the group, so the ring outlines the whole question.
   progress to sighted users.
 - A `<fieldset>`/`<legend>`: fieldsets group form controls, and the answers are not inside this
   container.
+- Naming the group by the heading plus the body (`aria-labelledby` on both): both elements sit
+  inside the group, so line-by-line browsing reads the question twice.
 
-**Consequence:** the question text is no longer a heading, so heading navigation moves between
-questions by their number, not by their wording.
+**Consequence:** heading navigation moves between questions by their number, not by their wording.

@@ -128,7 +128,10 @@ test.describe('Accessibility — Quick Form', () => {
     // Each click waits for the previous mocked question, so a click lost before hydration fails
     // at the missing heading instead of timing out on a later step.
     for (const heading of [null, 'Mocked question 1', 'Mocked question 2']) {
-      if (heading) await expect(page.getByRole('group', { name: heading })).toBeVisible();
+      if (heading)
+        await expect(
+          page.getByRole('group', { name: /^Question \d+$/ }).filter({ hasText: heading }),
+        ).toBeVisible();
       const button = page.locator('button[aria-pressed]').first();
       await expect(button).toBeEnabled({ timeout: 10_000 });
       await button.click();
@@ -201,12 +204,18 @@ test.describe('Accessibility — Quick Form reflow', { tag: CROSS_BROWSER }, () 
       const answer = page.locator('button[aria-pressed]').first();
       await expect(answer).toBeEnabled({ timeout: 10_000 });
       await answer.click();
-      await expect(page.getByRole('group', { name: 'Mocked question 1' })).toBeVisible();
+      await expect(
+        page
+          .getByRole('group', { name: /^Question \d+$/ })
+          .filter({ hasText: 'Mocked question 1' }),
+      ).toBeVisible();
       await expect(page.getByText(/about 88 left/)).toBeVisible();
       await expectHeaderFits(page);
 
       for (const heading of ['Mocked question 1', 'Mocked question 2']) {
-        await expect(page.getByRole('group', { name: heading })).toBeVisible();
+        await expect(
+          page.getByRole('group', { name: /^Question \d+$/ }).filter({ hasText: heading }),
+        ).toBeVisible();
         const button = page.locator('button[aria-pressed]').first();
         await expect(button).toBeEnabled();
         await button.click();

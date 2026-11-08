@@ -26,7 +26,7 @@ const dialog = (page: Page) => page.getByRole('dialog');
 // The question text without the visually hidden "Question N" heading, so comparisons see only
 // the question. The body is the group's one div child.
 const questionBody = (page: Page) =>
-  page.getByRole('group', { name: /^Question \d+/ }).locator(':scope > div');
+  page.getByRole('group', { name: /^Question \d+$/ }).locator(':scope > div');
 const questionText = async (page: Page) => (await questionBody(page).textContent()) ?? '';
 const answerButtons = (page: Page) => page.locator('button[aria-pressed]');
 const answerBox = (page: Page) => page.getByText('How to answer', { exact: true });

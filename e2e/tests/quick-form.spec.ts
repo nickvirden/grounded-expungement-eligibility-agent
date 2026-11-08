@@ -48,6 +48,12 @@ test.describe('Quick Form — Texas happy path', () => {
     // First question is present in the initial HTML (SSR)
     const questionHeading = page.getByRole('heading', { name: /^Question \d+$/ });
     await expect(questionHeading).toBeVisible({ timeout: 10_000 });
+    // The body carries the entry question's text, so an empty body fails.
+    await expect(
+      page
+        .getByRole('group', { name: /^Question \d+$/ })
+        .getByText(/what best describes this texas case/i),
+    ).toBeVisible();
 
     // There must be at least two answer options
     const answerButtons = page.getByRole('button');
@@ -155,7 +161,7 @@ test.describe('Quick Form — Texas happy path', () => {
 
     // This question/answer pair is only correctly paired once node identity
     // accounts for question variant, not just question group number.
-    await expect(page.getByRole('group', { name: /^Question \d+/ })).toContainText(
+    await expect(page.getByRole('group', { name: /^Question \d+$/ })).toContainText(
       /which best describes the offense you were arrested for/i,
     );
     await expect(page.getByRole('button', { name: /^felony$/i })).toBeVisible();
@@ -194,7 +200,7 @@ test.describe('Quick Form — Texas happy path', () => {
       await button.click();
     }
 
-    await expect(page.getByRole('group', { name: /^Question \d+/ })).toContainText(
+    await expect(page.getByRole('group', { name: /^Question \d+$/ })).toContainText(
       /currently.*on any of the following types of probation/i,
     );
 
@@ -290,7 +296,10 @@ test.describe('Quick Form — loop exit', () => {
   // hydration fails at the missing heading instead of timing out on a later step.
   async function answerThroughCycle(page: Page) {
     for (const heading of [null, 'Mocked question X', 'Mocked question Y']) {
-      if (heading) await expect(page.getByRole('group', { name: heading })).toBeVisible();
+      if (heading)
+        await expect(
+          page.getByRole('group', { name: /^Question \d+$/ }).filter({ hasText: heading }),
+        ).toBeVisible();
       const button = page.locator('button[aria-pressed]').first();
       await expect(button).toBeEnabled({ timeout: 15_000 });
       await button.click();
@@ -324,7 +333,7 @@ test.describe('Quick Form — loop exit', () => {
 
   test('Start over shows the entry question again with the path cleared', async ({ page }) => {
     await page.goto('/intake/texas/quick');
-    const question = page.getByRole('group', { name: /^Question \d+/ }).locator(':scope > div');
+    const question = page.getByRole('group', { name: /^Question \d+$/ }).locator(':scope > div');
     await expect(question).toBeVisible({ timeout: 10_000 });
     const entryText = await question.innerText();
     await mockCycle(page);
@@ -332,7 +341,7 @@ test.describe('Quick Form — loop exit', () => {
 
     await page.getByRole('button', { name: 'Start over' }).click();
     await expect(question).toHaveText(entryText);
-    await expect(page.getByRole('group', { name: /^Question \d+/ })).toBeFocused();
+    await expect(page.getByRole('group', { name: /^Question \d+$/ })).toBeFocused();
     await expect(page.getByRole('list', { name: /decision path so far/i })).toHaveCount(0);
     await expect(page.locator('button[aria-pressed]').first()).toBeEnabled();
   });
@@ -343,7 +352,7 @@ test.describe('Quick Form — loop exit', () => {
       timeout: 10_000,
     });
     await page.getByRole('button', { name: /didn't end up resulting in a conviction/i }).click();
-    await expect(page.getByRole('group', { name: /^Question \d+/ })).toContainText(
+    await expect(page.getByRole('group', { name: /^Question \d+$/ })).toContainText(
       /outcome|criminal record/i,
     );
     await expect(page.getByRole('heading', { name: "We can't finish this check" })).toHaveCount(0);
@@ -356,7 +365,7 @@ test.describe('Quick Form — loop exit', () => {
 const MAC_WEBKIT_TAB_SKIP = 'macOS WebKit does not Tab onto buttons by default';
 
 test.describe('Quick Form — focus after answering', { tag: CROSS_BROWSER }, () => {
-  const questionGroup = (page: Page) => page.getByRole('group', { name: /^Question \d+/ });
+  const questionGroup = (page: Page) => page.getByRole('group', { name: /^Question \d+$/ });
   const questionBody = (page: Page) => questionGroup(page).locator(':scope > div');
   const answers = (page: Page) => page.locator('button[aria-pressed]');
 
@@ -391,7 +400,9 @@ test.describe('Quick Form — focus after answering', { tag: CROSS_BROWSER }, ()
     await answers(page).first().focus();
     await page.keyboard.press('Enter');
 
-    await expect(page.getByRole('group', { name: 'Mocked question X' })).toBeFocused();
+    await expect(
+      page.getByRole('group', { name: /^Question \d+$/ }).filter({ hasText: 'Mocked question X' }),
+    ).toBeFocused();
     await page.keyboard.press('Tab');
     await expect(answers(page).first()).toBeFocused();
   });
@@ -406,7 +417,9 @@ test.describe('Quick Form — focus after answering', { tag: CROSS_BROWSER }, ()
 
     await answers(page).first().click();
 
-    await expect(page.getByRole('group', { name: 'Mocked question X' })).toBeFocused();
+    await expect(
+      page.getByRole('group', { name: /^Question \d+$/ }).filter({ hasText: 'Mocked question X' }),
+    ).toBeFocused();
     await page.keyboard.press('Tab');
     await expect(answers(page).first()).toBeFocused();
   });
@@ -420,7 +433,9 @@ test.describe('Quick Form — focus after answering', { tag: CROSS_BROWSER }, ()
     );
 
     await answers(page).first().click();
-    await expect(page.getByRole('group', { name: 'Mocked question X' })).toBeFocused();
+    await expect(
+      page.getByRole('group', { name: /^Question \d+$/ }).filter({ hasText: 'Mocked question X' }),
+    ).toBeFocused();
 
     await page.getByRole('button', { name: /^Help/ }).click();
     await expect(page.getByRole('dialog')).toBeVisible();
@@ -428,7 +443,9 @@ test.describe('Quick Form — focus after answering', { tag: CROSS_BROWSER }, ()
     await expect(page.getByRole('dialog')).toBeHidden();
 
     await answers(page).first().click();
-    await expect(page.getByRole('group', { name: 'Mocked question Y' })).toBeFocused();
+    await expect(
+      page.getByRole('group', { name: /^Question \d+$/ }).filter({ hasText: 'Mocked question Y' }),
+    ).toBeFocused();
   });
 
   // Chromium centres an off-screen focus target, so the position check alone cannot tell
@@ -450,12 +467,16 @@ test.describe('Quick Form — focus after answering', { tag: CROSS_BROWSER }, ()
     await mockQuestions(page, longQuestion(1), longQuestion(2));
 
     await answers(page).first().click();
-    await expect(page.getByRole('group', { name: 'Mocked question 1' })).toBeFocused();
+    await expect(
+      page.getByRole('group', { name: /^Question \d+$/ }).filter({ hasText: 'Mocked question 1' }),
+    ).toBeFocused();
     const last = answers(page).last();
     await last.scrollIntoViewIfNeeded();
     await last.click();
 
-    const next = page.getByRole('group', { name: 'Mocked question 2' });
+    const next = page
+      .getByRole('group', { name: /^Question \d+$/ })
+      .filter({ hasText: 'Mocked question 2' });
     await expect(next).toBeFocused();
     const header = await page.locator('header').boundingBox();
     const box = await next.boundingBox();
@@ -482,9 +503,9 @@ test.describe('Quick Form — focus after answering', { tag: CROSS_BROWSER }, ()
     await expect(alert).toBeVisible();
     await expect(questionBody(page)).toHaveText(entryText);
     await expect(questionGroup(page)).toBeFocused();
-    await expect(questionGroup(page)).toHaveAccessibleDescription(
-      (await alert.innerText()).replace(/\s+/g, ' ').trim(),
-    );
+    // The description is the question text followed by the alert, so focusing the group reads both.
+    const alertText = (await alert.innerText()).replace(/\s+/g, ' ').trim();
+    await expect(questionGroup(page)).toHaveAccessibleDescription(`${entryText} ${alertText}`);
   });
 
   test('a response arriving while focus is on a link leaves focus there', async ({ page }) => {
@@ -508,7 +529,9 @@ test.describe('Quick Form — focus after answering', { tag: CROSS_BROWSER }, ()
     const focusedHref = await page.evaluate(() => document.activeElement?.getAttribute('href'));
 
     release();
-    await expect(page.getByRole('group', { name: 'Mocked question X' })).toBeVisible();
+    await expect(
+      page.getByRole('group', { name: /^Question \d+$/ }).filter({ hasText: 'Mocked question X' }),
+    ).toBeVisible();
     expect(await focusedTag()).toBe('A');
     expect(await page.evaluate(() => document.activeElement?.getAttribute('href'))).toBe(
       focusedHref,
@@ -519,7 +542,7 @@ test.describe('Quick Form — focus after answering', { tag: CROSS_BROWSER }, ()
 // Tree questions carry block markup (paragraphs, lists) that is invalid inside a heading, so the
 // question text lives in a group named by a short "Question N" heading and the body.
 test.describe('Quick Form — question markup', () => {
-  const group = (page: Page) => page.getByRole('group', { name: /^Question \d+/ });
+  const group = (page: Page) => page.getByRole('group', { name: /^Question \d+$/ });
 
   test('the page headings are the title and a short "Question N", nothing long', async ({
     page,
@@ -530,6 +553,38 @@ test.describe('Quick Form — question markup', () => {
       'Eligibility Check — Texas',
       /^Question \d+$/,
     ]);
+  });
+
+  test('the question number is 1 on load, 2 after one answer and 1 again after Start over', async ({
+    page,
+  }) => {
+    await page.goto('/intake/texas/quick');
+    const number = (n: number) => page.getByRole('heading', { name: `Question ${n}`, exact: true });
+    await expect(number(1)).toBeVisible({ timeout: 10_000 });
+    const mocked = [
+      question(1, 'Mocked question X'),
+      question(2, 'Mocked question Y'),
+      question(1, 'Mocked question X'),
+    ];
+    await page.route('**/eligibility/assess', async (route) => {
+      const body = mocked.shift();
+      if (!body) throw new Error('assess called more often than the mock expects');
+      await route.fulfill({ json: body });
+    });
+
+    const answer = page.locator('button[aria-pressed]').first();
+    await expect(answer).toBeEnabled({ timeout: 15_000 });
+    await answer.click();
+    await expect(number(2)).toBeVisible();
+    await expect(group(page).filter({ hasText: 'Mocked question X' })).toBeVisible();
+
+    for (const text of ['Mocked question X', 'Mocked question Y']) {
+      await expect(group(page).filter({ hasText: text })).toBeVisible();
+      await expect(answer).toBeEnabled();
+      await answer.click();
+    }
+    await page.getByRole('button', { name: 'Start over' }).click();
+    await expect(number(1)).toBeVisible();
   });
 
   test('a multi-paragraph question has no block element inside any heading', async ({ page }) => {

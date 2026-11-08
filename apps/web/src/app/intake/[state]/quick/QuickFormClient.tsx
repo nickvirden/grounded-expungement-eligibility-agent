@@ -279,8 +279,8 @@ function QuickFormStepper({ state, stateName, entry, restarted, onRestart }: Ste
                 tabIndex={-1}
                 // biome-ignore lint/a11y/useSemanticElements: a fieldset is for form controls; this names a focus target
                 role="group"
-                aria-labelledby={`${questionNumberId} ${questionBodyId}`}
-                aria-describedby={error ? errorId : undefined}
+                aria-labelledby={questionNumberId}
+                aria-describedby={error ? `${questionBodyId} ${errorId}` : questionBodyId}
               >
                 <QuestionNumber id={questionNumberId}>Question {answeredCount + 1}</QuestionNumber>
                 <QuestionBody
