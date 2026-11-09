@@ -291,11 +291,7 @@ test.describe('Help dialog: closing and focus', { tag: CROSS_BROWSER }, () => {
 });
 
 test.describe('Help dialog: page scroll and fit', { tag: CROSS_BROWSER }, () => {
-  test('the page does not scroll while the dialog is open or after it closes', async ({
-    page,
-    browserName,
-  }) => {
-    test.fixme(browserName === 'webkit', 'WebKit hit-testing of the dialog body, see #213');
+  test('the page does not scroll while the dialog is open or after it closes', async ({ page }) => {
     await page.setViewportSize(MOBILE);
     await gotoNode(page, '7-10');
     await page.evaluate(() => window.scrollTo(0, 120));
@@ -314,7 +310,11 @@ test.describe('Help dialog: page scroll and fit', { tag: CROSS_BROWSER }, () => 
     });
     await page.mouse.move(180, 60);
     await page.mouse.wheel(0, 400);
-    await body.hover();
+    // A raw mouse move, not `body.hover()`: in WebKit, Playwright's hit-target check reports
+    // <html> over a top-layer dialog's body even though `elementFromPoint` resolves inside it.
+    const bodyBox = await body.boundingBox();
+    if (!bodyBox) throw new Error('dialog body has no box');
+    await page.mouse.move(bodyBox.x + bodyBox.width / 2, bodyBox.y + bodyBox.height / 2);
     await page.mouse.wheel(0, 400);
     expect(await body.evaluate((el) => el.scrollTop)).toBeGreaterThan(0);
     expect(await scrollY(page)).toBe(before);
