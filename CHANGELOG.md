@@ -1,3 +1,9 @@
+## [2.5.1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.5.0...v2.5.1) (2026-11-09)
+
+### Bug Fixes
+
+* **web:** lock the Quick Form answers after a terminal answer ([b8e2f1a](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/b8e2f1ae72b682ea76e334dfe690a4bfcb7cf046))
+
 ## [2.5.0](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.12...v2.5.0) (2026-11-09)
 
 ### Features
