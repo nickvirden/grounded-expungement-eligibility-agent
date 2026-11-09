@@ -1,4 +1,4 @@
-.PHONY: up down dev logs lint test e2e check-styles seed extract-trees audit format migrate
+.PHONY: up down dev logs lint test e2e check-styles seed extract-trees snapshot-trees audit format migrate
 
 up:
 	docker compose up -d
@@ -50,6 +50,12 @@ seed:
 
 extract-trees:
 	node scripts/extract_state_tree.mjs
+
+# Writes the missing snapshot for each state tree's current version. Run after
+# `make extract-trees` or any edit to packages/shared/state-trees/, then
+# `cd apps/api && uv run python sync_shared_data.py`.
+snapshot-trees:
+	cd apps/api && uv run python -m app.scripts.snapshot_state_trees
 
 audit:
 	cd apps/api && uv run --extra dev pip-audit

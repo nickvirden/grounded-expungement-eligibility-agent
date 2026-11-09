@@ -1,7 +1,9 @@
 """Integration tests for the eligibility API router."""
+import pytest
 from fastapi.testclient import TestClient
 
 from app.engine.tree_loader import _DEFAULT_TREES_DIR
+from app.engine.tree_version import tree_version
 from app.main import app
 from app.security.csrf import CSRF_COOKIE, CSRF_HEADER, generate_csrf_token
 
@@ -42,6 +44,27 @@ class TestStatesEndpoints:
         assert "nodes" in data
         assert "transitions" in data
 
+    def test_get_tree_reports_its_version_as_current(self) -> None:
+        data = client.get("/api/states/texas/tree").json()
+        assert data["treeVersion"] == tree_version("texas")
+        assert data["superseded"] is False
+
+    def test_get_tree_current_version_is_accepted(self) -> None:
+        resp = client.get(f"/api/states/texas/tree?version={tree_version('texas')}")
+        assert resp.status_code == 200
+        assert resp.json()["superseded"] is False
+
+    def test_get_tree_unknown_version_is_404_without_a_path(self) -> None:
+        resp = client.get("/api/states/texas/tree?version=ffffffffffff")
+        assert resp.status_code == 404
+        detail = resp.json()["detail"]
+        assert str(_DEFAULT_TREES_DIR) not in detail
+        assert "/" not in detail
+
+    @pytest.mark.parametrize("version", ["../x", "..%2Fx", "ABCDEF123456", "abc", "g" * 12])
+    def test_get_tree_malformed_version_is_422(self, version: str) -> None:
+        assert client.get(f"/api/states/texas/tree?version={version}").status_code == 422
+
     def test_get_tree_unknown_state(self) -> None:
         resp = client.get("/api/states/unknownstate/tree")
         assert resp.status_code == 404
@@ -67,6 +90,7 @@ class TestStatesEndpoints:
     def test_get_entry_texas(self) -> None:
         resp = client.get("/api/states/texas/entry")
         assert resp.status_code == 200
+        assert resp.json()["tree_version"] == tree_version("texas")
         data = resp.json()
         assert data["question_id"] == 0
         assert data["question"] is not None
@@ -85,6 +109,7 @@ class TestEligibilityAssessEndpoints:
         data = resp.json()
         assert data["is_terminal"] is True
         assert data["result_label"] == "Texas Expungement"
+        assert data["tree_version"] == tree_version("texas")
 
     def test_assess_terminal_dnq(self) -> None:
         c, token = _csrf_client()

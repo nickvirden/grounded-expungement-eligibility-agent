@@ -36,6 +36,7 @@ class EligibilityAssessResponse(BaseModel):
     next_answers: list[dict[str, Any]] | None = None
     questions_left: int | None = None
     traversed_path: list[str] = Field(default_factory=list)
+    tree_version: str
 
 
 class ServiceRec(BaseModel):
