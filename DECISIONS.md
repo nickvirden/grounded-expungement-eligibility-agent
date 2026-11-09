@@ -627,11 +627,21 @@ review: 4-4's question and buttons, rewritten so a user who is not ready to star
 they do not qualify (its routing change is in section 16), and 9-5's buttons, which read as answers
 to its question ("Yes, it has almost been 2 years" and "No, I have some time to wait still", the
 labels 12-1 uses). The shared tree, its mirror and the fixture entry for 9-5's answers carry the
-correction; 10-8 keeps the old label pair. Each correction is applied identically to the tree, its
-committed mirror in `apps/api/shared_data/`, and `apps/api/tests/fixtures/texas_legacy_trace.json`,
-so the parity tests that replay every `(questionId, answerPosition)` pair keep agreeing. Apart from
-the 4-4 routing change in section 16, no transition, answer position, `group`, `variant`, or
-`questionsLeft` value changes.
+correction; 10-8 keeps the old label pair, apart from the third set's typo fix. Each correction
+is applied identically to the tree, its committed mirror in `apps/api/shared_data/`, and
+`apps/api/tests/fixtures/texas_legacy_trace.json`, so the parity tests that replay every
+`(questionId, answerPosition)` pair keep agreeing. Apart from the 4-4 routing change in section 16,
+no transition, answer position, `group`, `variant`, or `questionsLeft` value changes.
+
+A third set is a copy-edit pass over #81, also applied without content-owner review and not
+statute-derived. Typo and grammar fixes: 6-2, 9-1, 9-11, 10-7, 10-8, 13-0 and 3-8's first button.
+Meaning-adjacent rewordings, which a reviewer should read: 4-3's "arrested" to "charged"; 10-6 and
+11-8 asking about a new conviction or deferred sentence, with 11-8's No button reworded to match;
+9-1's No button saying "since the incident occurred" instead of "since I was arrested"; 8-7's Yes
+button adding paid fines; 5-8's help defining a prison sentence; and 5-3 and 6-3 asking only "Do you
+want to start the legal process now?", with Yes now "Yes, I want to start the legal process now"
+and No now "No, I'm going to wait until it's been N years" (3 at 5-3, 2 at 6-3). Wording only:
+nothing in this set touches a transition, answer position, `group`, `variant`, or `questionsLeft`.
 
 **Provenance:** the fixture's `sourceSha256` pins the original, uncorrected `texas.js`. The
 corrected tree and fixture are not what that file produces. The legacy file shares one help string

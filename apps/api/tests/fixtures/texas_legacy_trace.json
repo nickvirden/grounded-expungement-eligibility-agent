@@ -191,7 +191,7 @@
       },
       "new_answers": [
         {
-          "value": "Yes, the charge I had dismissed were for murder or attempted murder",
+          "value": "Yes, the charges I had dismissed were for murder or attempted murder",
           "position": 2
         },
         {
@@ -300,15 +300,15 @@
       "success": true,
       "new_question": {
         "id": 5,
-        "question": "<p>The expungement process can take a while, so if you want to get this incident off your record as soon as possible, you should get things started now.</p><p>Do you want to start the legal process now, or are you going to wait until it's been 3 years?</p>"
+        "question": "<p>The expungement process can take a while, so if you want to get this incident off your record as soon as possible, you should get things started now.</p><p>Do you want to start the legal process now?</p>"
       },
       "new_answers": [
         {
-          "value": "Yes, I want to get this off my record as soon as possible!",
+          "value": "Yes, I want to start the legal process now",
           "position": 0
         },
         {
-          "value": "No, I'm just going to wait until its been 3 years",
+          "value": "No, I'm going to wait until it's been 3 years",
           "position": 4
         }
       ],
@@ -331,7 +331,7 @@
       "success": true,
       "new_question": {
         "id": 9,
-        "question": "Has it been at least 2 years since you the events which led to you getting arrested or charged?"
+        "question": "Has it been at least 2 years since the events which led to you getting arrested or charged?"
       },
       "new_answers": [
         {
@@ -339,7 +339,7 @@
           "position": 0
         },
         {
-          "value": "No, it has not been 2 years since I was arrested",
+          "value": "No, it has not been 2 years since the incident occurred",
           "position": 2
         }
       ],
@@ -369,15 +369,15 @@
       "success": true,
       "new_question": {
         "id": 6,
-        "question": "<p>The expungement process can take a while, so if you want to get this incident off your record as soon as possible, you should get things started now. </p><p>Do you want to start the legal process now, or are you going to wait until the statute of limitations has completely passed?</p>"
+        "question": "<p>The expungement process can take a while, so if you want to get this incident off your record as soon as possible, you should get things started now.</p><p>Do you want to start the legal process now?</p>"
       },
       "new_answers": [
         {
-          "value": "Yes, I want to get this off my record as soon as possible!",
+          "value": "Yes, I want to start the legal process now",
           "position": 0
         },
         {
-          "value": "No, I'm just going to wait until its been 2 years",
+          "value": "No, I'm going to wait until it's been 2 years",
           "position": 1
         }
       ],
@@ -433,15 +433,15 @@
       "success": true,
       "new_question": {
         "id": 6,
-        "question": "<p>The expungement process can take a while, so if you want to get this incident off your record as soon as possible, you should get things started now. </p><p>Do you want to start the legal process now, or are you going to wait until the statute of limitations has completely passed?</p>"
+        "question": "<p>The expungement process can take a while, so if you want to get this incident off your record as soon as possible, you should get things started now.</p><p>Do you want to start the legal process now?</p>"
       },
       "new_answers": [
         {
-          "value": "Yes, I want to get this off my record as soon as possible!",
+          "value": "Yes, I want to start the legal process now",
           "position": 0
         },
         {
-          "value": "No, I'm just going to wait until its been 2 years",
+          "value": "No, I'm going to wait until it's been 2 years",
           "position": 1
         }
       ],
@@ -506,7 +506,7 @@
       "success": true,
       "new_question": {
         "id": 4,
-        "question": "<p>Texas law requires that you wait three (3) years after being arrested for a felony to expunge your record when you haven't been arrested.</p><p>Has it almost been three (3) years?</p>"
+        "question": "<p>Texas law requires that you wait three (3) years after being arrested for a felony to expunge your record when you haven't been charged.</p><p>Has it almost been three (3) years?</p>"
       },
       "new_answers": [
         {
@@ -525,15 +525,15 @@
       "success": true,
       "new_question": {
         "id": 5,
-        "question": "<p>The expungement process can take a while, so if you want to get this incident off your record as soon as possible, you should get things started now.</p><p>Do you want to start the legal process now, or are you going to wait until it's been 3 years?</p>"
+        "question": "<p>The expungement process can take a while, so if you want to get this incident off your record as soon as possible, you should get things started now.</p><p>Do you want to start the legal process now?</p>"
       },
       "new_answers": [
         {
-          "value": "Yes, I want to get this off my record as soon as possible!",
+          "value": "Yes, I want to start the legal process now",
           "position": 0
         },
         {
-          "value": "No, I'm just going to wait until its been 3 years",
+          "value": "No, I'm going to wait until it's been 3 years",
           "position": 4
         }
       ],
@@ -688,7 +688,7 @@
       },
       "new_answers": [
         {
-          "value": "Yes, I want  to do whatever I can to get rid of my record",
+          "value": "Yes, I want to do whatever I can to get rid of my record",
           "position": 8
         },
         {
@@ -742,7 +742,7 @@
       },
       "new_answers": [
         {
-          "value": "Yes, I want  to do whatever I can to get rid of my record",
+          "value": "Yes, I want to do whatever I can to get rid of my record",
           "position": 8
         },
         {
@@ -799,7 +799,7 @@
       },
       "new_answers": [
         {
-          "value": "Yes, I want  to do whatever I can to get rid of my record",
+          "value": "Yes, I want to do whatever I can to get rid of my record",
           "position": 8
         },
         {
@@ -837,7 +837,7 @@
       },
       "new_answers": [
         {
-          "value": "Yes, I want  to do whatever I can to get rid of my record",
+          "value": "Yes, I want to do whatever I can to get rid of my record",
           "position": 8
         },
         {
@@ -1057,7 +1057,7 @@
       },
       "new_answers": [
         {
-          "value": "Yes, I want  to do whatever I can to get rid of my record",
+          "value": "Yes, I want to do whatever I can to get rid of my record",
           "position": 8
         },
         {
@@ -1156,7 +1156,7 @@
       },
       "new_answers": [
         {
-          "value": "Yes, I want  to do whatever I can to get rid of my record",
+          "value": "Yes, I want to do whatever I can to get rid of my record",
           "position": 8
         },
         {
@@ -1196,7 +1196,7 @@
       "success": true,
       "new_question": {
         "id": 10,
-        "question": "Were you convicted of any new offenses during the 2 year period following the completion of your deferred sentence?"
+        "question": "Were you convicted or put on another deferred sentence for any new offense during the 2 year period following the completion of your deferred sentence?"
       },
       "new_answers": [
         {
@@ -1227,7 +1227,7 @@
           "position": 9
         }
       ],
-      "helpText": "<h5><u>Sexual Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication, in the case we are evaluating, for a violation of Texas Penal Code Chapter 21, which covers Sexual Offenses.</b></p><p>The offenses in this chapter are Sexual Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 21:</p><ul><li>Public Lewdness</li><li>Indecent Exposure </li><li>Beastiality</li><li>Indecency with a Child</li><li>Improper Relationship Between Educator and Student</li><li>Invasive Visual Recording</li><li>Unlawful Disclosure or Promotion of Intimate Visual Material</li><li>Voyeurism</li><li>Sexual Coercion</li><li>Unlawful Electronic Transmission of Sexually Explicit Visual Material and</li><li>Continuous Sexual Abuse of a Child</li></ul>",
+      "helpText": "<h5><u>Sexual Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication, in the case we are evaluating, for a violation of Texas Penal Code Chapter 21, which covers Sexual Offenses.</b></p><p>The offenses in this chapter are Sexual Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 21:</p><ul><li>Public Lewdness</li><li>Indecent Exposure </li><li>Bestiality</li><li>Indecency with a Child</li><li>Improper Relationship Between Educator and Student</li><li>Invasive Visual Recording</li><li>Unlawful Disclosure or Promotion of Intimate Visual Material</li><li>Voyeurism</li><li>Sexual Coercion</li><li>Unlawful Electronic Transmission of Sexually Explicit Visual Material and</li><li>Continuous Sexual Abuse of a Child</li></ul>",
       "questionsLeft": 9,
       "endpoint": false
     },
@@ -1235,7 +1235,7 @@
       "success": true,
       "new_question": {
         "id": 11,
-        "question": "Were you convicted of any new offenses since completion of the deferred sentence we're currently evaluating?"
+        "question": "Were you convicted or put on another deferred sentence for any new offense since completion of the deferred sentence we're currently evaluating?"
       },
       "new_answers": [
         {
@@ -1243,7 +1243,7 @@
           "position": 0
         },
         {
-          "value": "No, I haven't been convicted of any new crimes since completing the deferred misdemeanor we're evaluating",
+          "value": "No, I didn't get convicted or placed on another deferred sentence since completing the deferred misdemeanor we're evaluating",
           "position": 1
         }
       ],
@@ -1287,7 +1287,7 @@
           "position": 0
         },
         {
-          "value": "No, I'm just going to wait until its  been a full 2 years",
+          "value": "No, I'm just going to wait until it's been a full 2 years",
           "position": 1
         }
       ],
@@ -1336,7 +1336,7 @@
       "success": true,
       "new_question": {
         "id": 11,
-        "question": "Were you convicted of any new offenses since completion of the deferred sentence we're currently evaluating?"
+        "question": "Were you convicted or put on another deferred sentence for any new offense since completion of the deferred sentence we're currently evaluating?"
       },
       "new_answers": [
         {
@@ -1344,7 +1344,7 @@
           "position": 0
         },
         {
-          "value": "No, I haven't been convicted of any new crimes since completing the deferred misdemeanor we're evaluating",
+          "value": "No, I didn't get convicted or placed on another deferred sentence since completing the deferred misdemeanor we're evaluating",
           "position": 1
         }
       ],
@@ -1375,7 +1375,7 @@
       "success": true,
       "new_question": {
         "id": 11,
-        "question": "Were you convicted of any new offenses since completion of the deferred sentence we're currently evaluating?"
+        "question": "Were you convicted or put on another deferred sentence for any new offense since completion of the deferred sentence we're currently evaluating?"
       },
       "new_answers": [
         {
@@ -1383,7 +1383,7 @@
           "position": 0
         },
         {
-          "value": "No, I haven't been convicted of any new crimes since completing the deferred misdemeanor we're evaluating",
+          "value": "No, I didn't get convicted or placed on another deferred sentence since completing the deferred misdemeanor we're evaluating",
           "position": 1
         }
       ],
@@ -1414,7 +1414,7 @@
       "success": true,
       "new_question": {
         "id": 11,
-        "question": "Were you convicted of any new offenses since completion of the deferred sentence we're currently evaluating?"
+        "question": "Were you convicted or put on another deferred sentence for any new offense since completion of the deferred sentence we're currently evaluating?"
       },
       "new_answers": [
         {
@@ -1422,7 +1422,7 @@
           "position": 0
         },
         {
-          "value": "No, I haven't been convicted of any new crimes since completing the deferred misdemeanor we're evaluating",
+          "value": "No, I didn't get convicted or placed on another deferred sentence since completing the deferred misdemeanor we're evaluating",
           "position": 1
         }
       ],
@@ -1453,7 +1453,7 @@
       "success": true,
       "new_question": {
         "id": 11,
-        "question": "Were you convicted of any new offenses since completion of the deferred sentence we're currently evaluating?"
+        "question": "Were you convicted or put on another deferred sentence for any new offense since completion of the deferred sentence we're currently evaluating?"
       },
       "new_answers": [
         {
@@ -1461,7 +1461,7 @@
           "position": 0
         },
         {
-          "value": "No, I haven't been convicted of any new crimes since completing the deferred misdemeanor we're evaluating",
+          "value": "No, I didn't get convicted or placed on another deferred sentence since completing the deferred misdemeanor we're evaluating",
           "position": 1
         }
       ],
@@ -1492,7 +1492,7 @@
       "success": true,
       "new_question": {
         "id": 11,
-        "question": "Were you convicted of any new offenses since completion of the deferred sentence we're currently evaluating?"
+        "question": "Were you convicted or put on another deferred sentence for any new offense since completion of the deferred sentence we're currently evaluating?"
       },
       "new_answers": [
         {
@@ -1500,7 +1500,7 @@
           "position": 0
         },
         {
-          "value": "No, I haven't been convicted of any new crimes since completing the deferred misdemeanor we're evaluating",
+          "value": "No, I didn't get convicted or placed on another deferred sentence since completing the deferred misdemeanor we're evaluating",
           "position": 1
         }
       ],
@@ -1531,7 +1531,7 @@
       "success": true,
       "new_question": {
         "id": 11,
-        "question": "Were you convicted of any new offenses since completion of the deferred sentence we're currently evaluating?"
+        "question": "Were you convicted or put on another deferred sentence for any new offense since completion of the deferred sentence we're currently evaluating?"
       },
       "new_answers": [
         {
@@ -1539,7 +1539,7 @@
           "position": 0
         },
         {
-          "value": "No, I haven't been convicted of any new crimes since completing the deferred misdemeanor we're evaluating",
+          "value": "No, I didn't get convicted or placed on another deferred sentence since completing the deferred misdemeanor we're evaluating",
           "position": 1
         }
       ],
@@ -1624,7 +1624,7 @@
           "position": 9
         }
       ],
-      "helpText": "<h5><u>Sexual Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication, in the case we are evaluating, for a violation of Texas Penal Code Chapter 21, which covers Sexual Offenses.</b></p><p>The offenses in this chapter are Sexual Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 21:</p><ul><li>Public Lewdness</li><li>Indecent Exposure </li><li>Beastiality</li><li>Indecency with a Child</li><li>Improper Relationship Between Educator and Student</li><li>Invasive Visual Recording</li><li>Unlawful Disclosure or Promotion of Intimate Visual Material</li><li>Voyeurism</li><li>Sexual Coercion</li><li>Unlawful Electronic Transmission of Sexually Explicit Visual Material and</li><li>Continuous Sexual Abuse of a Child</li></ul>",
+      "helpText": "<h5><u>Sexual Offenses</u></h5><p><b>Answer YES to this question if you were put on deferred adjudication, in the case we are evaluating, for a violation of Texas Penal Code Chapter 21, which covers Sexual Offenses.</b></p><p>The offenses in this chapter are Sexual Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 21:</p><ul><li>Public Lewdness</li><li>Indecent Exposure </li><li>Bestiality</li><li>Indecency with a Child</li><li>Improper Relationship Between Educator and Student</li><li>Invasive Visual Recording</li><li>Unlawful Disclosure or Promotion of Intimate Visual Material</li><li>Voyeurism</li><li>Sexual Coercion</li><li>Unlawful Electronic Transmission of Sexually Explicit Visual Material and</li><li>Continuous Sexual Abuse of a Child</li></ul>",
       "questionsLeft": 9,
       "endpoint": false
     },
@@ -1705,7 +1705,7 @@
       },
       "new_answers": [
         {
-          "value": "Yes, I want  to do whatever I can to get rid of my record",
+          "value": "Yes, I want to do whatever I can to get rid of my record",
           "position": 8
         },
         {
@@ -1743,7 +1743,7 @@
       },
       "new_answers": [
         {
-          "value": "Yes, I want  to do whatever I can to get rid of my record",
+          "value": "Yes, I want to do whatever I can to get rid of my record",
           "position": 8
         },
         {
@@ -1790,7 +1790,7 @@
           "position": 9
         }
       ],
-      "helpText": "<h5><u>Jail Sentence</u></h5><p>If you were arrested and sent to jail, this would not qualify as a jail sentence. For purposes of this question a \"jail sentence\" is where a judge actually sentences you to a term in jail.</p>",
+      "helpText": "<h5><u>Jail Sentence</u></h5><p>If you were arrested and sent to jail, this would not qualify as a jail sentence. For purposes of this question a \"jail sentence\" is where a judge actually sentences you to a term in jail. Likewise, a \"prison sentence\" is where a judge actually sentences you to a term in prison.</p>",
       "questionsLeft": 5,
       "endpoint": false
     },
@@ -1852,7 +1852,7 @@
       },
       "new_answers": [
         {
-          "value": "Yes, I have completed all of the other terms of my sentence",
+          "value": "Yes, I have completed all of the other terms of my sentence and paid all fines",
           "position": 10
         },
         {
@@ -2172,7 +2172,7 @@
           "position": 9
         }
       ],
-      "helpText": "<h5><u>Sexual Offenses</u></h5><p><b>Answer YES to this question if you were convicted, in the case we are evaluating, of a violation of Texas Penal Code Chapter 21, which covers Sexual Offenses.</b></p><p>The offenses in this chapter are Sexual Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 21:</p><ul><li>Public Lewdness</li><li>Indecent Exposure </li><li>Beastiality</li><li>Indecency with a Child</li><li>Improper Relationship Between Educator and Student</li><li>Invasive Visual Recording</li><li>Unlawful Disclosure or Promotion of Intimate Visual Material</li><li>Voyeurism</li><li>Sexual Coercion</li><li>Unlawful Electronic Transmission of Sexually Explicit Visual Material and</li><li>Continuous Sexual Abuse of a Child</li></ul>",
+      "helpText": "<h5><u>Sexual Offenses</u></h5><p><b>Answer YES to this question if you were convicted, in the case we are evaluating, of a violation of Texas Penal Code Chapter 21, which covers Sexual Offenses.</b></p><p>The offenses in this chapter are Sexual Offenses, some of which are felonies. The following is a list of criminal offenses listed in Chapter 21:</p><ul><li>Public Lewdness</li><li>Indecent Exposure </li><li>Bestiality</li><li>Indecency with a Child</li><li>Improper Relationship Between Educator and Student</li><li>Invasive Visual Recording</li><li>Unlawful Disclosure or Promotion of Intimate Visual Material</li><li>Voyeurism</li><li>Sexual Coercion</li><li>Unlawful Electronic Transmission of Sexually Explicit Visual Material and</li><li>Continuous Sexual Abuse of a Child</li></ul>",
       "questionsLeft": 8,
       "endpoint": false
     },
@@ -2188,7 +2188,7 @@
           "position": 7
         },
         {
-          "value": "No, I'm just going to wait until its been a full 2 years",
+          "value": "No, I'm just going to wait until it's been a full 2 years",
           "position": 1
         }
       ],
@@ -2227,7 +2227,7 @@
           "position": 7
         },
         {
-          "value": "No, I'm just going to wait until its been a full 2 years",
+          "value": "No, I'm just going to wait until it's been a full 2 years",
           "position": 1
         }
       ],
@@ -2266,7 +2266,7 @@
           "position": 7
         },
         {
-          "value": "No, I'm just going to wait until its been a full 2 years",
+          "value": "No, I'm just going to wait until it's been a full 2 years",
           "position": 1
         }
       ],
@@ -2305,7 +2305,7 @@
           "position": 7
         },
         {
-          "value": "No, I'm just going to wait until its been a full 2 years",
+          "value": "No, I'm just going to wait until it's been a full 2 years",
           "position": 1
         }
       ],
@@ -2344,7 +2344,7 @@
           "position": 7
         },
         {
-          "value": "No, I'm just going to wait until its been a full 2 years",
+          "value": "No, I'm just going to wait until it's been a full 2 years",
           "position": 1
         }
       ],
@@ -2383,7 +2383,7 @@
           "position": 7
         },
         {
-          "value": "No, I'm just going to wait until its been a full 2 years",
+          "value": "No, I'm just going to wait until it's been a full 2 years",
           "position": 1
         }
       ],
@@ -2422,7 +2422,7 @@
           "position": 7
         },
         {
-          "value": "No, I'm just going to wait until its been a full 2 years",
+          "value": "No, I'm just going to wait until it's been a full 2 years",
           "position": 1
         }
       ],
