@@ -1,3 +1,13 @@
+## [2.6.0](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.5.1...v2.6.0) (2026-11-09)
+
+### Features
+
+* **web:** stamp tree version on Quick Form results and label paths decoded in other wording ([67ea1ff](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/67ea1ff46a6166315187921e5ad5fb080c816f27))
+
+### Bug Fixes
+
+* **web:** drop the wording note when no tree loaded and accept null version fields ([9442ff0](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/9442ff0382d4e9c26340b5216cfa1fda3272bf97))
+
 ## [2.5.1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.5.0...v2.5.1) (2026-11-09)
 
 ### Bug Fixes
