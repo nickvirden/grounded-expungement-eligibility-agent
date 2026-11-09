@@ -425,13 +425,29 @@ any injected markup execute. A nonce makes the policy meaningful against XSS.
   the value. `apps/web/src/app/not-found.tsx` replaces Next's built-in 404, whose inline `<style>`
   and `style` attributes cannot carry a nonce and would be blocked.
 - The `csp-nonce` meta tag is not always in the DOM when styled-components first inserts a style.
-  When `notFound()` is thrown after an `await`, Next serves an error shell with an empty `<head>`
-  and renders the layout in the browser, and styled-components caches the nonce it resolves at
-  that first insertion. `apps/web/src/instrumentation-client.ts` therefore sets
+  When `notFound()` is thrown after an `await`, or a server render fails and shows
+  `app/error.tsx`, Next serves an error shell with an empty `<head>` and renders the layout in
+  the browser, and styled-components caches the nonce it resolves at that first insertion. `apps/web/src/instrumentation-client.ts` therefore sets
   `__webpack_nonce__` from the first nonced script before any application module loads. The
   assignment is guarded because Turbopack (dev) does not define the global, and the dev
   `style-src` allows inline styles anyway. Deleting that file breaks styles on that path in
   production, which the production e2e run in CI catches.
+- Error pages follow the not-found rule. `apps/web/src/app/error.tsx` replaces Next's built-in
+  error UI, which has the same inline `<style>` and `style` attributes, and shares its card with
+  `not-found.tsx` through `src/components/StatusCard.styles.ts`. It shows fixed copy and never
+  `error.message` or `digest`, and offers "Try again" (`router.refresh()` plus `reset()`, always
+  user-initiated, so an unreachable API is never hammered) and a home link. An API outage on the
+  quick form is therefore a 500 error page with a retry, not a 404: `fetchEntry` in the quick
+  page maps only the API's 404 to `notFound()` and lets every other failure throw.
+  `apps/web/src/app/global-error.tsx`, which handles failures of the root layout itself, is the one
+  exception to styled-components: it replaces the layout, so there is no registry to
+  server-render the styles and every style tag would depend on the client-side nonce fallback.
+  It imports `globals.css` and `global-error.module.css`, which Next emits as
+  same-origin `<link>` stylesheets that `style-src 'self'` allows without a nonce, and uses a
+  plain `<a>` and `window.location.reload()` rather than router APIs. No product path
+  reaches it, so it is checked by hand with a temporary throw in the root layout on a
+  production build. The production e2e run starts a second web server whose API is
+  unreachable to exercise `error.tsx` for real.
 - The development policy differs: `script-src` adds `'unsafe-eval'` (React dev tooling), `style-src`
   swaps the nonce for `'unsafe-inline'` (a nonce makes browsers ignore `'unsafe-inline'`), and
   `upgrade-insecure-requests` is dropped so http://localhost works. CI runs the Playwright suite
@@ -439,12 +455,26 @@ any injected markup execute. A nonce makes the policy meaningful against XSS.
   the Dockerfile runs), and local `pnpm e2e` uses the dev server, with `pnpm e2e:prod` to opt in.
   CI therefore no longer runs the Turbopack dev server, so dev-only breakage shows up only for
   developers running `pnpm dev`; a CI matrix over both modes would cover it.
+- Firefox and WebKit run only the specs tagged `@cross-browser` (`e2e/crossBrowser.ts`), in a separate
+  `e2e-cross-browser` CI job (`pnpm e2e:cross-browser`) against the dev server. WebKit applies
+  `upgrade-insecure-requests` to http://localhost, so against the production build over plain http
+  no script loads and the page never hydrates; production-policy assertions therefore stay in the
+  Chromium job. Rejected: a TLS terminator in front of the production build (certificate setup and
+  an extra process for every run) and running the whole suite in each engine (the markup and header
+  checks cannot differ by engine, and the timing-based double-activation matrix more than doubles
+  the run). Tag a `test.describe` when it covers dialog or focus handling, viewport units, forced
+  colors or pointer input.
 
 **Alternatives rejected:**
 - `'unsafe-inline'` for scripts via static `headers()`: keeps `/` static and is a one-line change,
   but permits inline script execution, so it gives little protection against injected script.
 - Experimental Subresource Integrity hashes (`experimental.sri`): webpack-only (dev uses Turbopack)
   and does not cover Next's inline bootstrap scripts.
+- styled-components in `global-error.tsx`: with the layout replaced there is no registry to
+  server-render the styles, so it would rest entirely on the client-side nonce fallback;
+  same-origin `<link>` stylesheets need neither.
+- A test-only hook or environment switch in product code to force `error.tsx`: ships dead
+  code to production; an unreachable API on a second server reaches the same boundary for free.
 - Adding the API origin to `connect-src`: widens the policy for requests the browser never makes.
 - Cross-Origin-Embedder-Policy: nothing needs isolating and it risks breaking embeds.
 - Self-hosting the Swagger/ReDoc assets under a docs-only CSP: keeps the docs public and adds a
@@ -693,3 +723,34 @@ code. #167 decides who does that.
 **When to revisit:** if the backtest in #173 does not clear its thresholds, if a closed issue turns
 out to have mattered, if the workflow stops without anyone noticing, or if the app handles real user
 data.
+
+---
+
+## 23. Question Text Is a Group With a Short Hidden Heading, Not One Long Heading
+
+**Decision:** The Quick Form renders each question in a focusable `role="group"` container. The
+container is named (`aria-labelledby`) by a visually hidden `<h2>` reading "Question N", and
+described (`aria-describedby`) by a body `<div>` that receives the sanitized question HTML. A failed
+answer adds the error banner to the description. When an answer unmounts the button that held
+focus, focus moves to the group, so a screen reader announces "Question N", then the full question
+text, then any error, once. The page's heading outline is the page title followed by "Question N".
+
+**Why:** 21 Texas questions carry `<p>`, `<ul>`, `<li>` or `<b>` markup (the issue's 22 included
+3-10, reworded to plain text in section 21). Block markup is not valid inside a heading, and
+rendering it as an `<h2>` exposed the whole question as one long heading in assistive technology's
+heading list. The global reset (`margin: 0`) also removed the spacing between paragraphs. With a
+body `div` the paragraphs and lists are ordinary blocks, and the body styles restore the spacing
+and list indentation. The focus ring and the sticky-header scroll margin sit on the group, so the
+ring outlines the whole question.
+
+**Rejected alternatives:**
+- Flattening the block markup in `packages/shared/state-trees/texas.json`: it edits content that the
+  tree parity tests pin, and it would lose the paragraph and list structure the authors wrote.
+- A visible "Question N" heading: it duplicates the step counter in the header, which already shows
+  progress to sighted users.
+- A `<fieldset>`/`<legend>`: fieldsets group form controls, and the answers are not inside this
+  container.
+- Naming the group by the heading plus the body (`aria-labelledby` on both): both elements sit
+  inside the group, so line-by-line browsing reads the question twice.
+
+**Consequence:** heading navigation moves between questions by their number, not by their wording.

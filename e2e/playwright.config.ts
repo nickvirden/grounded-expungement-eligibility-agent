@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { CROSS_BROWSER_GREP } from './crossBrowser';
 import { webMode } from './webMode';
 
 const isCI = !!process.env.CI;
@@ -30,12 +31,28 @@ const webServerByMode = {
   },
 } as const;
 
+// Production only: a second web server whose API is unreachable (port 1 refuses
+// connections), so server-rendered pages that depend on the API fail for real and the
+// error boundary can be exercised without a test hook in product code. `/` still
+// answers because the landing page falls back to a static state list, which is what
+// Playwright polls for readiness.
+const brokenApiWebServer = {
+  command:
+    'cd ../apps/web && INTERNAL_API_URL=http://127.0.0.1:1 PORT=3001 HOSTNAME=127.0.0.1 NEXT_TELEMETRY_DISABLED=1 pnpm run start:standalone',
+  url: 'http://127.0.0.1:3001',
+  reuseExistingServer: false,
+  timeout: 30_000,
+  stdout: 'pipe',
+  stderr: 'pipe',
+} as const;
+
 /**
  * Playwright configuration.
  *
  * The `webServer` block starts real services before the test suite runs:
  *   - FastAPI API on port 8001 (using a dedicated test SQLite DB, LLM stubbed via TestModel)
  *   - Next.js web on port 3000 (pointed at the test API)
+ *   - production mode only: a second Next.js web on port 3001 whose API is unreachable
  *
  * In local dev, `reuseExistingServer: true` lets you pre-start the servers
  * with `make dev` and skip the startup overhead between runs.
@@ -44,6 +61,11 @@ const webServerByMode = {
  *   - `dev` (default): `next dev`, whose relaxed CSP differs from production.
  *   - `production`: the standalone build that ships. CI uses this, and
  *     `pnpm e2e:prod` opts in locally. It requires `pnpm --filter web build` first.
+ *
+ * WebKit cannot run against `production` over plain http: the production CSP carries
+ * `upgrade-insecure-requests`, which WebKit also applies to localhost, so every script
+ * request is rewritten to https, fails, and the page never hydrates. The cross-browser
+ * run therefore uses `dev` mode, and its specs must not assert the production policy.
  */
 export default defineConfig({
   testDir: './tests',
@@ -60,10 +82,25 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
 
+  // Chromium runs the whole suite. Firefox and WebKit run only the specs tagged
+  // `@cross-browser`: the ones that exercise engine-specific behaviour (dialog and focus
+  // handling, viewport units, forced colors, pointer and touch input). The rest is
+  // markup and header assertions an engine cannot change, so repeating them costs CI time
+  // for no added signal.
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'firefox',
+      grep: CROSS_BROWSER_GREP,
+      use: { ...devices['Desktop Firefox'] },
+    },
+    {
+      name: 'webkit',
+      grep: CROSS_BROWSER_GREP,
+      use: { ...devices['Desktop Safari'] },
     },
   ],
 
@@ -87,5 +124,6 @@ export default defineConfig({
       stderr: 'pipe',
     },
     webServerByMode[webMode],
+    ...(webMode === 'production' ? [brokenApiWebServer] : []),
   ],
 });

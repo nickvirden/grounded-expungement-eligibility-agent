@@ -29,7 +29,7 @@ export const test = base.extend<{ cspGuard: undefined }>({
           w.__reportCspViolation(detail);
         });
       });
-      await use();
+      await use(undefined);
 
       // The page may be closed or mid-navigation by teardown; the forwarded
       // list still covers whatever arrived before then.

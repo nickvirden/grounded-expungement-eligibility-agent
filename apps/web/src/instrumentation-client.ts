@@ -5,10 +5,10 @@
 // from `meta[property=csp-nonce]` and then from `__webpack_nonce__`, and caches
 // the result. It creates its master sheet while its own module evaluates, and
 // which application chunk evaluates it first varies with load order. When
-// `notFound()` is thrown after an await, Next serves an error shell with an
-// empty <head> and renders the layout in the browser, so the meta tag is not in
-// the DOM yet and the cache would hold no nonce, blocking every style under the
-// nonce-only `style-src`. A nonced script's `.nonce` property stays readable
+// `notFound()` is thrown after an await, or a server render fails and shows
+// app/error.tsx, Next serves an error shell with an empty <head> and renders the
+// layout in the browser, so the meta tag is not in the DOM yet and the cache
+// would hold no nonce, blocking every style under the nonce-only `style-src`. A nonced script's `.nonce` property stays readable
 // even though browsers hide the attribute.
 
 // webpack's runtime nonce global; styled-components reads it as a fallback.

@@ -52,7 +52,13 @@ test.describe('Not-found page', () => {
   test('an unmatched intake state shows the same page', async ({ page }) => {
     const response = await page.goto('/intake/no-such-state/quick');
     expect(response?.status()).toBe(404);
-    await expect(page.getByRole('heading', { level: 1, name: 'Page not found' })).toBeVisible();
+    const heading = page.getByRole('heading', { level: 1, name: 'Page not found' });
+    await expect(heading).toBeVisible();
+    await expect(heading).toHaveCSS('font-weight', '800');
+    await expect(page.getByRole('link', { name: 'Go to the home page' })).toHaveCSS(
+      'background-color',
+      'rgb(37, 99, 235)',
+    );
   });
 });
 

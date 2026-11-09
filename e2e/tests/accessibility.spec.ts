@@ -1,5 +1,7 @@
 import { type Page, expect, test } from '@playwright/test';
+import { CROSS_BROWSER } from '../crossBrowser';
 import { gotoNode } from '../helpTree';
+import { webMode } from '../webMode';
 
 /**
  * Accessibility specification tests, driven by axe-core.
@@ -67,13 +69,23 @@ function expectNoViolations(results: { violations: Array<{ id: string; nodes: un
 test.describe('Accessibility — Quick Form', () => {
   test('initial load has no violations', async ({ page }) => {
     await page.goto('/intake/texas/quick');
-    await expect(page.getByRole('heading', { level: 2 })).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole('heading', { name: /^Question \d+$/ })).toBeVisible({
+      timeout: 10_000,
+    });
     expectNoViolations(await runAxe(page));
+  });
+
+  test('a multi-paragraph question with a list has no violations', async ({ page }) => {
+    await gotoNode(page, '7-3');
+    await expect(page.getByRole('heading', { name: /^Question \d+$/ })).toBeVisible();
+    expectNoViolations(await runAxe(page, [...RULES, 'heading-order']));
   });
 
   test('after one answer (breadcrumb visible) has no violations', async ({ page }) => {
     await page.goto('/intake/texas/quick');
-    await expect(page.getByRole('heading', { level: 2 })).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole('heading', { name: /^Question \d+$/ })).toBeVisible({
+      timeout: 10_000,
+    });
 
     const firstButton = page.locator('button[aria-pressed]').first();
     await expect(firstButton).toBeEnabled({ timeout: 10_000 });
@@ -93,7 +105,9 @@ test.describe('Accessibility — Quick Form', () => {
 
   test('loop exit state has no violations', async ({ page }) => {
     await page.goto('/intake/texas/quick');
-    await expect(page.getByRole('heading', { level: 2 })).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole('heading', { name: /^Question \d+$/ })).toBeVisible({
+      timeout: 10_000,
+    });
 
     // A question sequence that returns to one already answered, which the live tree never does.
     const question = (id: number) => ({
@@ -114,7 +128,10 @@ test.describe('Accessibility — Quick Form', () => {
     // Each click waits for the previous mocked question, so a click lost before hydration fails
     // at the missing heading instead of timing out on a later step.
     for (const heading of [null, 'Mocked question 1', 'Mocked question 2']) {
-      if (heading) await expect(page.getByRole('heading', { name: heading })).toBeVisible();
+      if (heading)
+        await expect(
+          page.getByRole('group', { name: /^Question \d+$/ }).filter({ hasText: heading }),
+        ).toBeVisible();
       const button = page.locator('button[aria-pressed]').first();
       await expect(button).toBeEnabled({ timeout: 10_000 });
       await button.click();
@@ -127,7 +144,7 @@ test.describe('Accessibility — Quick Form', () => {
 
 // The header counter is the widest element in the Quick Form header; it must wrap or drop to
 // its own row rather than push the page sideways on a narrow screen or at large text sizes.
-test.describe('Accessibility — Quick Form reflow', () => {
+test.describe('Accessibility — Quick Form reflow', { tag: CROSS_BROWSER }, () => {
   const REFLOW_RULES = [...RULES, 'button-name', 'link-name', 'heading-order', 'target-size'];
   const configs = [
     { name: '320x640', size: { width: 320, height: 640 }, fontSize: null },
@@ -168,7 +185,9 @@ test.describe('Accessibility — Quick Form reflow', () => {
     test(`${name} keeps the header on screen across the form states`, async ({ page }) => {
       await page.setViewportSize(size);
       await page.goto('/intake/texas/quick');
-      await expect(page.getByRole('heading', { level: 2 })).toBeVisible({ timeout: 10_000 });
+      await expect(page.getByRole('heading', { name: /^Question \d+$/ })).toBeVisible({
+        timeout: 10_000,
+      });
       if (fontSize) await page.addStyleTag({ content: `html { font-size: ${fontSize}px; }` });
 
       // 88 questions left gives the widest counter text; the third response repeats the first
@@ -185,12 +204,18 @@ test.describe('Accessibility — Quick Form reflow', () => {
       const answer = page.locator('button[aria-pressed]').first();
       await expect(answer).toBeEnabled({ timeout: 10_000 });
       await answer.click();
-      await expect(page.getByRole('heading', { name: 'Mocked question 1' })).toBeVisible();
+      await expect(
+        page
+          .getByRole('group', { name: /^Question \d+$/ })
+          .filter({ hasText: 'Mocked question 1' }),
+      ).toBeVisible();
       await expect(page.getByText(/about 88 left/)).toBeVisible();
       await expectHeaderFits(page);
 
       for (const heading of ['Mocked question 1', 'Mocked question 2']) {
-        await expect(page.getByRole('heading', { name: heading })).toBeVisible();
+        await expect(
+          page.getByRole('group', { name: /^Question \d+$/ }).filter({ hasText: heading }),
+        ).toBeVisible();
         const button = page.locator('button[aria-pressed]').first();
         await expect(button).toBeEnabled();
         await button.click();
@@ -304,5 +329,21 @@ test.describe('Accessibility — Not-found page', () => {
     const link = page.getByRole('link', { name: 'Go to the home page' });
     await expect(link).toBeFocused();
     await expect(link).toHaveCSS('outline-style', 'solid');
+  });
+});
+
+test.describe('Accessibility — Error page', () => {
+  // The broken-API web server exists only in production mode (see playwright.config.ts).
+  test.skip(webMode !== 'production', 'needs the broken-API web server');
+  test.use({ baseURL: 'http://127.0.0.1:3001' });
+
+  test('has no violations', async ({ page }) => {
+    await page.goto('/intake/texas/quick');
+    await expect(page.getByRole('heading', { level: 1, name: 'Something went wrong' })).toBeVisible(
+      {
+        timeout: 10_000,
+      },
+    );
+    expectNoViolations(await runAxe(page));
   });
 });

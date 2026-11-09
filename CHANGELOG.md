@@ -1,3 +1,16 @@
+## [2.4.12](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.11...v2.4.12) (2026-11-09)
+
+### Bug Fixes
+
+* **web:** name the question group by its short heading and describe it by the body ([335825c](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/335825c9b21842b29529434c60d17fad556857e0))
+* **web:** render quick-form question in a named group with a short hidden heading ([3d95531](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/3d95531240b3840a5a0b7bd65226817b99ed02f1))
+
+## [2.4.11](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.10...v2.4.11) (2026-11-08)
+
+### Bug Fixes
+
+* **web:** render error pages under the production CSP and stop the quick page swallowing notFound ([5c4503d](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/5c4503df464b6f1bf71e192835c41f1bc12fa59b))
+
 ## [2.4.10](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.9...v2.4.10) (2026-10-31)
 
 ### Bug Fixes

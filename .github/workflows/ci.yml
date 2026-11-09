@@ -162,7 +162,11 @@ jobs:
         run: uv run pytest -q -rs
 
   e2e:
-    runs-on: ubuntu-latest
+    # Pinned: `ubuntu-latest` moved to 26.04, which the pinned Playwright does
+    # not support (`playwright install --with-deps` exits 1 there). Move this
+    # back to `ubuntu-latest` after upgrading Playwright to a release that
+    # lists the new image.
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -244,5 +248,62 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: playwright-report
+          path: e2e/playwright-report/
+          retention-days: 14
+
+  # Runs the `@cross-browser` specs (see e2e/crossBrowser.ts) in Firefox and WebKit. This is
+  # a separate job so the required `e2e` check keeps its name and the two run in parallel.
+  #
+  # It serves the dev server, not the production build: the production CSP's
+  # `upgrade-insecure-requests` makes WebKit rewrite http://localhost requests to https,
+  # so the page never hydrates. Production-policy assertions stay in the Chromium job.
+  #
+  # Pinned to 24.04: `ubuntu-latest` is 26.04, where Playwright 1.59.1 supports Chromium only
+  # ("does not support firefox on ubuntu26.04-x64"). Move to `ubuntu-latest` once the
+  # pinned Playwright supports it.
+  e2e-cross-browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - uses: astral-sh/setup-uv@caf0cab7a618c569241d31dcd442f54681755d39 # v3
+
+      - name: Install JS dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Python dependencies
+        working-directory: apps/api
+        run: uv sync --locked
+
+      # Same install-and-retry shape as the e2e job, for the same stall.
+      - name: Install Playwright browsers
+        id: playwright-install
+        continue-on-error: true
+        timeout-minutes: 5
+        working-directory: e2e
+        run: pnpm exec playwright install --with-deps firefox webkit
+
+      - name: Retry Playwright browser install
+        if: steps.playwright-install.outcome != 'success'
+        timeout-minutes: 5
+        working-directory: e2e
+        run: pnpm exec playwright install --with-deps firefox webkit
+
+      - name: Cross-browser E2E tests
+        run: pnpm e2e:cross-browser
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: playwright-report-cross-browser
           path: e2e/playwright-report/
           retention-days: 14

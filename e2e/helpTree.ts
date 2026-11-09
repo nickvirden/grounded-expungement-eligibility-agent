@@ -77,6 +77,8 @@ export async function gotoNode(page: Page, id: string): Promise<void> {
   const path = paths[id];
   if (!path) throw new Error(`Node ${id} is not reachable in the Texas tree`);
   await page.goto('/intake/texas/quick');
+  // The first h2 is the visually hidden "Question N". Its number changes in the same render as the
+  // question text, so a changed h2 text means the next question has rendered.
   await page.locator('h2').first().waitFor({ timeout: 10_000 });
   for (const index of path) {
     const before = await page.locator('h2').first().textContent();
