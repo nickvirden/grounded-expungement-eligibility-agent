@@ -146,7 +146,8 @@ _DEFERRED_ADJUDICATION_HELP = (
 
 
 # (answer reaching the node, node id, chapter, status the node asks about). Sibling nodes share
-# one rule sentence apart from the status word, so each carries its own.
+# one rule sentence apart from the status wording, so each carries its own. The rule tests the
+# offense in the case being evaluated, not an unrelated record in the same chapter.
 _CHAPTER_RULE_NODES = [
     (8, 11, "9-11", 21, "convicted"),
     (10, 6, "10-7", 21, "deferred"),
@@ -167,12 +168,15 @@ def _chapter_rule_rows() -> list[tuple[int, int, str, str, str]]:
         if status == "deferred":
             absent = "deferred adjudication for or convicted of"
             present = (
-                "if you were put on deferred adjudication for a violation of "
-                f"Texas Penal Code Chapter {chapter}"
+                "if you were put on deferred adjudication, in the case we are evaluating, "
+                f"for a violation of Texas Penal Code Chapter {chapter}"
             )
         else:
             absent = "put on deferred adjudication for or"
-            present = f"if you were convicted of a violation of Texas Penal Code Chapter {chapter}"
+            present = (
+                "if you were convicted, in the case we are evaluating, "
+                f"of a violation of Texas Penal Code Chapter {chapter}"
+            )
         rows.append((question_id, answer_position, "next_question_help", absent, present))
     return rows
 
