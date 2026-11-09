@@ -142,6 +142,7 @@ function QuickFormStepper({ state, stateName, entry, restarted, onRestart }: Ste
       setSelectedIndex(index);
       setIsLoading(true);
       setError(null);
+      let navigatingToResult = false;
 
       try {
         const result: AssessResponse = await assessEligibility({
@@ -161,6 +162,11 @@ function QuickFormStepper({ state, stateName, entry, restarted, onRestart }: Ste
         setAnsweredSteps(newSteps);
 
         if (result.is_terminal) {
+          // Navigation to the result page can take seconds on a cold route, and this question
+          // stays on screen until it lands. The answers stay locked (loading state) so a click
+          // in that window cannot append another entry to the path. The page unmounting is
+          // what ends the loading state.
+          navigatingToResult = true;
           const params = new URLSearchParams({
             result_key: result.result_key ?? '',
             result_label: result.result_label ?? '',
@@ -192,8 +198,10 @@ function QuickFormStepper({ state, stateName, entry, restarted, onRestart }: Ste
         setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
         setSelectedIndex(null);
       } finally {
-        setIsLoading(false);
-        inFlight.current = false;
+        if (!navigatingToResult) {
+          setIsLoading(false);
+          inFlight.current = false;
+        }
       }
     },
     [isLoading, questionId, questionText, answers, state, answeredSteps, router],
