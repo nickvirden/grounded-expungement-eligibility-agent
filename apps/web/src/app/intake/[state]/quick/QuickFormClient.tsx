@@ -31,7 +31,9 @@ import {
   PathCrumbItem,
   ProgressFill,
   ProgressTrack,
-  QuestionText,
+  QuestionBody,
+  QuestionGroup,
+  QuestionNumber,
   StepCounter,
 } from './QuickFormClient.styles';
 import {
@@ -90,9 +92,11 @@ function QuickFormStepper({ state, stateName, entry, restarted, onRestart }: Ste
   const headingId = useId();
   const exitHeadingId = useId();
   const errorId = useId();
+  const questionNumberId = useId();
+  const questionBodyId = useId();
   const cardRef = useRef<HTMLDivElement>(null);
   const exitHeadingRef = useRef<HTMLHeadingElement>(null);
-  const questionHeadingRef = useRef<HTMLHeadingElement>(null);
+  const questionRef = useRef<HTMLDivElement>(null);
 
   const [questionId, setQuestionId] = useState(entry.question_id);
   const [questionText, setQuestionText] = useState(entry.question);
@@ -202,19 +206,19 @@ function QuickFormStepper({ state, stateName, entry, restarted, onRestart }: Ste
 
   // After "Start over" the control that held focus is gone; the first question takes it.
   useEffect(() => {
-    if (restarted) questionHeadingRef.current?.focus();
+    if (restarted) questionRef.current?.focus();
   }, [restarted]);
 
   // The answer that held focus unmounts when the next question replaces the card. Loop-exit and
   // terminal answers return before the step advances, so the exit heading keeps its focus.
   useEffect(() => {
-    if (stepNumber > 0 && focusIsFree(cardRef.current)) questionHeadingRef.current?.focus();
+    if (stepNumber > 0 && focusIsFree(cardRef.current)) questionRef.current?.focus();
   }, [stepNumber]);
 
   // A failed answer also unmounts the answer list while it loads, so focus returns to the
-  // question. The heading is described by the error banner, so focusing it reads the error too.
+  // question. The group is described by the error banner, so focusing it reads the error too.
   useEffect(() => {
-    if (error && focusIsFree(cardRef.current)) questionHeadingRef.current?.focus();
+    if (error && focusIsFree(cardRef.current)) questionRef.current?.focus();
   }, [error]);
 
   const safeQuestionHtml = useMemo(() => sanitizeLegacyHtml(questionText), [questionText]);
@@ -270,15 +274,21 @@ function QuickFormStepper({ state, stateName, entry, restarted, onRestart }: Ste
                   Each string passes through sanitizeLegacyHtml, an attribute-free tag allowlist,
                   before it reaches dangerouslySetInnerHTML. Help text has its own transform and
                   sanitizer profile (see HelpDialog). */}
-              <QuestionText
-                ref={questionHeadingRef}
+              <QuestionGroup
+                ref={questionRef}
                 tabIndex={-1}
-                role="heading"
-                aria-level={2}
-                aria-describedby={error ? errorId : undefined}
-                // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized by sanitizeLegacyHtml
-                dangerouslySetInnerHTML={{ __html: safeQuestionHtml }}
-              />
+                // biome-ignore lint/a11y/useSemanticElements: a fieldset is for form controls; this names a focus target
+                role="group"
+                aria-labelledby={questionNumberId}
+                aria-describedby={error ? `${questionBodyId} ${errorId}` : questionBodyId}
+              >
+                <QuestionNumber id={questionNumberId}>Question {answeredCount + 1}</QuestionNumber>
+                <QuestionBody
+                  id={questionBodyId}
+                  // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized by sanitizeLegacyHtml
+                  dangerouslySetInnerHTML={{ __html: safeQuestionHtml }}
+                />
+              </QuestionGroup>
 
               <HelpSection
                 state={state}

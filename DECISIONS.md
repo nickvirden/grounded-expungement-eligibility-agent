@@ -700,3 +700,34 @@ code. #167 decides who does that.
 **When to revisit:** if the backtest in #173 does not clear its thresholds, if a closed issue turns
 out to have mattered, if the workflow stops without anyone noticing, or if the app handles real user
 data.
+
+---
+
+## 23. Question Text Is a Group With a Short Hidden Heading, Not One Long Heading
+
+**Decision:** The Quick Form renders each question in a focusable `role="group"` container. The
+container is named (`aria-labelledby`) by a visually hidden `<h2>` reading "Question N", and
+described (`aria-describedby`) by a body `<div>` that receives the sanitized question HTML. A failed
+answer adds the error banner to the description. When an answer unmounts the button that held
+focus, focus moves to the group, so a screen reader announces "Question N", then the full question
+text, then any error, once. The page's heading outline is the page title followed by "Question N".
+
+**Why:** 21 Texas questions carry `<p>`, `<ul>`, `<li>` or `<b>` markup (the issue's 22 included
+3-10, reworded to plain text in section 21). Block markup is not valid inside a heading, and
+rendering it as an `<h2>` exposed the whole question as one long heading in assistive technology's
+heading list. The global reset (`margin: 0`) also removed the spacing between paragraphs. With a
+body `div` the paragraphs and lists are ordinary blocks, and the body styles restore the spacing
+and list indentation. The focus ring and the sticky-header scroll margin sit on the group, so the
+ring outlines the whole question.
+
+**Rejected alternatives:**
+- Flattening the block markup in `packages/shared/state-trees/texas.json`: it edits content that the
+  tree parity tests pin, and it would lose the paragraph and list structure the authors wrote.
+- A visible "Question N" heading: it duplicates the step counter in the header, which already shows
+  progress to sighted users.
+- A `<fieldset>`/`<legend>`: fieldsets group form controls, and the answers are not inside this
+  container.
+- Naming the group by the heading plus the body (`aria-labelledby` on both): both elements sit
+  inside the group, so line-by-line browsing reads the question twice.
+
+**Consequence:** heading navigation moves between questions by their number, not by their wording.
