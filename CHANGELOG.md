@@ -1,3 +1,13 @@
+## [2.5.0](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.12...v2.5.0) (2026-11-09)
+
+### Features
+
+* **api:** stamp content-hash tree version and serve superseded tree snapshots ([1043515](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/104351589ac00db81d0857504def6ebede45b43d))
+
+### Bug Fixes
+
+* **api:** state the one-way guarantee of the tree version and catch orphaned mirror files ([ba53d57](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/ba53d570fa701415fc3de3145375a98de5361aec))
+
 ## [2.4.12](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.4.11...v2.4.12) (2026-11-09)
 
 ### Bug Fixes
