@@ -306,7 +306,7 @@ def _chapter_rule_rows() -> list[tuple[int, int, str, str, str]]:
         "3-10-question",
         "4-4-question",
         "4-3-charged",
-        "9-6-new-offense",
+        "10-6-new-offense",
         "11-8-new-offense",
         "5-3-question",
         "6-3-question",
@@ -323,7 +323,7 @@ def test_corrected_wording_replaces_legacy_text(
     absent_fragment: str,
     present_fragment: str,
 ) -> None:
-    """Statute-derived wording corrections replace the legacy strings; the legacy trace
+    """Hand-corrected wording replaces the legacy strings; the legacy trace
     fixture is edited by hand to match (DECISIONS.md section 21)."""
     text = getattr(step("texas", question_id, answer_position), field)
 
@@ -378,7 +378,7 @@ def test_corrected_wording_replaces_legacy_text_at_entry_question() -> None:
             8,
             [
                 "Yes, I want to do whatever I can to get rid of my record",
-                "No, I'm not interested in getting a pardon for the record we're evaluating",
+                "No, I'm not interested in getting a pardon for the conviction we're evaluating",
             ],
         ),
         (
