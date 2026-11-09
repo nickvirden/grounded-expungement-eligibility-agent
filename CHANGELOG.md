@@ -1,3 +1,10 @@
+## [2.6.2](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.6.1...v2.6.2) (2026-11-09)
+
+### Bug Fixes
+
+* **shared:** correct Texas questionnaire copy findings from [#81](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/81) ([a524c21](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/a524c212bc3cdc801f05bc276ba22f0bc69bc653))
+* **shared:** revert 3-8 pardon button edit and tighten [#81](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/81) copy notes ([bc3ce02](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/bc3ce029d6141e2cb74b8f36feab326fb16319c3))
+
 ## [2.6.1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.6.0...v2.6.1) (2026-11-09)
 
 ### Bug Fixes
