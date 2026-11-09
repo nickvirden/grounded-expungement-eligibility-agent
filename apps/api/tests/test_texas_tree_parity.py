@@ -246,6 +246,51 @@ def _chapter_rule_rows() -> list[tuple[int, int, str, str, str]]:
             "Before this case, were you ever convicted of, or placed on deferred adjudication for, "
             "any offense other than a traffic offense punishable by fine only?",
         ),
+        (
+            3,
+            3,
+            "next_question_text",
+            "when you haven't been arrested.",
+            "when you haven't been charged.",
+        ),
+        (
+            9,
+            6,
+            "next_question_text",
+            "Were you convicted of any new offenses during",
+            "convicted or put on another deferred sentence for any new offense during",
+        ),
+        (
+            10,
+            8,
+            "next_question_text",
+            "Were you convicted of any new offenses since",
+            "convicted or put on another deferred sentence for any new offense since",
+        ),
+        (
+            4,
+            3,
+            "next_question_text",
+            "or are you going to wait until it's been 3 years?",
+            "<p>Do you want to start the legal process now?</p>",
+        ),
+        (
+            5,
+            3,
+            "next_question_text",
+            "until the statute of limitations has completely passed",
+            "<p>Do you want to start the legal process now?</p>",
+        ),
+        (8, 1, "next_question_text", "since you the events", "since the events"),
+        (8, 11, "next_question_help", "Beastiality", "Bestiality"),
+        (10, 6, "next_question_help", "Beastiality", "Bestiality"),
+        (
+            4,
+            8,
+            "next_question_help",
+            "to a term in jail.</p>",
+            'a "prison sentence" is where a judge actually sentences you to a term in prison.',
+        ),
     ],
     ids=[
         "2-3-sealing",
@@ -260,6 +305,15 @@ def _chapter_rule_rows() -> list[tuple[int, int, str, str, str]]:
         "8-16-gang-directing",
         "3-10-question",
         "4-4-question",
+        "4-3-charged",
+        "9-6-new-offense",
+        "11-8-new-offense",
+        "5-3-question",
+        "6-3-question",
+        "9-1-question",
+        "9-11-bestiality",
+        "10-7-bestiality",
+        "5-8-prison-sentence",
     ],
 )
 def test_corrected_wording_replaces_legacy_text(
@@ -319,8 +373,96 @@ def test_corrected_wording_replaces_legacy_text_at_entry_question() -> None:
             5,
             ["Yes, it has almost been 2 years", "No, I have some time to wait still"],
         ),
+        (
+            2,
+            8,
+            [
+                "Yes, I want to do whatever I can to get rid of my record",
+                "No, I'm not interested in getting a pardon for the record we're evaluating",
+            ],
+        ),
+        (
+            5,
+            2,
+            [
+                "Yes, the charges I had dismissed were for murder or attempted murder",
+                "No, the charge that was dismissed was not for murder or attempted murder",
+            ],
+        ),
+        (
+            8,
+            1,
+            [
+                "Yes, it's been at least 2 years since the incident occurred",
+                "No, it has not been 2 years since the incident occurred",
+            ],
+        ),
+        (
+            7,
+            7,
+            [
+                "Yes, I have completed all of the other terms of my sentence and paid all fines",
+                "No, I have not completed the other terms of my probation",
+            ],
+        ),
+        (
+            10,
+            8,
+            [
+                "Yes, I was convicted or put on another deferred sentence since the one we're "
+                "evaluating",
+                "No, I didn't get convicted or placed on another deferred sentence since "
+                "completing the deferred misdemeanor we're evaluating",
+            ],
+        ),
+        (
+            4,
+            3,
+            [
+                "Yes, I want to start the legal process now",
+                "No, I'm going to wait until it's been 3 years",
+            ],
+        ),
+        (
+            5,
+            3,
+            [
+                "Yes, I want to start the legal process now",
+                "No, I'm going to wait until it's been 2 years",
+            ],
+        ),
+        (
+            9,
+            8,
+            [
+                "Yes, I want to get this off my record as soon as possible!",
+                "No, I'm just going to wait until it's been a full 2 years",
+            ],
+        ),
+        (
+            12,
+            0,
+            [
+                "Yes, I want to get this off my record as soon as possible!",
+                "No, I'm just going to wait until it's been a full 2 years",
+            ],
+        ),
     ],
-    ids=["8-17-answers", "3-10-answers", "4-4-answers", "9-5-answers"],
+    ids=[
+        "8-17-answers",
+        "3-10-answers",
+        "4-4-answers",
+        "9-5-answers",
+        "3-8-answers",
+        "6-2-answers",
+        "9-1-answers",
+        "8-7-answers",
+        "11-8-answers",
+        "5-3-answers",
+        "6-3-answers",
+        "10-8-answers",
+        "13-0-answers",
+    ],
 )
 def test_corrected_wording_replaces_legacy_answers(
     question_id: int, answer_position: int, expected_values: list[str]

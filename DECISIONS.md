@@ -633,6 +633,14 @@ so the parity tests that replay every `(questionId, answerPosition)` pair keep a
 the 4-4 routing change in section 16, no transition, answer position, `group`, `variant`, or
 `questionsLeft` value changes.
 
+A third set is a copy-edit pass over #81, also applied without content-owner review and not
+statute-derived: typo and grammar fixes (6-2, 9-1, 9-11, 10-7, 10-8, 13-0 and 3-8), 4-3's "arrested" to "charged", 10-6 and 11-8
+asking about a new conviction or deferred sentence (their buttons already did), 3-8's pardon
+button naming the record rather than a conviction, 8-7's Yes button adding paid fines, 5-8's help
+defining a prison sentence, and 5-3 and 6-3 asking only "Do you want to start the legal process
+now?" so their Yes and No buttons answer it. Wording only: nothing in this set touches a
+transition, answer position, `group`, `variant`, or `questionsLeft`.
+
 **Provenance:** the fixture's `sourceSha256` pins the original, uncorrected `texas.js`. The
 corrected tree and fixture are not what that file produces. The legacy file shares one help string
 between sibling questions (for example 11-11 and 12-3), so reproducing a correction from the

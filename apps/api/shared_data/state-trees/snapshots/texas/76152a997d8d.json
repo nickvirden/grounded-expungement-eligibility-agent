@@ -1,0 +1,3459 @@
+{
+  "entryNodeId": "0-0",
+  "nodes": {
+    "0-0": {
+      "group": 0,
+      "question": "What best describes this Texas case?",
+      "answers": [
+        {
+          "value": "I was arrested, but it didn't end up resulting in a conviction",
+          "position": 0
+        },
+        {
+          "value": "I was sentenced to Deferred Adjudication, Pretrial Diversion, or other Alternative Sentencing",
+          "position": 1
+        },
+        {
+          "value": "I was convicted as an adult",
+          "position": 2
+        },
+        {
+          "value": "I had a juvenile case (referred to juvenile probation or juvenile court, whether or not it was adjudicated)",
+          "position": 3
+        },
+        {
+          "value": "My case was federal",
+          "position": 4
+        }
+      ]
+    },
+    "1-0": {
+      "group": 1,
+      "question": "Which best describes the outcome of the criminal record we're currently evaluating?",
+      "answers": [
+        {
+          "value": "My charges were dismissed at some point after I was arrested",
+          "position": 0
+        },
+        {
+          "value": "I was acquitted, pardoned, or my conviction was overturned on appeal",
+          "position": 1
+        },
+        {
+          "value": "After being arrested, no charges were filed",
+          "position": 2
+        }
+      ]
+    },
+    "2-0": {
+      "group": 2,
+      "question": "<p>You've indicated that your charges were dismissed in the case we're evaluating.</p><p>Were you convicted of any other charges from the same arrest or set of events?</p>",
+      "answers": [
+        {
+          "value": "Yes, I was convicted of other charges from this incident",
+          "position": 0
+        },
+        {
+          "value": "No, I was not convicted of any other charges from this arrest or sequence of events",
+          "position": 1
+        }
+      ]
+    },
+    "3-1": {
+      "group": 3,
+      "question": "Which best describes the charges that were dismissed?",
+      "answers": [
+        {
+          "value": "A felony charge was dismissed",
+          "position": 0
+        },
+        {
+          "value": "A misdemeanor was dismissed",
+          "position": 1
+        }
+      ]
+    },
+    "4-0": {
+      "group": 4,
+      "question": "<p>Great! Now we need to figure out whether the Statute of Limitations have passed for the charges you had dismissed. </p><p>Please pay attention to the help button on the next question, unless you're sure you know the statute of limitations for the offense you were arrested for.</p>",
+      "answers": [
+        {
+          "value": "Let's figure this out!",
+          "position": 0
+        }
+      ]
+    },
+    "5-0": {
+      "group": 5,
+      "question": "Has enough time passed for the Statute of Limitations to have expired for the offense you had dismissed? Please refer to the help button if you're not sure.",
+      "answers": [
+        {
+          "value": "Yes, after reading the information in the help button I know it's been enough time",
+          "position": 0
+        },
+        {
+          "value": "No, I know that it has not been long enough",
+          "position": 1
+        },
+        {
+          "value": "I'm not sure, you better ask me more questions",
+          "position": 2
+        }
+      ]
+    },
+    "6-1": {
+      "group": 6,
+      "question": "Were your charges dismissed for \"Lack of Probable Cause\"? If you're not sure, please click the help button.",
+      "answers": [
+        {
+          "value": "Yes, my charges were dismissed for lack of probable cause",
+          "position": 0
+        },
+        {
+          "value": "No, my charges were dismissed for another reason",
+          "position": 1
+        }
+      ]
+    },
+    "6-2": {
+      "group": 6,
+      "question": "Did you have charges for murder or attempted murder dismissed?",
+      "answers": [
+        {
+          "value": "Yes, the charges I had dismissed were for murder or attempted murder",
+          "position": 2
+        },
+        {
+          "value": "No, the charge that was dismissed was not for murder or attempted murder",
+          "position": 3
+        }
+      ]
+    },
+    "7-3": {
+      "group": 7,
+      "question": "<p>Were the dismissed charges we are evaluating in this case for any of the following crimes: </p><ul><li>* Sexual Assault of a Child</li><li>* Indecency with a Child,</li><li>* Trafficking of Persons, or</li><li>* Compelling Prostitution of a Child</li>",
+      "answers": [
+        {
+          "value": "Yes, my charges were for one of the offenses on that list",
+          "position": 0
+        },
+        {
+          "value": "No, the charges I had dismissed are not on that list",
+          "position": 1
+        }
+      ]
+    },
+    "8-1": {
+      "group": 8,
+      "question": "What level of charges were the charges you had dismissed?",
+      "answers": [
+        {
+          "value": "The arrest record we're evaluating was for a felony",
+          "position": 0
+        },
+        {
+          "value": "The arrest record we're evaluating was for a misdemeanor",
+          "position": 1
+        }
+      ]
+    },
+    "9-0": {
+      "group": 9,
+      "question": "Has it been at least 3 years since you the events which led to you getting arrested or charged?",
+      "answers": [
+        {
+          "value": "Yes, it's been at least 3 years since the incident occurred",
+          "position": 0
+        },
+        {
+          "value": "No, it hasn't been 3 years yet",
+          "position": 1
+        }
+      ]
+    },
+    "10-1": {
+      "group": 10,
+      "question": "<p>The Statute of Limitations of most felonies in Texas is 3 years.</p><p>Has it almost been 3 years since the event that led to your charges or arrest?</p>",
+      "answers": [
+        {
+          "value": "Yes, it has almost been 3 years now",
+          "position": 0
+        },
+        {
+          "value": "No, 3 years is a ways away still",
+          "position": 1
+        }
+      ]
+    },
+    "5-3": {
+      "group": 5,
+      "question": "<p>The expungement process can take a while, so if you want to get this incident off your record as soon as possible, you should get things started now.</p><p>Do you want to start the legal process now?</p>",
+      "answers": [
+        {
+          "value": "Yes, I want to start the legal process now",
+          "position": 0
+        },
+        {
+          "value": "No, I'm going to wait until it's been 3 years",
+          "position": 4
+        }
+      ]
+    },
+    "9-1": {
+      "group": 9,
+      "question": "Has it been at least 2 years since the events which led to you getting arrested or charged?",
+      "answers": [
+        {
+          "value": "Yes, it's been at least 2 years since the incident occurred",
+          "position": 0
+        },
+        {
+          "value": "No, it has not been 2 years since the incident occurred",
+          "position": 2
+        }
+      ]
+    },
+    "10-2": {
+      "group": 10,
+      "question": "<p>The Statute of Limitations of most misdemeanors in Texas is 2 years.</p><p>Has it almost been 2 years since the event that led to your charges or arrest?</p>",
+      "answers": [
+        {
+          "value": "Yes, it has almost been 2 years now",
+          "position": 2
+        },
+        {
+          "value": "No, 2 years is a ways away still",
+          "position": 1
+        }
+      ]
+    },
+    "6-3": {
+      "group": 6,
+      "question": "<p>The expungement process can take a while, so if you want to get this incident off your record as soon as possible, you should get things started now.</p><p>Do you want to start the legal process now?</p>",
+      "answers": [
+        {
+          "value": "Yes, I want to start the legal process now",
+          "position": 0
+        },
+        {
+          "value": "No, I'm going to wait until it's been 2 years",
+          "position": 1
+        }
+      ]
+    },
+    "4-1": {
+      "group": 4,
+      "question": "Has it been at least 2 years since your arrest?",
+      "answers": [
+        {
+          "value": "Yes, it has been 2 years since my arrest",
+          "position": 1
+        },
+        {
+          "value": "Nope, it hasn't been 2 years yet",
+          "position": 2
+        }
+      ]
+    },
+    "5-2": {
+      "group": 5,
+      "question": "Were your charges dismissed for \"Lack of Probable Cause\"? If you're not sure, please click the help button.",
+      "answers": [
+        {
+          "value": "Yes, my charges were dismissed for lack of probable cause",
+          "position": 0
+        },
+        {
+          "value": "No, my charges were dismissed for another reason",
+          "position": 3
+        }
+      ]
+    },
+    "2-2": {
+      "group": 2,
+      "question": "Which best describes the offense you were arrested for?",
+      "answers": [
+        {
+          "value": "Felony",
+          "position": 2
+        },
+        {
+          "value": "Class A or B Misdemeanor",
+          "position": 3
+        },
+        {
+          "value": "Class C Misdemeanor",
+          "position": 4
+        }
+      ]
+    },
+    "3-2": {
+      "group": 3,
+      "question": "Has it been at least 3 years since you were arrested?",
+      "answers": [
+        {
+          "value": "Yes, it has been at least 3 years since I was arrested",
+          "position": 2
+        },
+        {
+          "value": "No, it hasn't been 3 years since I was arrested",
+          "position": 3
+        }
+      ]
+    },
+    "4-3": {
+      "group": 4,
+      "question": "<p>Texas law requires that you wait three (3) years after being arrested for a felony to expunge your record when you haven't been charged.</p><p>Has it almost been three (3) years?</p>",
+      "answers": [
+        {
+          "value": "Yes, it has almost been 3 years",
+          "position": 3
+        },
+        {
+          "value": "No, I still have plenty of time to wait",
+          "position": 4
+        }
+      ]
+    },
+    "3-3": {
+      "group": 3,
+      "question": "Has it been at least 1 year since you were arrested?",
+      "answers": [
+        {
+          "value": "Yes, it has been at least 1 year since I was arrested",
+          "position": 4
+        },
+        {
+          "value": "No, it hasn't been a year since I was arrested",
+          "position": 5
+        }
+      ]
+    },
+    "4-4": {
+      "group": 4,
+      "question": "<p>When you've been arrested for a misdemeanor and haven't been charged, you can expunge your arrest record after one year.</p><p>The expungement process can take a while, so if you want to get this incident off your record as soon as possible, you should get things started now.</p><p>Do you want to start the legal process now?</p>",
+      "answers": [
+        {
+          "value": "Yes, I want to get this off my record as soon as possible!",
+          "position": 1
+        },
+        {
+          "value": "No, I'm not ready to start yet",
+          "position": 15
+        }
+      ]
+    },
+    "1-1": {
+      "group": 1,
+      "question": "Which type of deferred sentencing were you granted?",
+      "answers": [
+        {
+          "value": "I was given Deferred Adjudication",
+          "position": 3
+        },
+        {
+          "value": "I was given Deferred Prosecution or Pretrial Diversion",
+          "position": 4
+        }
+      ]
+    },
+    "2-3": {
+      "group": 2,
+      "question": "Did you successfully complete your deferred adjudication sentence and have your charges dismissed?",
+      "answers": [
+        {
+          "value": "Yes, I successfully finished all of the terms of my sentence",
+          "position": 5
+        },
+        {
+          "value": "No, my deferred sentence has not been completed",
+          "position": 6
+        }
+      ]
+    },
+    "3-5": {
+      "group": 3,
+      "question": "Were you given deferred adjudication for Driving While Intoxicated?",
+      "answers": [
+        {
+          "value": "Yeah, I was given deferred adjudication for a DWI",
+          "position": 6
+        },
+        {
+          "value": "No, I was sentenced to deferred adjudication for a different crime",
+          "position": 7
+        }
+      ]
+    },
+    "4-6": {
+      "group": 4,
+      "question": "<p>To seal a DWI, you need to be a first time offender. </p><p>Have you previously been put on deferred adjudication, or convicted of, any crime that wasn't just a fine-only traffic offense? </p>",
+      "answers": [
+        {
+          "value": "Yes, I have something else on my record",
+          "position": 5
+        },
+        {
+          "value": "Nope, this is the only thing on my record",
+          "position": 6
+        }
+      ]
+    },
+    "3-8": {
+      "group": 3,
+      "question": "<p>Based on your answers, it doesn't appear that the record we're currently evaluating will qualify to be sealed, expunged, or set-aside.</p><p>That doesn't mean you're completely out of options though. Although it can be pretty difficult, you probably qualify to seek a Governor's Pardon.</p><p>A Governor's Pardon will get rid of any finding of guilt, and typically restore your firearm rights as well.</p><p>Do you want to learn more about applying for a pardon? </p>",
+      "answers": [
+        {
+          "value": "Yes, I want to do whatever I can to get rid of my record",
+          "position": 8
+        },
+        {
+          "value": "No, I'm not interested in getting a pardon for the record we're evaluating",
+          "position": 9
+        }
+      ]
+    },
+    "5-6": {
+      "group": 5,
+      "question": "Was your blood alcohol concentration (BAC) over 0.15?",
+      "answers": [
+        {
+          "value": "Yes, I blew over a 0.15",
+          "position": 5
+        },
+        {
+          "value": "No, I blew a 0.15 or less",
+          "position": 6
+        },
+        {
+          "value": "I did not blow into a breathalyzer",
+          "position": 7
+        }
+      ]
+    },
+    "6-6": {
+      "group": 6,
+      "question": "Did your DWI involve an accident of any type?",
+      "answers": [
+        {
+          "value": "Yeah, there was some sort of an accident",
+          "position": 4
+        },
+        {
+          "value": "Nope, there wasn't an accident",
+          "position": 5
+        }
+      ]
+    },
+    "7-4": {
+      "group": 7,
+      "question": "Was anyone in the car with you when you got in the accident?",
+      "answers": [
+        {
+          "value": "Yeah, someone was in the car with me",
+          "position": 2
+        },
+        {
+          "value": "No, I was driving by myself",
+          "position": 3
+        }
+      ]
+    },
+    "8-3": {
+      "group": 8,
+      "question": "Did you get into an accident with another car or person?",
+      "answers": [
+        {
+          "value": "Yes, another car or person was involved",
+          "position": 2
+        },
+        {
+          "value": "No other car or person was involved in the accident",
+          "position": 3
+        }
+      ]
+    },
+    "7-5": {
+      "group": 7,
+      "question": "Were you given an Interlock device for at least 6 months as part of your probation?",
+      "answers": [
+        {
+          "value": "Yes, I was required to install an interlock in my car",
+          "position": 4
+        },
+        {
+          "value": "No, I was not required to put an interlock device in my car",
+          "position": 5
+        }
+      ]
+    },
+    "8-4": {
+      "group": 8,
+      "question": "Has it been at least 2 years since you completed the terms of your probation or deferred sentence?",
+      "answers": [
+        {
+          "value": "Yep, it's been 2 years",
+          "position": 4
+        },
+        {
+          "value": "No, it hasn't been 2 years yet",
+          "position": 5
+        }
+      ]
+    },
+    "9-5": {
+      "group": 9,
+      "question": "<p>After you successfully complete your DWI sentence, you typically need to wait 2 years to seal your record if you've had an interlock device.</p><p>Has it almost been 2 years since you've finished your deferred sentence?</p>",
+      "answers": [
+        {
+          "value": "Yes, it has almost been 2 years",
+          "position": 3
+        },
+        {
+          "value": "No, I have some time to wait still",
+          "position": 4
+        }
+      ]
+    },
+    "10-3": {
+      "group": 10,
+      "question": "<p>It can take a while to get your records and legal documents together to seal your record.</p><p>Do you want to start the legal process now to get your record sealed as soon as possible?</p>",
+      "answers": [
+        {
+          "value": "Yes, I want to get this off my record as soon as possible!",
+          "position": 3
+        },
+        {
+          "value": "No, I have some time to wait",
+          "position": 1
+        }
+      ]
+    },
+    "8-5": {
+      "group": 8,
+      "question": "Has it been at least 5 years since you completed the terms of your probation or deferred sentence?",
+      "answers": [
+        {
+          "value": "Yep, it's been 5 years",
+          "position": 4
+        },
+        {
+          "value": "No, it hasn't been 5 years yet",
+          "position": 6
+        }
+      ]
+    },
+    "4-7": {
+      "group": 4,
+      "question": "Have you ever been convicted of abusing, neglecting, endangering or abandoning a child, elderly person, or disabled person?",
+      "answers": [
+        {
+          "value": "Yes, I have been convicted of one of those crimes",
+          "position": 5
+        },
+        {
+          "value": "No, I have never been convicted of one of those crimes",
+          "position": 7
+        }
+      ]
+    },
+    "5-7": {
+      "group": 5,
+      "question": "Have you ever been convicted or put on deferred adjudication for a crime involving Domestic Violence, Violating a Protective Order, or Stalking?",
+      "answers": [
+        {
+          "value": "Yes, I've been convicted or placed on deferred adjudication for one of those crimes",
+          "position": 5
+        },
+        {
+          "value": "No, I've never been convicted or put on deferred for any of those criminal offenses",
+          "position": 8
+        }
+      ]
+    },
+    "6-8": {
+      "group": 6,
+      "question": "Have you ever been required to register as a sex offender?",
+      "answers": [
+        {
+          "value": "Yes, I have been required to register as a sex offender",
+          "position": 6
+        },
+        {
+          "value": "No, I have not been required to register as a sex offender",
+          "position": 7
+        }
+      ]
+    },
+    "7-7": {
+      "group": 7,
+      "question": "Have you ever been convicted or put on deferred adjudication for murder or aggravated kidnapping?",
+      "answers": [
+        {
+          "value": "Yes, I have been convicted or put on deferred adjudication for murder or aggravated kidnapping",
+          "position": 2
+        },
+        {
+          "value": "No, I have never been convicted or put on deferred adjudication for either of those crimes",
+          "position": 6
+        }
+      ]
+    },
+    "8-6": {
+      "group": 8,
+      "question": "<p>Great! Now let's figure out if enough time has gone by to satisfy the waiting periods.</p><p>What is the level of offense that we're currently evaluating?</p>",
+      "answers": [
+        {
+          "value": "I was put on deferred adjudication for a felony",
+          "position": 7
+        },
+        {
+          "value": "I was put on deferred adjudication for a Class A or B Misdemeanor",
+          "position": 8
+        },
+        {
+          "value": "I was put on deferred adjudication for a Class C Misdemeanor",
+          "position": 9
+        }
+      ]
+    },
+    "9-7": {
+      "group": 9,
+      "question": "Has it been at least 5 years since you completed all of the terms of your deferred sentence?",
+      "answers": [
+        {
+          "value": "Yes, it's been at least 5 years since I finished the terms of my deferred sentence",
+          "position": 5
+        },
+        {
+          "value": "No, it hasn't been 5 years since I've finished the terms of my sentence",
+          "position": 4
+        }
+      ]
+    },
+    "10-5": {
+      "group": 10,
+      "question": "<p>Have you been convicted or put on another deferred sentence for any crime during the 5 year period after completing your deferred sentence?</p><p>Do not count fine-only traffic violations when answering this question. </p>",
+      "answers": [
+        {
+          "value": "Yes, I was convicted or put on another deferred sentence during those 5 years",
+          "position": 4
+        },
+        {
+          "value": "No, I didn't get convicted or placed on another deferred sentence during those 5 years",
+          "position": 5
+        }
+      ]
+    },
+    "9-8": {
+      "group": 9,
+      "question": "Has it been at least 2 years since you successfully completed your deferred sentence?",
+      "answers": [
+        {
+          "value": "Yes, it has been at least 2 years since I finished the terms of my sentence",
+          "position": 6
+        },
+        {
+          "value": "No, it hasn't been 2 years since I finished my sentence",
+          "position": 7
+        }
+      ]
+    },
+    "10-6": {
+      "group": 10,
+      "question": "Were you convicted or put on another deferred sentence for any new offense during the 2 year period following the completion of your deferred sentence?",
+      "answers": [
+        {
+          "value": "Yes, I was convicted or put on another deferred sentence during those 2 years",
+          "position": 6
+        },
+        {
+          "value": "No, I didn't get convicted or placed on another deferred sentence during those 2 years",
+          "position": 7
+        }
+      ]
+    },
+    "10-7": {
+      "group": 10,
+      "question": "Were you given deferred adjudication for a Sex Offense listed in the help button?",
+      "answers": [
+        {
+          "value": "Yes, I was placed on a deferred sentence for one of the crimes on that list",
+          "position": 8
+        },
+        {
+          "value": "No, I was given a deferred sentence for a crime that is not on that list",
+          "position": 9
+        }
+      ]
+    },
+    "11-8": {
+      "group": 11,
+      "question": "Were you convicted or put on another deferred sentence for any new offense since completion of the deferred sentence we're currently evaluating?",
+      "answers": [
+        {
+          "value": "Yes, I was convicted or put on another deferred sentence since the one we're evaluating",
+          "position": 0
+        },
+        {
+          "value": "No, I didn't get convicted or placed on another deferred sentence since completing the deferred misdemeanor we're evaluating",
+          "position": 1
+        }
+      ]
+    },
+    "12-1": {
+      "group": 12,
+      "question": "<p>After you successfully complete deferred adjudication for this type of crime, you typically need to wait 2 years to seal your record.</p><p>Has it been almost 2 years?</p>",
+      "answers": [
+        {
+          "value": "Yes, it has almost been 2 years",
+          "position": 0
+        },
+        {
+          "value": "No, I have some time to wait still",
+          "position": 1
+        }
+      ]
+    },
+    "13-0": {
+      "group": 13,
+      "question": "<p>It can take a while to get your records and legal documents together to seal your record.</p><p>Do you want to start the legal process now to get your record sealed as soon as possible?</p>",
+      "answers": [
+        {
+          "value": "Yes, I want to get this off my record as soon as possible!",
+          "position": 0
+        },
+        {
+          "value": "No, I'm just going to wait until it's been a full 2 years",
+          "position": 1
+        }
+      ]
+    },
+    "11-9": {
+      "group": 11,
+      "question": "Were you given a deferred sentence for one of weapons-related offense listed in the help button?",
+      "answers": [
+        {
+          "value": "Yes, I was placed on a deferred sentence for one of the weapons crimes on that list",
+          "position": 2
+        },
+        {
+          "value": "No, I was given a deferred sentence for a crime that is not on that list",
+          "position": 3
+        }
+      ]
+    },
+    "12-3": {
+      "group": 12,
+      "question": "Were you placed on deferred adjudication for disorderly conduct offenses listed in the help button?",
+      "answers": [
+        {
+          "value": "Yes, I was given a deferred sentence for one of the crimes on that list",
+          "position": 2
+        },
+        {
+          "value": "No, I was given a deferred sentence for a crime that is not on that list",
+          "position": 3
+        }
+      ]
+    },
+    "13-3": {
+      "group": 13,
+      "question": "Were you put on deferred for a crime involving assault or any of the crimes listed in the help button?",
+      "answers": [
+        {
+          "value": "Yes, I was given a deferred sentence for one of the crimes on that list",
+          "position": 2
+        },
+        {
+          "value": "No, I was given a deferred sentence for a crime that is not on that list",
+          "position": 3
+        }
+      ]
+    },
+    "14-3": {
+      "group": 14,
+      "question": "Were you put on deferred for prostitution or any of the crimes listed in the help button?",
+      "answers": [
+        {
+          "value": "Yes, I was given a deferred sentence for one of the crimes on that list",
+          "position": 0
+        },
+        {
+          "value": "No, I was given a deferred sentence for a crime that is not on that list",
+          "position": 1
+        }
+      ]
+    },
+    "15-1": {
+      "group": 15,
+      "question": "Were you placed on deferred for Kidnapping, Unlawful Restraint or any of the crimes on the list in the help button?",
+      "answers": [
+        {
+          "value": "Yes, I was given a deferred sentence for one of the crimes on that list",
+          "position": 0
+        },
+        {
+          "value": "No, I was given a deferred sentence for a crime that is not on that list",
+          "position": 1
+        }
+      ]
+    },
+    "16-1": {
+      "group": 16,
+      "question": "Finally, were you put on deferred for a crime involving a child or family listed in the help button?",
+      "answers": [
+        {
+          "value": "Yes, I was given a deferred sentence for one of the crimes on that list",
+          "position": 0
+        },
+        {
+          "value": "No, I was given a deferred sentence for a crime that is not on that list",
+          "position": 1
+        }
+      ]
+    },
+    "17-1": {
+      "group": 17,
+      "question": "Did you complete your deferred sentence after September 1, 2017?",
+      "answers": [
+        {
+          "value": "Yes, I finished my deferred sentence <b>after</b> September 1, 2017",
+          "position": 0
+        },
+        {
+          "value": "No, I finished my deferred sentence <b>before</b> September 1, 2017",
+          "position": 1
+        }
+      ]
+    },
+    "18-0": {
+      "group": 18,
+      "question": "Do you have any convictions on your record for any crime that wasn't just a fine-only traffic offense?",
+      "answers": [
+        {
+          "value": "Yeah, I have another conviction or was placed on deferred for another crime",
+          "position": 0
+        },
+        {
+          "value": "No, this was the first time I got in any trouble",
+          "position": 1
+        }
+      ]
+    },
+    "2-4": {
+      "group": 2,
+      "question": "Did you successfully complete Deferred Prosecution without violating its terms?",
+      "answers": [
+        {
+          "value": "Yes, I completed the terms of my pre-trial diversion",
+          "position": 4
+        },
+        {
+          "value": "No, I did not successfully complete the terms of pre-trial diversion",
+          "position": 7
+        }
+      ]
+    },
+    "1-2": {
+      "group": 1,
+      "question": "Is the conviction we're evaluating a felony?",
+      "answers": [
+        {
+          "value": "Yes, the conviction we're currently evaluating was for a felony",
+          "position": 5
+        },
+        {
+          "value": "No, the conviction we're currently evaluating was for a misdemeanor",
+          "position": 6
+        }
+      ]
+    },
+    "2-5": {
+      "group": 2,
+      "question": "Is the conviction we're currently evaluating a felony Driving While Intoxicated (DWI) offense?",
+      "answers": [
+        {
+          "value": "Yes, I was convicted of felony DWI",
+          "position": 8
+        },
+        {
+          "value": "No, my felony conviction was for something else",
+          "position": 9
+        }
+      ]
+    },
+    "3-9": {
+      "group": 3,
+      "question": "Did your conviction require you to register as a sex offender?",
+      "answers": [
+        {
+          "value": "Yes, the conviction we're evaluating required me to register as a sex offender",
+          "position": 10
+        },
+        {
+          "value": "No, my conviction did not require me to register as a sex offender",
+          "position": 11
+        }
+      ]
+    },
+    "4-11": {
+      "group": 4,
+      "question": "Were you convicted of any of the serious crimes listed in the help button?",
+      "answers": [
+        {
+          "value": "Yes, the conviction we are evaluating was for a crime on that list",
+          "position": 5
+        },
+        {
+          "value": "No, this conviction was not for a crime on that list",
+          "position": 8
+        }
+      ]
+    },
+    "5-8": {
+      "group": 5,
+      "question": "Did you receive a prison sentence or jail sentence for the felony conviction we're currently evaluating?",
+      "answers": [
+        {
+          "value": "Yes, I was sentenced to jail or prison after being convicted of this crime",
+          "position": 5
+        },
+        {
+          "value": "No, the judge didn't sentence me to jail or prison other than any time I spent prior to conviction",
+          "position": 9
+        }
+      ]
+    },
+    "6-9": {
+      "group": 6,
+      "question": "Are you <b>currently</b> on any of the following types of probation?",
+      "answers": [
+        {
+          "value": "Yes, I am on Community Supervision (\"straight probation\")",
+          "position": 8
+        },
+        {
+          "value": "Yes, I am on Deferred Adjudication or Deferred Prosecution (\"pre-trial diversion\")",
+          "position": 9
+        },
+        {
+          "value": "No, but I successfully completed Community Supervision (\"straight probation\")",
+          "position": 10
+        },
+        {
+          "value": "No, I was never put on any type of probation",
+          "position": 10
+        },
+        {
+          "value": "No, and I did not successfully complete the terms of my probation",
+          "position": 6
+        }
+      ]
+    },
+    "7-8": {
+      "group": 7,
+      "question": "Have you completed one-third of your probation or have you been on probation for at least 2 years?",
+      "answers": [
+        {
+          "value": "Yes, I have completed at least one third of my probation OR have been on probation for at least 2 years",
+          "position": 7
+        },
+        {
+          "value": "No, I have not completed that much probation",
+          "position": 8
+        }
+      ]
+    },
+    "8-7": {
+      "group": 8,
+      "question": "Have you completed the other terms of your probation and paid all fines?",
+      "answers": [
+        {
+          "value": "Yes, I have completed all of the other terms of my sentence and paid all fines",
+          "position": 10
+        },
+        {
+          "value": "No, I have not completed the other terms of my probation",
+          "position": 6
+        }
+      ]
+    },
+    "7-10": {
+      "group": 7,
+      "question": "Is the conviction we're evaluating one of the counties listed in the help button?",
+      "answers": [
+        {
+          "value": "Yes, I was convicted in one of the counties listed in the help button",
+          "position": 9
+        },
+        {
+          "value": "No, my conviction was not in one of the counties on that list",
+          "position": 10
+        }
+      ]
+    },
+    "8-9": {
+      "group": 8,
+      "question": "Has it been more than 30 days since you were discharged from probation?",
+      "answers": [
+        {
+          "value": "Yes, it has been more than 30 days since my probation was officially terminated by the court",
+          "position": 2
+        },
+        {
+          "value": "No, it has not been 30 days since my probation was terminated by the court",
+          "position": 10
+        }
+      ]
+    },
+    "2-6": {
+      "group": 2,
+      "question": "<p>Was this conviction for a crime that was violent or sexual in nature?</p><p>For example, misdemeanor simple assault does not count for this question.</p>",
+      "answers": [
+        {
+          "value": "Yes, I was convicted of a crime that was violent or sexual",
+          "position": 8
+        },
+        {
+          "value": "No, I was not convicted of a crime that was violent or sexual",
+          "position": 10
+        }
+      ]
+    },
+    "3-10": {
+      "group": 3,
+      "question": "Before this case, were you ever convicted of, or placed on deferred adjudication for, any offense other than a traffic offense punishable by fine only?",
+      "answers": [
+        {
+          "value": "Yes, I have been convicted or placed on deferred adjudication for a different offense",
+          "position": 12
+        },
+        {
+          "value": "No, never (not counting fine-only traffic tickets)",
+          "position": 13
+        }
+      ]
+    },
+    "4-13": {
+      "group": 4,
+      "question": "Is the conviction we're currently evaluating for Driving While Intoxicated (DWI)?",
+      "answers": [
+        {
+          "value": "Yes, I was convicted of a DWI",
+          "position": 9
+        },
+        {
+          "value": "No, I was convicted of something else",
+          "position": 10
+        }
+      ]
+    },
+    "5-10": {
+      "group": 5,
+      "question": "Was community supervision (probation) part of your sentence?",
+      "answers": [
+        {
+          "value": "Yes, I was put on probation after being convicted",
+          "position": 10
+        },
+        {
+          "value": "No, probation was not part of my sentence",
+          "position": 11
+        }
+      ]
+    },
+    "6-10": {
+      "group": 6,
+      "question": "Were you convicted of purchasing or consuming alcohol as a minor, or selling or furnishing alcohol to a minor?",
+      "answers": [
+        {
+          "value": "Yes, I was convicted of one of those offenses",
+          "position": 11
+        },
+        {
+          "value": "No, I wasn't convicted of an alcohol crime involving a minor",
+          "position": 12
+        }
+      ]
+    },
+    "7-11": {
+      "group": 7,
+      "question": "Were you a minor when convicted of this offense?",
+      "answers": [
+        {
+          "value": "Yes, I was a minor when convicted",
+          "position": 11
+        },
+        {
+          "value": "No, I was not a minor when convicted",
+          "position": 12
+        }
+      ]
+    },
+    "8-11": {
+      "group": 8,
+      "question": "Are you now at least 21 years old?",
+      "answers": [
+        {
+          "value": "Yep, now I'm at least 21",
+          "position": 9
+        },
+        {
+          "value": "No, I am not yet 21",
+          "position": 6
+        }
+      ]
+    },
+    "7-12": {
+      "group": 7,
+      "question": "Has it been at least two (2) years since you successfully completed your probation?",
+      "answers": [
+        {
+          "value": "Yep, it's been at least two years since I completed probation",
+          "position": 13
+        },
+        {
+          "value": "Nope, it hasn't been two years since I finished probation",
+          "position": 14
+        }
+      ]
+    },
+    "8-14": {
+      "group": 8,
+      "question": "<p>Since it hasn't been two (2) years since you've completed probation, let's see if the offense we are currently evaluating has a shorter waiting period.</p><p>We're going to go through a bunch of different types of offenses to check, so please be patient!</p>",
+      "answers": [
+        {
+          "value": "Let's figure it out!",
+          "position": 11
+        }
+      ]
+    },
+    "9-11": {
+      "group": 9,
+      "question": "Were you convicted of a Sexual Offense such as indecent exposure or public lewdness? For a complete list, see the help button.",
+      "answers": [
+        {
+          "value": "Yes, I was convicted of one of the crimes listed in the help button",
+          "position": 8
+        },
+        {
+          "value": "No, this conviction was for something else",
+          "position": 9
+        }
+      ]
+    },
+    "10-8": {
+      "group": 10,
+      "question": "<p>Based on the charge you were convicted of, you probably need to wait 2 years from when you finish your sentence to seal your record.</p><p>That isn't a lot of time. Do you want to start the legal process now to get your record sealed as soon as possible?</p>",
+      "answers": [
+        {
+          "value": "Yes, I want to get this off my record as soon as possible!",
+          "position": 7
+        },
+        {
+          "value": "No, I'm just going to wait until it's been a full 2 years",
+          "position": 1
+        }
+      ]
+    },
+    "10-9": {
+      "group": 10,
+      "question": "Were you convicted of one of the weapons-related offenses listed in the help button?",
+      "answers": [
+        {
+          "value": "Yes, I was convicted of one of the weapons charges listed in the help button",
+          "position": 10
+        },
+        {
+          "value": "No, this conviction was for something else",
+          "position": 11
+        }
+      ]
+    },
+    "11-11": {
+      "group": 11,
+      "question": "Were you convicted of disorderly conduct or one of the related offenses listed in the help button?",
+      "answers": [
+        {
+          "value": "Yes, I was convicted of one of the crimes listed in the help button",
+          "position": 4
+        },
+        {
+          "value": "No, this conviction was for something else",
+          "position": 5
+        }
+      ]
+    },
+    "12-5": {
+      "group": 12,
+      "question": "Were you convicted of a crime involving assault or one of the offenses listed in the help button?",
+      "answers": [
+        {
+          "value": "Yes, I was convicted of assault or one of the crimes listed in the help button",
+          "position": 4
+        },
+        {
+          "value": "No, this conviction was for something else",
+          "position": 5
+        }
+      ]
+    },
+    "13-5": {
+      "group": 13,
+      "question": "Were you convicted of prostitution, an obscenity offense, or one of the other crimes listed in the help button?",
+      "answers": [
+        {
+          "value": "Yes, I was convicted of prostitution or one of the crimes listed in the help button",
+          "position": 4
+        },
+        {
+          "value": "No, this conviction was for something else",
+          "position": 5
+        }
+      ]
+    },
+    "14-5": {
+      "group": 14,
+      "question": "Were you convicted of kidnapping, unlawful restraint, or one of the crimes listed in the help button?",
+      "answers": [
+        {
+          "value": "Yes, I was convicted of kidnapping or one of the crimes listed in the help button",
+          "position": 2
+        },
+        {
+          "value": "No, this conviction was for something else",
+          "position": 3
+        }
+      ]
+    },
+    "15-3": {
+      "group": 15,
+      "question": "Finally, were you convicted of a crime involving your family or a child listed in the help button?",
+      "answers": [
+        {
+          "value": "Yes, I was convicted of a crime involving family or one of the crimes listed in the help button",
+          "position": 2
+        },
+        {
+          "value": "No, this conviction was for something else",
+          "position": 3
+        }
+      ]
+    },
+    "6-11": {
+      "group": 6,
+      "question": "Have you paid all fines, costs, and restitution imposed by the court?",
+      "answers": [
+        {
+          "value": "Yes, I have taken care of all financial obligations",
+          "position": 13
+        },
+        {
+          "value": "No, I still owe money because of my sentence",
+          "position": 1
+        }
+      ]
+    },
+    "7-13": {
+      "group": 7,
+      "question": "Were you convicted of purchasing or consuming alcohol as a minor, or selling or furnishing alcohol to a minor?",
+      "answers": [
+        {
+          "value": "Yes, it was one of those offenses",
+          "position": 15
+        },
+        {
+          "value": "No, it was not one of those offenses",
+          "position": 16
+        }
+      ]
+    },
+    "8-16": {
+      "group": 8,
+      "question": "Were you convicted of one of the crimes in the help button related to engaging in organized criminal activity?",
+      "answers": [
+        {
+          "value": "Yes, I was convicted of one of the crimes on that list",
+          "position": 2
+        },
+        {
+          "value": "No, I wasn't convicted of any of the crimes on that list",
+          "position": 12
+        }
+      ]
+    },
+    "9-12": {
+      "group": 9,
+      "question": "Was the crime you were convicted of punishable by only a fine?",
+      "answers": [
+        {
+          "value": "Yes, the offense could only result in a fine",
+          "position": 10
+        },
+        {
+          "value": "No, the offense could have resulted in more than just a fine",
+          "position": 11
+        }
+      ]
+    },
+    "10-11": {
+      "group": 10,
+      "question": "Has it been 2 years since you completed the sentence for the offense we're evaluating?",
+      "answers": [
+        {
+          "value": "Yes, it has been at least 2 years",
+          "position": 7
+        },
+        {
+          "value": "No, it hasn't quite been 2 years yet",
+          "position": 10
+        }
+      ]
+    },
+    "1-3": {
+      "group": 1,
+      "question": "Do you have any pending matters with any juvenile probation department or juvenile court?",
+      "answers": [
+        {
+          "value": "Yes, I have some juvenile matters still pending",
+          "position": 7
+        },
+        {
+          "value": "No, I have no pending juvenile matters",
+          "position": 8
+        }
+      ]
+    },
+    "2-8": {
+      "group": 2,
+      "question": "Do you have any pending charges or warrants with an adult criminal justice agency?",
+      "answers": [
+        {
+          "value": "Yes, I have pending criminal matters",
+          "position": 6
+        },
+        {
+          "value": "No, I do not have any pending criminal matters in any court",
+          "position": 11
+        }
+      ]
+    },
+    "3-11": {
+      "group": 3,
+      "question": "Are you at least 17 years of age?",
+      "answers": [
+        {
+          "value": "Yes, I am at least 17 years of age",
+          "position": 14
+        },
+        {
+          "value": "No, I am under 17 years old",
+          "position": 15
+        }
+      ]
+    },
+    "4-14": {
+      "group": 4,
+      "question": "Was your case transferred from juvenile court to adult criminal court?",
+      "answers": [
+        {
+          "value": "Yes, it was transferred to adult court",
+          "position": 11
+        },
+        {
+          "value": "No, my case stayed in juvenile court",
+          "position": 12
+        }
+      ]
+    },
+    "5-11": {
+      "group": 5,
+      "question": "Were you convicted in adult court?",
+      "answers": [
+        {
+          "value": "Yes, I was convicted in adult court",
+          "position": 12
+        },
+        {
+          "value": "No, my case transferred to adult court, but I wasn't convicted",
+          "position": 13
+        }
+      ]
+    },
+    "5-12": {
+      "group": 5,
+      "question": "Have you been convicted of any felony as an adult?",
+      "answers": [
+        {
+          "value": "Yes, I have an adult felony conviction",
+          "position": 5
+        },
+        {
+          "value": "No, I have NOT been convicted of a felony as an adult",
+          "position": 14
+        }
+      ]
+    },
+    "6-14": {
+      "group": 6,
+      "question": "Are you currently required to register as a sex offender?",
+      "answers": [
+        {
+          "value": "Yes, I am currently required to register as a sex offender",
+          "position": 6
+        },
+        {
+          "value": "No, I am not required to register as a sex offender",
+          "position": 14
+        }
+      ]
+    },
+    "7-14": {
+      "group": 7,
+      "question": "Have you been found to have engaged in \"Habitual Felony Conduct\"? Please read the information in the help button to understand what this is.",
+      "answers": [
+        {
+          "value": "Yes, I have been found to have engaged in this type of conduct",
+          "position": 2
+        },
+        {
+          "value": "No, I have not been found to have engaged in habitual felony conduct",
+          "position": 17
+        }
+      ]
+    },
+    "7-15": {
+      "group": 7,
+      "question": "Were you a minor when convicted of this offense?",
+      "answers": [
+        {
+          "value": "Yes, I was a minor when convicted",
+          "position": 11
+        },
+        {
+          "value": "No, I was not a minor when convicted",
+          "position": 18
+        }
+      ]
+    },
+    "8-17": {
+      "group": 8,
+      "question": "Have you received a \"Determinate Sentence\" for one of the crimes listed in the help button?",
+      "answers": [
+        {
+          "value": "Yes, I got a Determinate Sentence of one of the crimes on that list",
+          "position": 2
+        },
+        {
+          "value": "No, I have not got a Determinate Sentence of any of those offenses",
+          "position": 13
+        }
+      ]
+    },
+    "9-13": {
+      "group": 9,
+      "question": "Were you sent to a correctional facility as part of your sentence?",
+      "answers": [
+        {
+          "value": "Yes, I was sent to a correctional facility as part of my sentence",
+          "position": 12
+        },
+        {
+          "value": "No, I was not sentenced to a correctional facility",
+          "position": 13
+        }
+      ]
+    },
+    "10-12": {
+      "group": 10,
+      "question": "Have you been discharged and released from the correctional facility you were sent to?",
+      "answers": [
+        {
+          "value": "Yes, I have been fully discharged and released from my sentence",
+          "position": 12
+        },
+        {
+          "value": "No, I haven't been fully discharged from my sentence",
+          "position": 1
+        }
+      ]
+    },
+    "4-15": {
+      "group": 4,
+      "question": "Has it been at least one year since your juvenile case was discharged?",
+      "answers": [
+        {
+          "value": "Yes, it has been at least 1 year since my case was discharged",
+          "position": 13
+        },
+        {
+          "value": "It's been less than one year since my case was discharged",
+          "position": 14
+        }
+      ]
+    },
+    "5-14": {
+      "group": 5,
+      "question": "<p>When you're under 17 years old, Texas law requires that you wait one (1) year to seal your case.</p><p>Since one (1) year is such a short amount of time, do you want to begin the process now, so that you can file as soon as possible?</p>",
+      "answers": [
+        {
+          "value": "Yes, I want to seal my juvenile record as soon as I can!",
+          "position": 15
+        },
+        {
+          "value": "No, I will wait a year and then look into sealing my record",
+          "position": 4
+        }
+      ]
+    }
+  },
+  "transitions": [
+    {
+      "from": {
+        "questionId": 0,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 1,
+        "nodeId": "1-0"
+      }
+    },
+    {
+      "from": {
+        "questionId": 1,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 2,
+        "nodeId": "2-0"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "nodeId": "3-1"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "nodeId": "4-0"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "nodeId": "5-0"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Expungement"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 6,
+        "nodeId": "6-1"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Expungement"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 6,
+        "nodeId": "6-2"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "nodeId": "7-3"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "nodeId": "8-1"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 9,
+        "nodeId": "9-0"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Expungement"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "nodeId": "10-1"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "nodeId": "5-3"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 9,
+        "nodeId": "9-1"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "nodeId": "10-2"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 6,
+        "nodeId": "6-3"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "nodeId": "4-1"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Expungement"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "nodeId": "5-2"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 6,
+        "nodeId": "6-3"
+      }
+    },
+    {
+      "from": {
+        "questionId": 1,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Expungement"
+      }
+    },
+    {
+      "from": {
+        "questionId": 1,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 2,
+        "nodeId": "2-2"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "nodeId": "3-2"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Expungement"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "nodeId": "4-3"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "nodeId": "5-3"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "nodeId": "3-3"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "nodeId": "4-4"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Expungement"
+      }
+    },
+    {
+      "from": {
+        "questionId": 0,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 1,
+        "nodeId": "1-1"
+      }
+    },
+    {
+      "from": {
+        "questionId": 1,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 2,
+        "nodeId": "2-3"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "nodeId": "3-5"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 6
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "nodeId": "4-6"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "nodeId": "3-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 8
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Pardon eBook"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 9
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 6
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "nodeId": "5-6"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "nodeId": "3-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 6
+      },
+      "to": {
+        "type": "question",
+        "questionId": 6,
+        "nodeId": "6-6"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "nodeId": "7-4"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "nodeId": "3-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "nodeId": "8-3"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "nodeId": "3-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "nodeId": "7-5"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "nodeId": "8-4"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas DWI Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 9,
+        "nodeId": "9-5"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "nodeId": "10-3"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas DWI Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "nodeId": "8-5"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 6
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "nodeId": "7-5"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 7
+      },
+      "to": {
+        "type": "result",
+        "value": "Research"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 7
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "nodeId": "4-7"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 7
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "nodeId": "5-7"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 8
+      },
+      "to": {
+        "type": "question",
+        "questionId": 6,
+        "nodeId": "6-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 6
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "nodeId": "3-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 7
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "nodeId": "7-7"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 6
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "nodeId": "8-6"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 7
+      },
+      "to": {
+        "type": "question",
+        "questionId": 9,
+        "nodeId": "9-7"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "nodeId": "10-5"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "nodeId": "3-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Felony Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 8
+      },
+      "to": {
+        "type": "question",
+        "questionId": 9,
+        "nodeId": "9-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 6
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "nodeId": "10-6"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 6
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "nodeId": "10-7"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 8
+      },
+      "to": {
+        "type": "question",
+        "questionId": 11,
+        "nodeId": "11-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 11,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify"
+      }
+    },
+    {
+      "from": {
+        "questionId": 11,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 12,
+        "nodeId": "12-1"
+      }
+    },
+    {
+      "from": {
+        "questionId": 12,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 13,
+        "nodeId": "13-0"
+      }
+    },
+    {
+      "from": {
+        "questionId": 13,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Misdemeanor Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 13,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 12,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 9
+      },
+      "to": {
+        "type": "question",
+        "questionId": 11,
+        "nodeId": "11-9"
+      }
+    },
+    {
+      "from": {
+        "questionId": 11,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 11,
+        "nodeId": "11-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 11,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 12,
+        "nodeId": "12-3"
+      }
+    },
+    {
+      "from": {
+        "questionId": 12,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 11,
+        "nodeId": "11-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 12,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 13,
+        "nodeId": "13-3"
+      }
+    },
+    {
+      "from": {
+        "questionId": 13,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 11,
+        "nodeId": "11-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 13,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 14,
+        "nodeId": "14-3"
+      }
+    },
+    {
+      "from": {
+        "questionId": 14,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 11,
+        "nodeId": "11-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 14,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 15,
+        "nodeId": "15-1"
+      }
+    },
+    {
+      "from": {
+        "questionId": 15,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 11,
+        "nodeId": "11-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 15,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 16,
+        "nodeId": "16-1"
+      }
+    },
+    {
+      "from": {
+        "questionId": 16,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 11,
+        "nodeId": "11-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 16,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "question",
+        "questionId": 17,
+        "nodeId": "17-1"
+      }
+    },
+    {
+      "from": {
+        "questionId": 17,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "question",
+        "questionId": 18,
+        "nodeId": "18-0"
+      }
+    },
+    {
+      "from": {
+        "questionId": 18,
+        "answerPosition": 0
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Misdemeanor Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 18,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Automatic Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 17,
+        "answerPosition": 1
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Misdemeanor Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 7
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Misdemeanor Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 7
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "nodeId": "10-7"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 9
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Expungement"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 6
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 1,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "question",
+        "questionId": 2,
+        "nodeId": "2-4"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 7
+      },
+      "to": {
+        "type": "question",
+        "questionId": 1,
+        "nodeId": "1-2"
+      }
+    },
+    {
+      "from": {
+        "questionId": 1,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 2,
+        "nodeId": "2-5"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 8
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "nodeId": "3-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 9
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "nodeId": "3-9"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 10
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "nodeId": "3-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 11
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "nodeId": "4-11"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 8
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "nodeId": "5-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 9
+      },
+      "to": {
+        "type": "question",
+        "questionId": 6,
+        "nodeId": "6-9"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 8
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "nodeId": "7-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 7
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "nodeId": "8-7"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 10
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Conviction Set Aside"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 8
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 9
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 10
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "nodeId": "7-10"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 9
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "nodeId": "8-9"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 10
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Conviction Set Aside"
+      }
+    },
+    {
+      "from": {
+        "questionId": 1,
+        "answerPosition": 6
+      },
+      "to": {
+        "type": "question",
+        "questionId": 2,
+        "nodeId": "2-6"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 10
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "nodeId": "3-10"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 12
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "nodeId": "3-9"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 13
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "nodeId": "4-13"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 9
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "nodeId": "4-6"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 10
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "nodeId": "5-10"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 10
+      },
+      "to": {
+        "type": "question",
+        "questionId": 6,
+        "nodeId": "6-10"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 11
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "nodeId": "7-11"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 11
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "nodeId": "8-11"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 12
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "nodeId": "7-12"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 12
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "nodeId": "7-12"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 13
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Misdemeanor Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 14
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "nodeId": "8-14"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 11
+      },
+      "to": {
+        "type": "question",
+        "questionId": 9,
+        "nodeId": "9-11"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 8
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "nodeId": "10-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 9
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "nodeId": "10-9"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 10
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "nodeId": "10-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 11
+      },
+      "to": {
+        "type": "question",
+        "questionId": 11,
+        "nodeId": "11-11"
+      }
+    },
+    {
+      "from": {
+        "questionId": 11,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "nodeId": "10-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 11,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 12,
+        "nodeId": "12-5"
+      }
+    },
+    {
+      "from": {
+        "questionId": 12,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "nodeId": "10-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 12,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 13,
+        "nodeId": "13-5"
+      }
+    },
+    {
+      "from": {
+        "questionId": 13,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "nodeId": "10-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 13,
+        "answerPosition": 5
+      },
+      "to": {
+        "type": "question",
+        "questionId": 14,
+        "nodeId": "14-5"
+      }
+    },
+    {
+      "from": {
+        "questionId": 14,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "nodeId": "10-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 14,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 15,
+        "nodeId": "15-3"
+      }
+    },
+    {
+      "from": {
+        "questionId": 15,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "nodeId": "10-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 15,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Misdemeanor Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 11
+      },
+      "to": {
+        "type": "question",
+        "questionId": 6,
+        "nodeId": "6-11"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 13
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "nodeId": "7-13"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 15
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "nodeId": "7-15"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 16
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "nodeId": "8-16"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 12
+      },
+      "to": {
+        "type": "question",
+        "questionId": 9,
+        "nodeId": "9-12"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 10
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Misdemeanor Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 11
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "nodeId": "10-11"
+      }
+    },
+    {
+      "from": {
+        "questionId": 0,
+        "answerPosition": 2
+      },
+      "to": {
+        "type": "question",
+        "questionId": 1,
+        "nodeId": "1-2"
+      }
+    },
+    {
+      "from": {
+        "questionId": 0,
+        "answerPosition": 3
+      },
+      "to": {
+        "type": "question",
+        "questionId": 1,
+        "nodeId": "1-3"
+      }
+    },
+    {
+      "from": {
+        "questionId": 1,
+        "answerPosition": 7
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify Yet"
+      }
+    },
+    {
+      "from": {
+        "questionId": 1,
+        "answerPosition": 8
+      },
+      "to": {
+        "type": "question",
+        "questionId": 2,
+        "nodeId": "2-8"
+      }
+    },
+    {
+      "from": {
+        "questionId": 2,
+        "answerPosition": 11
+      },
+      "to": {
+        "type": "question",
+        "questionId": 3,
+        "nodeId": "3-11"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 14
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "nodeId": "4-14"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 11
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "nodeId": "5-11"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 12
+      },
+      "to": {
+        "type": "question",
+        "questionId": 1,
+        "nodeId": "1-2"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 13
+      },
+      "to": {
+        "type": "question",
+        "questionId": 1,
+        "nodeId": "1-0"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 12
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "nodeId": "5-12"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 14
+      },
+      "to": {
+        "type": "question",
+        "questionId": 6,
+        "nodeId": "6-14"
+      }
+    },
+    {
+      "from": {
+        "questionId": 6,
+        "answerPosition": 14
+      },
+      "to": {
+        "type": "question",
+        "questionId": 7,
+        "nodeId": "7-14"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 17
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "nodeId": "8-17"
+      }
+    },
+    {
+      "from": {
+        "questionId": 7,
+        "answerPosition": 18
+      },
+      "to": {
+        "type": "question",
+        "questionId": 8,
+        "nodeId": "8-16"
+      }
+    },
+    {
+      "from": {
+        "questionId": 8,
+        "answerPosition": 13
+      },
+      "to": {
+        "type": "question",
+        "questionId": 9,
+        "nodeId": "9-13"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 12
+      },
+      "to": {
+        "type": "question",
+        "questionId": 10,
+        "nodeId": "10-12"
+      }
+    },
+    {
+      "from": {
+        "questionId": 10,
+        "answerPosition": 12
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Juvenile Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 9,
+        "answerPosition": 13
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Juvenile Record Sealing"
+      }
+    },
+    {
+      "from": {
+        "questionId": 3,
+        "answerPosition": 15
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "nodeId": "4-15"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 13
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "nodeId": "4-14"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 14
+      },
+      "to": {
+        "type": "question",
+        "questionId": 5,
+        "nodeId": "5-14"
+      }
+    },
+    {
+      "from": {
+        "questionId": 4,
+        "answerPosition": 15
+      },
+      "to": {
+        "type": "result",
+        "value": "Texas Expungement"
+      }
+    },
+    {
+      "from": {
+        "questionId": 5,
+        "answerPosition": 15
+      },
+      "to": {
+        "type": "question",
+        "questionId": 4,
+        "nodeId": "4-14"
+      }
+    },
+    {
+      "from": {
+        "questionId": 0,
+        "answerPosition": 4
+      },
+      "to": {
+        "type": "result",
+        "value": "Does Not Qualify"
+      }
+    }
+  ]
+}
