@@ -2,7 +2,7 @@ import { formatStateName } from '@/app/LandingClient.utils';
 import DecisionPathList from '@/components/DecisionPathList';
 import { CheckCircleIcon, XCircleIcon } from '@/components/icons/index';
 import { getStateTree } from '@/lib/api';
-import { decodeDecisionPath } from '@/lib/decisionPath';
+import { decodeDecisionPath, provenanceNote, resolveTreeProvenance } from '@/lib/decisionPath';
 import type { StateTree } from '@/lib/schemas';
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -12,6 +12,7 @@ import {
   OutcomeBadge,
   PathSection,
   PrimaryButton,
+  ProvenanceNote,
   ResultBody,
   ResultCard,
   ResultHeadline,
@@ -19,11 +20,16 @@ import {
   SecondaryButton,
   SectionTitle,
 } from './page.styles';
-import { getResultMeta } from './page.utils';
+import { getResultMeta, parseTreeParam } from './page.utils';
 
 interface Props {
   params: Promise<{ state: string }>;
-  searchParams: Promise<{ result_key?: string; result_label?: string; path?: string }>;
+  searchParams: Promise<{
+    result_key?: string;
+    result_label?: string;
+    path?: string;
+    tree?: string | string[];
+  }>;
 }
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
@@ -62,15 +68,27 @@ export default async function ResultPage({ params, searchParams }: Props) {
   // A direct-URL load (no stepper interaction first) must still render the
   // result -- fall back to raw-code rendering rather than hanging the whole
   // page (or 404ing) if the tree fetch fails or never responds.
+  const requestedVersion = parseTreeParam(sp.tree);
+  const fetchInit = () => ({ next: { revalidate: 3600 }, signal: AbortSignal.timeout(5_000) });
   let tree: StateTree | null = null;
   try {
-    tree = await getStateTree(state, {
-      next: { revalidate: 3600 },
-      signal: AbortSignal.timeout(5_000),
-    });
+    tree = await getStateTree(state, fetchInit(), requestedVersion);
   } catch {
     tree = null;
   }
+  // The versioned tree is gone or the request failed: decode against the
+  // current tree and say so, rather than hiding the path.
+  if (!tree && requestedVersion) {
+    try {
+      tree = await getStateTree(state, fetchInit());
+    } catch {
+      tree = null;
+    }
+  }
+  const resolved = resolveTreeProvenance(sp.tree, requestedVersion ? tree : null);
+  // With no tree at all the path renders as raw codes, so a claim about
+  // which wording is shown would be false.
+  const note = tree ? provenanceNote(resolved) : null;
   const decodedPath = decodeDecisionPath(path, tree);
 
   const OutcomeIcon = meta.outcome === 'negative' ? XCircleIcon : CheckCircleIcon;
@@ -108,6 +126,17 @@ export default async function ResultPage({ params, searchParams }: Props) {
         {path.length > 0 && (
           <PathSection aria-labelledby="decision-path-heading">
             <SectionTitle id="decision-path-heading">Decision path</SectionTitle>
+            {note && (
+              <ProvenanceNote>
+                {note}
+                {resolved === 'superseded' && (
+                  <>
+                    {' '}
+                    <Link href={`/intake/${state}/quick`}>Retake the Quick Form</Link>
+                  </>
+                )}
+              </ProvenanceNote>
+            )}
             <DecisionPathList steps={decodedPath} />
           </PathSection>
         )}

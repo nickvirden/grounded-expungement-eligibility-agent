@@ -1,7 +1,7 @@
 'use client';
 
 import DecisionPathList from '@/components/DecisionPathList';
-import { decodeDecisionPath } from '@/lib/decisionPath';
+import { decodeDecisionPath, provenanceNote, resolveTreeProvenance } from '@/lib/decisionPath';
 import type { EligibilityReport, StateTree } from '@/lib/schemas';
 import { useMemo } from 'react';
 import {
@@ -11,6 +11,7 @@ import {
   CaseLabel,
   CaseRow,
   CaseValue,
+  PathNote,
   ResultKey,
   ResultSection,
   StatusPill,
@@ -38,6 +39,12 @@ export default function CaseFileCard({ state, intakeId, status, report, decision
     () => (report ? decodeDecisionPath(report.traversed_path, decisionTree) : []),
     [report, decisionTree],
   );
+  // The tree on hand is always the current one, so a report stamped with any
+  // other version (or none) is decoded against wording it may not have seen.
+  const pathNote =
+    report && decisionTree
+      ? provenanceNote(resolveTreeProvenance(report.tree_version, decisionTree))
+      : null;
 
   return (
     // tabIndex: a decoded decision path can run longer than the panel's
@@ -95,6 +102,7 @@ export default function CaseFileCard({ state, intakeId, status, report, decision
                 <CaseRow>
                   <CaseLabel>Decision path</CaseLabel>
                   <CaseValue>
+                    {pathNote && <PathNote>{pathNote}</PathNote>}
                     <DecisionPathList $density="compact" steps={decodedPath} />
                   </CaseValue>
                 </CaseRow>

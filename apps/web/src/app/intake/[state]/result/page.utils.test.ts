@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { describe, it } from 'node:test';
-import { getResultMeta } from './page.utils.js';
+import { getResultMeta, parseTreeParam } from './page.utils.js';
 
 // Mirrors apps/api/app/engine/rule_engine.py's _value_to_key: the API turns a
 // result's human-readable label into the key the result page receives.
@@ -62,5 +62,18 @@ describe('getResultMeta', () => {
   it('does not resolve object-prototype property names', () => {
     assert.equal(getResultMeta('constructor').headline, DEFAULT_HEADLINE);
     assert.equal(getResultMeta('toString').headline, DEFAULT_HEADLINE);
+  });
+});
+
+describe('parseTreeParam', () => {
+  it('passes a well-formed version through', () => {
+    assert.equal(parseTreeParam('abcdef012345'), 'abcdef012345');
+  });
+
+  it('drops absent, malformed and repeated values', () => {
+    assert.equal(parseTreeParam(undefined), undefined);
+    assert.equal(parseTreeParam('zzz'), undefined);
+    assert.equal(parseTreeParam('ABCDEF012345'), undefined);
+    assert.equal(parseTreeParam(['abcdef012345', 'abcdef012345']), undefined);
   });
 });

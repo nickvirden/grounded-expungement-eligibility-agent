@@ -1,3 +1,5 @@
+import { isTreeVersion } from '@/lib/decisionPath';
+
 /** Map result keys to display metadata. */
 export interface ResultMeta {
   headline: string;
@@ -123,4 +125,13 @@ export function getResultMeta(resultKey: string | null): ResultMeta {
     if (key.toLowerCase() === normalised) return meta;
   }
   return DEFAULT_META;
+}
+
+/**
+ * The `tree` search parameter as a version to request, or undefined when it is
+ * absent, repeated or malformed. Provenance classification still sees the raw
+ * value, so a malformed one is reported rather than silently ignored.
+ */
+export function parseTreeParam(value: string | string[] | undefined): string | undefined {
+  return typeof value === 'string' && isTreeVersion(value) ? value : undefined;
 }

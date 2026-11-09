@@ -269,6 +269,14 @@ test.describe('Accessibility — Result page', () => {
     expectNoViolations(await runAxe(page));
   });
 
+  test('load with a provenance note has no violations', async ({ page }) => {
+    await page.goto(
+      '/intake/texas/result?result_key=expungement&result_label=Texas+Expungement&state=texas&path=0:0,1:1&tree=zzz',
+    );
+    await expect(page.getByText(/shown in current wording/i)).toBeVisible({ timeout: 10_000 });
+    expectNoViolations(await runAxe(page));
+  });
+
   test('conditional-outcome load has no violations', async ({ page }) => {
     await page.goto(
       '/intake/texas/result?result_key=does_not_qualify_yet&result_label=Does+Not+Qualify+Yet&state=texas&path=0:0,1:1',

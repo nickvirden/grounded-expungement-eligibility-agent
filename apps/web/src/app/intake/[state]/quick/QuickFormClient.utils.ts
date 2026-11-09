@@ -116,3 +116,15 @@ export function questionKey({ questionId, questionText, answers }: KeyableQuesti
 export function isRepeatedQuestion(answeredKeys: readonly string[], nextKey: string): boolean {
   return answeredKeys.includes(nextKey);
 }
+
+/**
+ * The tree version to stamp on the result URL: the version every response on
+ * the path reported, or undefined when any is missing or two differ. A path
+ * whose steps came from different trees (a deploy landed mid-form) matches no
+ * single version, so it is left unversioned rather than stamped wrongly.
+ */
+export function stampTreeVersion(versions: ReadonlyArray<string | undefined>): string | undefined {
+  const [first] = versions;
+  if (!first) return undefined;
+  return versions.every((v) => v === first) ? first : undefined;
+}

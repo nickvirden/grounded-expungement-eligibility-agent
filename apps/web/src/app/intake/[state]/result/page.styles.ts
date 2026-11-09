@@ -81,6 +81,20 @@ export const PathSection = styled.section`
   margin-top: var(--space-2);
 `;
 
+export const ProvenanceNote = styled.p`
+  font-size: 0.875rem;
+  color: var(--color-navy-600);
+  line-height: 1.6;
+  margin-bottom: var(--space-3);
+
+  a {
+    color: var(--color-blue-700);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+`;
+
 export const SectionTitle = styled.h2`
   font-size: 0.8125rem;
   font-weight: 700;

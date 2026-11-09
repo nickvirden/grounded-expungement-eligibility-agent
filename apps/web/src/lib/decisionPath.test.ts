@@ -1,7 +1,12 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { describe, it } from 'node:test';
-import { decodeDecisionPath } from './decisionPath.js';
+import {
+  decodeDecisionPath,
+  isTreeVersion,
+  provenanceNote,
+  resolveTreeProvenance,
+} from './decisionPath.js';
 import { type StateTree, stateTreeSchema } from './schemas.js';
 
 // Small fixture tree, independent of any real state's data, covering:
@@ -180,5 +185,72 @@ describe('decodeDecisionPath', () => {
     if (prefixedFirst.kind === 'answered') {
       assert.equal(prefixedFirst.questionHtml, 'What best describes this Texas case?');
     }
+  });
+});
+
+describe('resolveTreeProvenance', () => {
+  const v = 'abcdef012345';
+
+  it('is exact when the loaded tree is the requested current version', () => {
+    assert.equal(resolveTreeProvenance(v, { treeVersion: v, superseded: false }), 'exact');
+  });
+
+  it('is exact when the API omits the superseded flag', () => {
+    assert.equal(resolveTreeProvenance(v, { treeVersion: v }), 'exact');
+  });
+
+  it('is superseded when the loaded tree is a retained snapshot of the requested version', () => {
+    assert.equal(resolveTreeProvenance(v, { treeVersion: v, superseded: true }), 'superseded');
+  });
+
+  it('is unversioned when no version was requested', () => {
+    assert.equal(resolveTreeProvenance(undefined, null), 'unversioned');
+    assert.equal(resolveTreeProvenance('', { treeVersion: v }), 'unversioned');
+  });
+
+  it('is unavailable when the tree could not be loaded', () => {
+    assert.equal(resolveTreeProvenance(v, null), 'unavailable');
+  });
+
+  it('is unavailable when the response is for a different version', () => {
+    assert.equal(
+      resolveTreeProvenance(v, { treeVersion: '000000000000', superseded: false }),
+      'unavailable',
+    );
+  });
+
+  it('is unavailable when an older API returns the current tree without a version', () => {
+    assert.equal(resolveTreeProvenance(v, {}), 'unavailable');
+  });
+
+  it('is invalid for malformed or repeated values', () => {
+    for (const bad of ['zzz', 'ABCDEF012345', 'abcdef01234', 'abcdef0123456', '../x']) {
+      assert.equal(resolveTreeProvenance(bad, null), 'invalid', bad);
+    }
+    assert.equal(resolveTreeProvenance([v, v], null), 'invalid');
+  });
+});
+
+describe('isTreeVersion', () => {
+  it('accepts exactly 12 lowercase hex characters', () => {
+    assert.equal(isTreeVersion('0123456789ab'), true);
+    assert.equal(isTreeVersion('0123456789AB'), false);
+    assert.equal(isTreeVersion('0123456789a'), false);
+    assert.equal(isTreeVersion('0123456789abc'), false);
+    assert.equal(isTreeVersion('0123456789ab\n'), false);
+  });
+});
+
+describe('provenanceNote', () => {
+  it('is silent only for an exact match', () => {
+    assert.equal(provenanceNote('exact'), null);
+    for (const p of ['superseded', 'unversioned', 'unavailable', 'invalid'] as const) {
+      assert.ok(provenanceNote(p), p);
+    }
+  });
+
+  it('words a superseded path differently from a current-wording fallback', () => {
+    assert.match(provenanceNote('superseded') ?? '', /as worded when you answered/);
+    assert.match(provenanceNote('unavailable') ?? '', /current wording/);
   });
 });

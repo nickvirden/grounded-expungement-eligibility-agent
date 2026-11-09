@@ -90,6 +90,11 @@ test.describe('Quick Form — Texas happy path', () => {
     // Should navigate to result page
     await page.waitForURL(/\/intake\/texas\/result/, { timeout: 10_000 });
 
+    // The URL names the tree the path was answered against, and that tree is current, so no
+    // provenance note is shown.
+    expect(new URL(page.url()).searchParams.get('tree')).toMatch(/^[0-9a-f]{12}$/);
+    await expect(page.getByText(/shown in current wording|shown as worded/i)).toHaveCount(0);
+
     // Result page should show a positive outcome
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 
@@ -119,6 +124,41 @@ test.describe('Quick Form — Texas happy path', () => {
     await expect(pathRegion).toContainText(/didn't end up resulting in a conviction/i);
     const pathText = await pathRegion.innerText();
     expect(pathText).not.toMatch(/\bq?\d+:a?\d+\b/);
+
+    // A URL with no tree version decodes against the current tree and says so.
+    await expect(pathRegion).toContainText(
+      'Shown in current wording, which may differ from what you saw.',
+    );
+  });
+
+  test('a malformed tree version still decodes the path and shows the current-wording note', async ({
+    page,
+  }) => {
+    await page.goto(
+      '/intake/texas/result?result_key=expungement&result_label=Texas+Expungement&state=texas&path=0:0,1:1&tree=zzz',
+    );
+
+    const pathRegion = page.getByRole('region', { name: /decision path/i });
+    await expect(pathRegion).toBeVisible({ timeout: 10_000 });
+    await expect(pathRegion).toContainText(/what best describes this texas case/i);
+    await expect(pathRegion).toContainText(
+      'Shown in current wording, which may differ from what you saw.',
+    );
+  });
+
+  test('a well-formed version with no retained tree falls back to current wording', async ({
+    page,
+  }) => {
+    await page.goto(
+      '/intake/texas/result?result_key=expungement&result_label=Texas+Expungement&state=texas&path=0:0,1:1&tree=000000000000',
+    );
+
+    const pathRegion = page.getByRole('region', { name: /decision path/i });
+    await expect(pathRegion).toBeVisible({ timeout: 10_000 });
+    await expect(pathRegion).toContainText(/what best describes this texas case/i);
+    await expect(pathRegion).toContainText(
+      'Shown in current wording, which may differ from what you saw.',
+    );
   });
 
   test('an unparseable path segment renders as literal text without breaking the rest of the path', async ({
