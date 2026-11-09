@@ -618,3 +618,57 @@ test.describe('Quick Form — question markup', () => {
     expect(style.indent).toBeGreaterThan(0);
   });
 });
+
+// A terminal answer navigates to the result page, which can take seconds on a cold route. The
+// question stays on screen until then, so its answers have to stop accepting clicks: each extra
+// click would append another entry to the path in the result URL.
+test.describe('Quick Form — terminal answer', () => {
+  test('locks the answers while the result page loads, so the path ends at the terminal answer', async ({
+    page,
+  }) => {
+    await page.route('**/intake/texas/result**', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 2_000));
+      await route.continue();
+    });
+
+    await page.goto('/intake/texas/quick');
+    await expect(page.getByRole('heading', { level: 2 })).toBeVisible({ timeout: 10_000 });
+
+    // Convicted as an adult → misdemeanor → violent or sexual → the pardon question.
+    const clicks = [
+      /^i was convicted as an adult$/i,
+      /no, the conviction we're currently evaluating was for a misdemeanor/i,
+      /yes, i was convicted of a crime that was violent or sexual/i,
+    ];
+    for (const name of clicks) {
+      const button = page.getByRole('button', { name });
+      await expect(button).toBeVisible({ timeout: 15_000 });
+      await button.click();
+    }
+
+    const declinePardon = page.getByRole('button', { name: /not interested in getting a pardon/i });
+    const wantPardon = page.getByRole('button', { name: /^yes, i want/i });
+    await expect(declinePardon).toBeVisible({ timeout: 15_000 });
+    await expect(wantPardon).toBeVisible();
+    const assessed = page.waitForResponse('**/eligibility/assess');
+    await declinePardon.click();
+    await assessed;
+
+    // Answers are hidden while the assess request is in flight anyway, so the lock only
+    // matters once it has settled. Let the response handler finish, then confirm the
+    // question still offers nothing to click while the delayed navigation is pending. The
+    // count is read once, not polled: a polled assertion would pass as soon as the navigation
+    // removed the page, which is exactly the window this test guards.
+    await page.waitForTimeout(500);
+    expect(page.url()).toContain('/quick');
+    expect(await wantPardon.count()).toBe(0);
+
+    await page.waitForURL(/\/intake\/texas\/result/, { timeout: 15_000 });
+    const path = new URL(page.url()).searchParams.get('path');
+    expect(path).toBe('0:2,1:6,2:8,3:9');
+
+    const pathRegion = page.getByRole('region', { name: /decision path/i });
+    await expect(pathRegion).toBeVisible();
+    expect(await pathRegion.innerText()).not.toMatch(/\bq?\d+:a?\d+\b/);
+  });
+});
