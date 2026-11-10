@@ -1,6 +1,30 @@
 {
   "version": 1,
   "entries": {
+    "texas:10-7": {
+      "reviewed": true,
+      "hash": "2f1b02db8d5ecf906f4e92f2a233b028d7745f91aefa04fbb50c0f4add30bbb8",
+      "fields": {
+        "question": "59bb839ba945",
+        "rule": "a7878007cf0e",
+        "help": "3dcdcff4d94e",
+        "answers": "79198cfec44b"
+      },
+      "reviewedBy": "nickvirden",
+      "reviewedAt": "2026-11-09"
+    },
+    "texas:10-9": {
+      "reviewed": true,
+      "hash": "aeaad52b7e3aa66a9ce0e8f9e07498b20c738d93a173e64c5820e248dbec4655",
+      "fields": {
+        "question": "6fda1b047ca1",
+        "rule": "2254142451dc",
+        "help": "84dcc9c0f342",
+        "answers": "f360e197496c"
+      },
+      "reviewedBy": "nickvirden",
+      "reviewedAt": "2026-11-09"
+    },
     "texas:11-11": {
       "reviewed": true,
       "hash": "3e8cab2a3eefe683f1c106bdf44a23248e15f7e32758f6786e7e68235a6d0efe",
@@ -13,6 +37,18 @@
       "reviewedBy": "nickvirden",
       "reviewedAt": "2026-10-21"
     },
+    "texas:11-9": {
+      "reviewed": true,
+      "hash": "cb914495ebd0ad22a38b8c87c8448411fe9512922e3b9beb6345e3d4b5585311",
+      "fields": {
+        "question": "eae223c8fbe4",
+        "rule": "9a5b4dca3a86",
+        "help": "2f446ffdf38b",
+        "answers": "d47bf1347136"
+      },
+      "reviewedBy": "nickvirden",
+      "reviewedAt": "2026-11-09"
+    },
     "texas:12-3": {
       "reviewed": true,
       "hash": "31a56f82491b2e5d4b34b496748f30b332a29e4183fa39aabf919bdd840acb16",
@@ -24,6 +60,54 @@
       },
       "reviewedBy": "nickvirden",
       "reviewedAt": "2026-10-24"
+    },
+    "texas:12-5": {
+      "reviewed": true,
+      "hash": "1e6b43d2b24dd4eeef8273915aa17bcebdb68049e7b3fb11673fba67f75c4aeb",
+      "fields": {
+        "question": "4494c731cf29",
+        "rule": "329f6651fc8b",
+        "help": "80510ec96235",
+        "answers": "704bfca174a4"
+      },
+      "reviewedBy": "nickvirden",
+      "reviewedAt": "2026-11-09"
+    },
+    "texas:13-3": {
+      "reviewed": true,
+      "hash": "7eabf8b8ebe73dd7a9158a66d74c463de9df052d0721d39a315ccfce45526eef",
+      "fields": {
+        "question": "25b0eab9e9b2",
+        "rule": "e8eaefc2b1b5",
+        "help": "b6dd5e4fb823",
+        "answers": "271370a87af2"
+      },
+      "reviewedBy": "nickvirden",
+      "reviewedAt": "2026-11-09"
+    },
+    "texas:13-5": {
+      "reviewed": true,
+      "hash": "991ca6e9cecb4ace645b600f111a4ff4be94538f098301ba4bc1ccdb55709e00",
+      "fields": {
+        "question": "64b88c708067",
+        "rule": "1ad1ab22ebfb",
+        "help": "0268e0d5d3cd",
+        "answers": "f33e75303b92"
+      },
+      "reviewedBy": "nickvirden",
+      "reviewedAt": "2026-11-09"
+    },
+    "texas:14-3": {
+      "reviewed": true,
+      "hash": "0125f746be89dd19c126cfaa244c4c3374be3f6075d3ade4b8fa6a18377589f5",
+      "fields": {
+        "question": "54f83d636245",
+        "rule": "9367d0c96a63",
+        "help": "c337822293e9",
+        "answers": "271370a87af2"
+      },
+      "reviewedBy": "nickvirden",
+      "reviewedAt": "2026-11-09"
     },
     "texas:14-5": {
       "reviewed": true,
@@ -108,6 +192,30 @@
       },
       "reviewedBy": "nickvirden",
       "reviewedAt": "2026-10-24"
+    },
+    "texas:8-16": {
+      "reviewed": true,
+      "hash": "43a151ae256b49964903959c9e96f0a68068fbdb7e4162bd86a01f55ed9a8e52",
+      "fields": {
+        "question": "56e7e1c381b8",
+        "rule": "0e6f9928d242",
+        "help": "e83c24608cf9",
+        "answers": "c3b6cfc697d5"
+      },
+      "reviewedBy": "nickvirden",
+      "reviewedAt": "2026-11-09"
+    },
+    "texas:9-11": {
+      "reviewed": true,
+      "hash": "2e0c0f5d3276b53a9d0618e2132f72383cbe25e9dd3252e1b65a8a4bf2a175dc",
+      "fields": {
+        "question": "b96a5b476b19",
+        "rule": "9dd74237d4a6",
+        "help": "ee6f17df093d",
+        "answers": "09842f88b290"
+      },
+      "reviewedBy": "nickvirden",
+      "reviewedAt": "2026-11-09"
     }
   }
 }
