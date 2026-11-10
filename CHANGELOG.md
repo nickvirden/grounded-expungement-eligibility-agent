@@ -1,3 +1,9 @@
+## [2.7.1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.7.0...v2.7.1) (2026-11-10)
+
+### Bug Fixes
+
+* **shared:** say the Chapter 20, 25 and 42 rules test the offense in the case being evaluated ([24cc097](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/24cc09717b7dcac6d36608d2d21563a1399e0398)), closes [#223](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/223)
+
 ## [2.7.0](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.6.3...v2.7.0) (2026-11-10)
 
 ### Features
