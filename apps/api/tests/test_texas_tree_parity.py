@@ -158,6 +158,12 @@ _CHAPTER_RULE_NODES = [
     (12, 5, "13-5", 43, "convicted"),
     (13, 3, "14-3", 43, "deferred"),
     (7, 16, "8-16", 71, "convicted"),
+    (10, 11, "11-11", 42, "convicted"),
+    (11, 3, "12-3", 42, "deferred"),
+    (13, 5, "14-5", 20, "convicted"),
+    (14, 1, "15-1", 20, "deferred"),
+    (14, 3, "15-3", 25, "convicted"),
+    (15, 1, "16-1", 25, "deferred"),
 ]
 _CHAPTER_RULE_IDS = [f"{node}-chapter-rule" for _, _, node, _, _ in _CHAPTER_RULE_NODES]
 

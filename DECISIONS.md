@@ -616,7 +616,9 @@ wording in 2-3's help, the offense class in 10-1's question ("most felonies"), a
 not attorney-reviewed; open questions are tracked in #74. A second set changes which answer applies
 to a user, so reviewers should read each string: the chapter help rules name only the status their
 question asks about (convicted at 9-11, 10-9, 12-5, 13-5 and 8-16; deferred adjudication at 10-7,
-11-9, 13-3 and 14-3); 8-16's list uses the current offense headings; 8-17 asks whether a juvenile
+11-9, 13-3 and 14-3) and say the violation is "in the case we are evaluating", as do the six
+rules at 11-11, 12-3, 14-5, 15-1, 15-3 and 16-1, because Gov't Code 411.072, 411.0725(e) and
+411.0735 test the offense being evaluated, not an unrelated record in the same chapter; 8-16's list uses the current offense headings; 8-17 asks whether a juvenile
 court gave a determinate sentence and its rule tests the same thing; 3-10 asks about any prior
 conviction or deferred adjudication other than a fine-only traffic offense; and 0-0's fourth answer
 covers a juvenile referral whether or not it was adjudicated. These are likewise statute-derived and
