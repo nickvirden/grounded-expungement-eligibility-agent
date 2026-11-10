@@ -11,7 +11,7 @@ import { gotoNode, nodeHasHelp, reachableNodesWithHelp } from '../helpTree';
  *
  * Nodes are reached by clicking the real answer buttons along a path computed from the
  * committed tree (see helpTree.ts). Node ids used below: 0-0 (short title, no rule), 11-11
- * (a rule in the first paragraph), 10-7 (the same, not yet reviewed), 2-6 (no help), 7-10 (84
+ * (a rule in the first paragraph), 2-6 (no help), 7-10 (84
  * counties), 4-11 (a numbered list) and 7-14 (a quoted statute).
  */
 
@@ -726,18 +726,6 @@ test.describe('Help content', () => {
     expect(new Set(leftBorders)).toEqual(new Set(['0px']));
     await expect(d.locator('blockquote')).toHaveCount(0);
   });
-
-  test('10-7 has no "How to answer" box and its rule is plain bold text inside the dialog', async ({
-    page,
-  }) => {
-    await page.setViewportSize(MOBILE);
-    await gotoNode(page, '10-7');
-    await expect(answerBox(page)).toHaveCount(0);
-    const d = await openByClick(page);
-    const rule = d.locator('b, strong').filter({ hasText: /answer (yes|no)/i });
-    await expect(rule).toHaveCount(1);
-    await expect(d.getByText('How to answer', { exact: true })).toHaveCount(0);
-  });
 });
 
 // The reviewed-rule ledger decides which rules are promoted into the "How to answer" box. The
@@ -775,6 +763,17 @@ test.describe('"How to answer" box', () => {
       const box = answerBox(page);
       if (!decision.promoted) {
         await expect(box).toHaveCount(0);
+        // An unreviewed rule stays as plain bold text in the dialog, never hidden or reworded.
+        if (decision.reason === 'not-reviewed') {
+          const d = await openByClick(page);
+          await expect(
+            d
+              .locator('b, strong')
+              .filter({ hasText: /answer (yes|no)/i })
+              .first(),
+          ).toBeVisible();
+          await expect(d.getByText('How to answer', { exact: true })).toHaveCount(0);
+        }
         return;
       }
       await expect(box).toBeVisible();
