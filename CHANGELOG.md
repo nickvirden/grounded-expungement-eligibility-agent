@@ -1,3 +1,10 @@
+## [2.6.3](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.6.2...v2.6.3) (2026-11-10)
+
+### Bug Fixes
+
+* **shared:** correct Texas 7-10 question wording, county spellings and list markup ([0f69345](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/0f6934518769c56056d45fa9a62c103fe7d7dbb8)), closes [#227](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/227)
+* **web:** re-review the texas:7-10 help-ledger entry after the wording edit ([aedd07d](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/aedd07d5c9aefcf90012136c6c3ea4ae24433d0d)), closes [#74](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/74) [#227](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/227)
+
 ## [2.6.2](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.6.1...v2.6.2) (2026-11-09)
 
 ### Bug Fixes

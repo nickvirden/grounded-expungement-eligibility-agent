@@ -643,6 +643,12 @@ want to start the legal process now?", with Yes now "Yes, I want to start the le
 and No now "No, I'm going to wait until it's been N years" (3 at 5-3, 2 at 6-3). Wording only:
 nothing in this set touches a transition, answer position, `group`, `variant`, or `questionsLeft`.
 
+7-10's question and county help are corrected the same way, wording only, without content-owner
+review and not statute-derived: "Is the conviction ... one of the counties" becomes "Was the
+conviction ... in one of the counties", "Kennedy" becomes "Kenedy", "De Witt" becomes "DeWitt"
+(moved after "Deaf Smith" to keep the list alphabetical), and the help's missing closing `</ul>`
+is added. The 7-10 help-ledger entry is re-reviewed separately because its hash covers this text.
+
 **Provenance:** the fixture's `sourceSha256` pins the original, uncorrected `texas.js`. The
 corrected tree and fixture are not what that file produces. The legacy file shares one help string
 between sibling questions (for example 11-11 and 12-3), so reproducing a correction from the

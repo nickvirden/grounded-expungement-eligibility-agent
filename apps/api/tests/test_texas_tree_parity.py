@@ -295,6 +295,21 @@ def _chapter_rule_rows() -> list[tuple[int, int, str, str, str]]:
             "to a term in jail.</p>",
             'a "prison sentence" is where a judge actually sentences you to a term in prison.',
         ),
+        (
+            6,
+            10,
+            "next_question_text",
+            "Is the conviction we're evaluating one of",
+            "Was the conviction we're evaluating in one of",
+        ),
+        (6, 10, "next_question_help", "Kennedy", "<li>Kenedy</li>"),
+        (
+            6,
+            10,
+            "next_question_help",
+            "De Witt",
+            "<li>Deaf Smith</li><li>DeWitt</li><li>Dickens</li>",
+        ),
     ],
     ids=[
         "2-3-sealing",
@@ -318,6 +333,9 @@ def _chapter_rule_rows() -> list[tuple[int, int, str, str, str]]:
         "9-11-bestiality",
         "10-7-bestiality",
         "5-8-prison-sentence",
+        "7-10-question",
+        "7-10-kenedy",
+        "7-10-dewitt",
     ],
 )
 def test_corrected_wording_replaces_legacy_text(
@@ -334,6 +352,14 @@ def test_corrected_wording_replaces_legacy_text(
     assert text is not None
     assert absent_fragment not in text
     assert present_fragment in text
+
+
+def test_county_help_list_is_closed() -> None:
+    help_text = step("texas", 6, 10).next_question_help
+
+    assert help_text is not None
+    assert help_text.count("<ul>") == help_text.count("</ul>") == 1
+    assert help_text.endswith("<li>Yoakum</li></ul>")
 
 
 def test_corrected_wording_replaces_legacy_text_at_entry_question() -> None:
