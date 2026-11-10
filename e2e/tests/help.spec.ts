@@ -767,7 +767,10 @@ test.describe('"How to answer" box', () => {
         if (decision.reason === 'not-reviewed') {
           const d = await openByClick(page);
           await expect(
-            d.locator('b, strong').filter({ hasText: /answer (yes|no)/i }).first(),
+            d
+              .locator('b, strong')
+              .filter({ hasText: /answer (yes|no)/i })
+              .first(),
           ).toBeVisible();
           await expect(d.getByText('How to answer', { exact: true })).toHaveCount(0);
         }
