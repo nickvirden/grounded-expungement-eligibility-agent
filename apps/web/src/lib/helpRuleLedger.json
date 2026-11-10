@@ -27,15 +27,15 @@
     },
     "texas:11-11": {
       "reviewed": true,
-      "hash": "3e8cab2a3eefe683f1c106bdf44a23248e15f7e32758f6786e7e68235a6d0efe",
+      "hash": "55147509bff28488192eddc607e4188de39b842e67a7977cdd8f5baddf0bebde",
       "fields": {
         "question": "290a48560756",
-        "rule": "a282e483780d",
-        "help": "1548d60299e0",
+        "rule": "7fa8cf007566",
+        "help": "d12935e7500e",
         "answers": "09842f88b290"
       },
       "reviewedBy": "nickvirden",
-      "reviewedAt": "2026-10-21"
+      "reviewedAt": "2026-11-10"
     },
     "texas:11-9": {
       "reviewed": true,
@@ -51,15 +51,15 @@
     },
     "texas:12-3": {
       "reviewed": true,
-      "hash": "31a56f82491b2e5d4b34b496748f30b332a29e4183fa39aabf919bdd840acb16",
+      "hash": "6d919dc91facebe2a86cc2b484de21762413b30b558c16e29bf4b9f4d1fa934c",
       "fields": {
         "question": "04e6dde037cb",
-        "rule": "c40d6825253e",
-        "help": "14dbd79b89af",
+        "rule": "afcc1b7d3325",
+        "help": "6efccab4148a",
         "answers": "271370a87af2"
       },
       "reviewedBy": "nickvirden",
-      "reviewedAt": "2026-10-24"
+      "reviewedAt": "2026-11-10"
     },
     "texas:12-5": {
       "reviewed": true,
@@ -111,51 +111,51 @@
     },
     "texas:14-5": {
       "reviewed": true,
-      "hash": "dccd167ab6204f995bbddfa19b61155a9748057f76467db47ec92ffebc5dd065",
+      "hash": "8e4e300306e10fc014ba97e90f7dfae699bfb8d8fd5997d01115b1ccbb5c3fd2",
       "fields": {
         "question": "49b033bb2acb",
-        "rule": "20195a87d041",
-        "help": "ea0262caeca8",
+        "rule": "7849737af337",
+        "help": "0aaba292a048",
         "answers": "05ea4e9d0fc7"
       },
       "reviewedBy": "nickvirden",
-      "reviewedAt": "2026-10-24"
+      "reviewedAt": "2026-11-10"
     },
     "texas:15-1": {
       "reviewed": true,
-      "hash": "3f270c2e7ff1bbcef18d9e555f477d25544941866cf733d0f9ea26cec1c7c7b8",
+      "hash": "7300997e321ef4081269e4cffc5d0e8bc1a4d3e218ab579476b5c4c7fe334b2a",
       "fields": {
         "question": "775688bbbe2b",
-        "rule": "2a769239fc25",
-        "help": "7518cc59bfe5",
+        "rule": "344f62c606a1",
+        "help": "8760e3029594",
         "answers": "271370a87af2"
       },
       "reviewedBy": "nickvirden",
-      "reviewedAt": "2026-10-21"
+      "reviewedAt": "2026-11-10"
     },
     "texas:15-3": {
       "reviewed": true,
-      "hash": "7e2ee008a16144b4bd1f1ad85d31a098c622ed076a9c31c5115c150d11d38ebf",
+      "hash": "e48be898506b464f80d85df94d4ce7afafcdaf653a9358ddd3d71f4878d0585f",
       "fields": {
         "question": "35c18fe1de36",
-        "rule": "8a17bb268a27",
-        "help": "889e3254d993",
+        "rule": "78a5a30ef2b5",
+        "help": "078ed54536d4",
         "answers": "d142daef2621"
       },
       "reviewedBy": "nickvirden",
-      "reviewedAt": "2026-10-21"
+      "reviewedAt": "2026-11-10"
     },
     "texas:16-1": {
       "reviewed": true,
-      "hash": "6e9d51fa0dab8cdacc4e91d0f42e545300d3132df6e76dc820c74802ed35625d",
+      "hash": "07723e1f912ea67804033ceea05555d7ca3cac7439047e070bfe528546a60b92",
       "fields": {
         "question": "358235e74ca1",
-        "rule": "41048bea867a",
-        "help": "010823cd67d2",
+        "rule": "36f45cea8e85",
+        "help": "37261ca68035",
         "answers": "271370a87af2"
       },
       "reviewedBy": "nickvirden",
-      "reviewedAt": "2026-10-24"
+      "reviewedAt": "2026-11-10"
     },
     "texas:2-0": {
       "reviewed": true,

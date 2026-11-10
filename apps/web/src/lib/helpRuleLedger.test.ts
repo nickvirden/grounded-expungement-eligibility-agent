@@ -111,7 +111,12 @@ describe('help rule ledger: promotion', () => {
   it('keeps an unreviewed rule in the body as bold text, unreworded', () => {
     const d = decideHelp(inputFor('11-11'), approvedHashes(ledgerOf([])));
     assert.equal(d.reason, 'not-reviewed');
-    assert.ok(bold(d.content, 'Answer YES to this question if you were convicted of a violation'));
+    assert.ok(
+      bold(
+        d.content,
+        'Answer YES to this question if you were convicted, in the case we are evaluating, of a violation',
+      ),
+    );
     assert.equal(d.content.title, 'Disorderly Conduct Offenses');
   });
 
@@ -142,7 +147,7 @@ describe('help rule ledger: promotion', () => {
   it('stops promoting when one word of the rule changes', () => {
     const i = inputFor('11-11');
     const approved = approvedHashes(ledgerOf(['11-11']));
-    const mutated = { ...i, help: i.help.replace('convicted of', 'charged with') };
+    const mutated = { ...i, help: i.help.replace('convicted,', 'charged with,') };
     assert.notEqual(mutated.help, i.help);
     const d = decideHelp(mutated, approved);
     assert.equal(d.promoted, false);
@@ -893,7 +898,7 @@ describe('committed help rule ledger', () => {
 
     assert.match(
       messageFor(
-        edit((n) => ({ ...n, help: (n.help ?? '').replace('convicted of', 'charged with') })),
+        edit((n) => ({ ...n, help: (n.help ?? '').replace('convicted,', 'charged with,') })),
       ),
       /^texas:11-11: rule and help text changed since review on 2026-01-01\. Re-review it, then update the hash to [0-9a-f]{64}\.$/,
     );
@@ -916,7 +921,7 @@ describe('committed help rule ledger', () => {
         edit((n) => ({
           ...n,
           question: `${n.question}!`,
-          help: (n.help ?? '').replace('convicted of', 'charged with'),
+          help: (n.help ?? '').replace('convicted,', 'charged with,'),
         })),
       ),
       /^texas:11-11: question and rule and help text changed since review/,
