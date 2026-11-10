@@ -1,3 +1,9 @@
+## [2.7.0](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.6.3...v2.7.0) (2026-11-10)
+
+### Features
+
+* **web:** approve the nine Texas chapter rules for the How to answer box ([53baa2f](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/53baa2ff8843dcd3ac035a44cd8f49294086b126)), closes [#80](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/80) [#158](https://github.com/nickvirden/grounded-expungement-eligibility-agent/issues/158)
+
 ## [2.6.3](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.6.2...v2.6.3) (2026-11-10)
 
 ### Bug Fixes
