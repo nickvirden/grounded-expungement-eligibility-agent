@@ -99,15 +99,16 @@
     },
     "texas:7-10": {
       "reviewed": true,
-      "hash": "2315617cb508062a6bfc2eb61a3f1b54d90c37964dcee08c88929c21985fd4d5",
+      "hash": "c1b666cecb44b35fda8abe9f36e1232e6fc1ee44fcaeb26ecb7c54e4a95e6a6f",
       "fields": {
-        "question": "21276a9e42d3",
+        "question": "a6375e86f8e2",
         "rule": "4631b0c3684c",
-        "help": "32d3b4c3f81f",
+        "help": "3deb92bff561",
         "answers": "64e2f73fccd4"
       },
-      "reviewedBy": "nickvirden",
-      "reviewedAt": "2026-10-24"
+      "reviewedBy": "Claude Sonnet 5.5, at nickvirden's request",
+      "reviewedAt": "2026-11-09",
+      "note": "Re-review after a wording-only edit of a previously human-reviewed entry (2026-10-24, nickvirden). Changes since that review: the question reads \"Was the conviction ... in one of the counties\" (agrees with the rule sentence and both answers); \"Kenedy\" and \"DeWitt\" replace \"Kennedy\" and \"De Witt\"; the list's closing </ul> is present. The rule sentence, both answers and the county membership are unchanged. Reviewed for agreement between question, rule, answers and help; the county list's legal accuracy is not part of this review (#74)."
     }
   }
 }
