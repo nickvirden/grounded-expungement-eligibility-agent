@@ -1,5 +1,6 @@
 import { formatStateName } from '@/app/LandingClient.utils';
-import { internalApiUrl } from '@/lib/internalApiUrl';
+import { ApiError, type StateEntry, getStateEntry } from '@/lib/api';
+import { isStateSlug } from '@/lib/stateSlug';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import QuickFormClient from './QuickFormClient';
@@ -17,31 +18,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-interface Entry {
-  question_id: number;
-  question: string;
-  help: string | null;
-  // API (and Texas JSON tree) uses 'value'; normalized to 'label' by Zod on client
-  answers: Array<{ value?: string; label?: string; position: number }>;
-  questions_left: number;
-  // Absent when the API predates tree versioning.
-  tree_version?: string;
-}
-
 /**
- * Deliberately has no try/catch: a 404 maps to `null` (unknown state), while
- * every other failure, including an unreachable API, propagates to the error
- * boundary so an outage is never reported as a missing page.
+ * Deliberately only maps a 404 to `null` (unknown state): every other failure,
+ * including an unreachable or hung API, propagates to the error boundary so an
+ * outage is never reported as a missing page.
  */
-async function fetchEntry(state: string): Promise<Entry | null> {
-  const res = await fetch(`${internalApiUrl()}/api/states/${state}/entry`, {
-    next: { revalidate: 3600 },
-  });
-
-  if (res.status === 404) return null;
-  if (!res.ok) throw new Error(`Entry request failed: ${res.status}`);
-
-  return (await res.json()) as Entry;
+async function fetchEntry(state: string): Promise<StateEntry | null> {
+  try {
+    return await getStateEntry(state, {
+      next: { revalidate: 3600 },
+      signal: AbortSignal.timeout(5_000),
+    });
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 404) return null;
+    throw err;
+  }
 }
 
 /**
@@ -50,6 +41,7 @@ async function fetchEntry(state: string): Promise<Entry | null> {
  */
 export default async function QuickFormPage({ params }: Props) {
   const { state } = await params;
+  if (!isStateSlug(state)) notFound();
   const stateName = formatStateName(state);
 
   const entry = await fetchEntry(state);

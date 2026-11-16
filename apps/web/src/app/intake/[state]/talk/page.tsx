@@ -1,7 +1,9 @@
 import { formatStateName } from '@/app/LandingClient.utils';
 import { getStateTree } from '@/lib/api';
 import type { StateTree } from '@/lib/schemas';
+import { isStateSlug } from '@/lib/stateSlug';
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import TalkClient from './TalkClient';
 
 interface Props {
@@ -26,6 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  */
 export default async function TalkPage({ params }: Props) {
   const { state } = await params;
+  if (!isStateSlug(state)) notFound();
   const stateName = formatStateName(state);
 
   // Powers decision-path decoding in the Case File panel once a report

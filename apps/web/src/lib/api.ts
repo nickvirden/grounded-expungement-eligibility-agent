@@ -81,8 +81,31 @@ export async function getStateTree(
   version?: string,
 ): Promise<StateTree> {
   const query = version && isTreeVersion(version) ? `?version=${version}` : '';
-  const data = await fetchJson<unknown>(`/api/states/${state}/tree${query}`, init);
+  const data = await fetchJson<unknown>(
+    `/api/states/${encodeURIComponent(state)}/tree${query}`,
+    init,
+  );
   return stateTreeSchema.parse(data);
+}
+
+export interface StateEntry {
+  question_id: number;
+  question: string;
+  help: string | null;
+  // API (and Texas JSON tree) uses 'value'; normalized to 'label' by Zod on client
+  answers: Array<{ value?: string; label?: string; position: number }>;
+  questions_left: number;
+  // Absent when the API predates tree versioning.
+  tree_version?: string;
+}
+
+/**
+ * Fetch a state's entry question. Throws `ApiError` on any non-2xx response (a
+ * 404 means an unknown state) and rethrows transport failures, including an
+ * aborted `init.signal`, so callers decide which of those is a missing page.
+ */
+export async function getStateEntry(state: string, init?: RequestInit): Promise<StateEntry> {
+  return fetchJson<StateEntry>(`/api/states/${encodeURIComponent(state)}/entry`, init);
 }
 
 // ─── Eligibility ─────────────────────────────────────────────────────────────
