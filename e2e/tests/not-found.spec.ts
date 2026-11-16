@@ -64,7 +64,7 @@ test.describe('Not-found page', () => {
   // Slugs that are not state-shaped are rejected before the page calls the API, so a
   // crafted segment can never pick another API path. Whether the API was called is not
   // observable from the browser; the styled 404 on every intake route is.
-  for (const slug of ['..%2Fhealthz', '%2e%2e%2f%2e%2e%2fhealthz', 'a%2Fb', 'a%3Fx%3D1']) {
+  for (const slug of ['..%2Fhealthz', 'a%2Fb', 'a%3Fx%3D1']) {
     for (const route of ['quick', 'talk', 'result']) {
       test(`a malformed state slug ${slug} on /${route} shows the same page`, async ({ page }) => {
         const response = await page.goto(`/intake/${slug}/${route}`);

@@ -58,7 +58,6 @@ describe('getStateTree', () => {
 
 describe('state slug in the API path', () => {
   const originalFetch = globalThis.fetch;
-  const tree = { entryNodeId: 'q0', nodes: {}, transitions: [] };
   const entry = {
     question_id: 1,
     question: 'Q?',
@@ -90,25 +89,20 @@ describe('state slug in the API path', () => {
     );
   });
 
-  it('encodes a slash so the request cannot leave the states path', async () => {
+  it('sends a slug with an underscore as is', async () => {
     const urls = recordUrls(entry);
-    await getStateEntry('../healthz');
-    await getStateEntry('a/b');
-    assert.equal(urls.length, 2);
-    for (const u of urls) {
-      const { pathname } = new URL(u);
-      assert.match(pathname, /^\/api\/states\/[^/]+\/entry$/);
-    }
-    assert.equal(new URL(urls[0] as string).pathname, '/api/states/..%2Fhealthz/entry');
+    await getStateEntry('new_york');
+    assert.equal(new URL(urls[0] as string).pathname, '/api/states/new_york/entry');
   });
 
-  it('keeps query and fragment characters out of the URL structure', async () => {
-    const urls = recordUrls(tree);
-    await getStateTree('a?x=1#frag');
-    const url = new URL(urls[0] as string);
-    assert.equal(url.search, '');
-    assert.equal(url.hash, '');
-    assert.equal(url.pathname, '/api/states/a%3Fx%3D1%23frag/tree');
+  it('rejects a slug that is not state-shaped before any request', async () => {
+    const urls = recordUrls(entry);
+    for (const slug of ['..', '../healthz', 'a/b', '..%2Fhealthz', 'a?x=1#frag', '']) {
+      for (const call of [() => getStateEntry(slug), () => getStateTree(slug)]) {
+        await assert.rejects(call, (err) => err instanceof ApiError && err.status === 404, slug);
+      }
+    }
+    assert.equal(urls.length, 0);
   });
 
   it('throws ApiError carrying the status for an unknown state', async () => {
@@ -126,9 +120,17 @@ describe('state slug in the API path', () => {
       new Promise((_resolve, reject) => {
         init?.signal?.addEventListener('abort', () => reject(init.signal?.reason));
       })) as typeof fetch;
-    await assert.rejects(
-      () => getStateEntry('texas', { signal: AbortSignal.timeout(20) }),
-      (err) => err instanceof Error && err.name === 'TimeoutError',
-    );
+    // AbortSignal.timeout's timer is unref'd, so on its own nothing would keep the event
+    // loop alive while the mock fetch is pending and node:test would cancel the test.
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(new DOMException('t', 'TimeoutError')), 20);
+    try {
+      await assert.rejects(
+        () => getStateEntry('texas', { signal: controller.signal }),
+        (err) => err instanceof DOMException && err.name === 'TimeoutError',
+      );
+    } finally {
+      clearTimeout(timer);
+    }
   });
 });

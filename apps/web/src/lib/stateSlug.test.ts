@@ -4,7 +4,7 @@ import { isStateSlug } from './stateSlug.js';
 
 describe('isStateSlug', () => {
   it('accepts well-formed slugs in any case', () => {
-    for (const slug of ['texas', 'Texas', 'new-york', 'a1']) {
+    for (const slug of ['texas', 'Texas', 'new-york', 'new_york', 'a1']) {
       assert.equal(isStateSlug(slug), true, slug);
     }
   });
@@ -24,6 +24,7 @@ describe('isStateSlug', () => {
       'a b',
       'a%00b',
       '-texas',
+      '_texas',
       '1texas',
       'texas\n',
     ];

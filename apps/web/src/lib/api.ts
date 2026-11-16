@@ -16,6 +16,7 @@ import {
   intakeCreateResponseSchema,
   stateTreeSchema,
 } from './schemas';
+import { isStateSlug } from './stateSlug';
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
@@ -63,6 +64,14 @@ export class ApiError extends Error {
 
 // ─── States ───────────────────────────────────────────────────────────────────
 
+/**
+ * A slug that is not state-shaped names no state, so it is answered locally as the
+ * 404 the API would give, and never reaches the request path.
+ */
+function assertStateSlug(state: string): void {
+  if (!isStateSlug(state)) throw new ApiError(404, 'Unknown state');
+}
+
 export async function listStates(): Promise<string[]> {
   // API returns list[StateInfo] — extract just the state key
   const data = await fetchJson<Array<{ state: string }>>('/api/states');
@@ -80,6 +89,7 @@ export async function getStateTree(
   init?: RequestInit,
   version?: string,
 ): Promise<StateTree> {
+  assertStateSlug(state);
   const query = version && isTreeVersion(version) ? `?version=${version}` : '';
   const data = await fetchJson<unknown>(
     `/api/states/${encodeURIComponent(state)}/tree${query}`,
@@ -101,10 +111,11 @@ export interface StateEntry {
 
 /**
  * Fetch a state's entry question. Throws `ApiError` on any non-2xx response (a
- * 404 means an unknown state) and rethrows transport failures, including an
+ * 404 means an unknown state, including a slug that is not state-shaped) and rethrows transport failures, including an
  * aborted `init.signal`, so callers decide which of those is a missing page.
  */
 export async function getStateEntry(state: string, init?: RequestInit): Promise<StateEntry> {
+  assertStateSlug(state);
   return fetchJson<StateEntry>(`/api/states/${encodeURIComponent(state)}/entry`, init);
 }
 
