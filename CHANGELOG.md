@@ -1,3 +1,9 @@
+## [2.7.2](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.7.1...v2.7.2) (2026-11-16)
+
+### Bug Fixes
+
+* **web:** disable Talk to Agent input until hydration completes ([0c16a70](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/0c16a70d7476892571de75f386b47b6906631d93))
+
 ## [2.7.1](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.7.0...v2.7.1) (2026-11-10)
 
 ### Bug Fixes
