@@ -13,10 +13,20 @@
     "skipLibCheck": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    // Playwright loads this package as CommonJS (no "type" in package.json), so `import.meta`
+    // must be a type error here rather than a run-time one. node16/nodenext would model that
+    // too, but the web helpers the tests import live in an ESM package ("type": "module"),
+    // which those modes refuse to `require`. TypeScript 6 deprecates node10 resolution; the
+    // upgrade then needs its own decision here.
+    "module": "commonjs",
+    "moduleResolution": "node10",
     "resolveJsonModule": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    // Web helpers imported by e2e tests are type-checked with this config but resolved at run
+    // time through apps/web/tsconfig.json. Keep this mapping identical to that one's `@/*`.
+    "paths": {
+      "@/*": ["../apps/web/src/*"]
+    }
   },
   "include": ["*.ts", "tests/**/*.ts"],
   "exclude": ["node_modules"]
