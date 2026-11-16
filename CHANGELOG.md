@@ -1,3 +1,10 @@
+## [2.7.3](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.7.2...v2.7.3) (2026-11-16)
+
+### Bug Fixes
+
+* **web:** accept underscore state slugs, test the quick page load logic, reject non-slugs in the API client ([fc07534](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/fc0753433d2733b1c139980c854fb6b50332ed82))
+* **web:** validate and encode the state slug, time out the quick page's entry fetch ([e248c87](https://github.com/nickvirden/grounded-expungement-eligibility-agent/commit/e248c876750ec9823a49eb28494ab51d69a40398))
+
 ## [2.7.2](https://github.com/nickvirden/grounded-expungement-eligibility-agent/compare/v2.7.1...v2.7.2) (2026-11-16)
 
 ### Bug Fixes
