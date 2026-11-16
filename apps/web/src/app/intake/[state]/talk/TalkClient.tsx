@@ -35,7 +35,7 @@ export default function TalkClient({ state, stateName, decisionTree }: Props) {
   const { messages, intakeId, report, isLoading, error, send } = useChatStream();
   const [draft, setDraft] = useState('');
   // The server-rendered textarea accepts typing before React attaches handlers, so Enter inserts
-  // a newline, the Send button is still disabled, and hydration can reset the controlled value to
+  // a newline, the Send button is still disabled, and hydration then resets the controlled value to
   // ''. Keeping the input disabled until the first client effect runs means it only accepts text
   // that can be sent.
   const [hydrated, setHydrated] = useState(false);
