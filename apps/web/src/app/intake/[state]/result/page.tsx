@@ -4,8 +4,10 @@ import { CheckCircleIcon, XCircleIcon } from '@/components/icons/index';
 import { getStateTree } from '@/lib/api';
 import { decodeDecisionPath, provenanceNote, resolveTreeProvenance } from '@/lib/decisionPath';
 import type { StateTree } from '@/lib/schemas';
+import { isStateSlug } from '@/lib/stateSlug';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import {
   ActionRow,
   Disclaimer,
@@ -58,6 +60,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 export default async function ResultPage({ params, searchParams }: Props) {
   const { state } = await params;
   const sp = await searchParams;
+  if (!isStateSlug(state)) notFound();
 
   const stateName = formatStateName(state);
   const resultKey = sp.result_key ?? null;
