@@ -34,6 +34,11 @@ const WELCOME = (stateName: string) =>
 export default function TalkClient({ state, stateName, decisionTree }: Props) {
   const { messages, intakeId, report, isLoading, error, send } = useChatStream();
   const [draft, setDraft] = useState('');
+  // The server-rendered textarea accepts typing before React attaches handlers, and hydration
+  // then resets the controlled value to '', silently discarding the text. Keeping the input
+  // disabled until the first client effect runs means it only accepts what can be sent.
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
   const listRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -112,7 +117,7 @@ export default function TalkClient({ state, stateName, decisionTree }: Props) {
             onChange={handleTextareaChange}
             onKeyDown={handleKeyDown}
             placeholder={hasStarted ? 'Continue the conversation…' : 'Describe your situation…'}
-            disabled={isLoading}
+            disabled={isLoading || !hydrated}
             rows={2}
             aria-label="Message input"
           />
