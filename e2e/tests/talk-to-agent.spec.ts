@@ -76,3 +76,81 @@ test.describe('Talk to Agent — missing Authorization header', () => {
     await expect(page.getByLabel('Eligibility result')).toHaveCount(0);
   });
 });
+
+test.describe('Talk to Agent — submit before hydration', () => {
+  // The server-rendered textarea accepts typing before React attaches its handlers, and
+  // hydration then resets the controlled value. A message entered in that window must not
+  // be silently lost, so the input stays disabled until hydration completes.
+  test('does not accept or lose a message typed before hydration', async ({ page }) => {
+    const sentMessages: string[] = [];
+    page.on('request', (request) => {
+      if (request.method() === 'POST' && new URL(request.url()).pathname === '/api/chat') {
+        sentMessages.push(request.postData() ?? '');
+      }
+    });
+
+    // Hold back every script chunk so the page stays server-rendered only.
+    let release: () => void = () => undefined;
+    const released = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    await page.route('**/_next/static/**/*.js', async (route) => {
+      await released;
+      await route.continue();
+    });
+
+    await page.goto('/intake/texas/talk', { waitUntil: 'domcontentloaded' });
+
+    const textarea = page.getByLabel('Message input');
+    await expect(textarea).toBeVisible();
+    // Typing is attempted with a short timeout: if the input is editable the text lands in
+    // the server-rendered DOM; if it is disabled the attempt is skipped.
+    await textarea.pressSequentially(NARRATIVE, { timeout: 1_000 }).catch(() => undefined);
+    await textarea.press('Enter', { timeout: 1_000 }).catch(() => undefined);
+    await page
+      .getByRole('button', { name: 'Send message' })
+      .click({ timeout: 1_000, force: true })
+      .catch(() => undefined);
+
+    await expect(textarea).toBeDisabled();
+
+    // Release the script chunks; hydration completes and the input becomes usable.
+    release();
+    await expect(textarea).toBeEnabled({ timeout: 15_000 });
+
+    await textarea.fill(NARRATIVE);
+    await page.getByRole('button', { name: 'Send message' }).click();
+
+    await expect(page.getByLabel('Your message')).toHaveCount(1);
+    await expect(page.getByLabel('Eligibility result')).toBeVisible({ timeout: 15_000 });
+    expect(sentMessages).toHaveLength(1);
+  });
+
+  test('sends exactly one message when submitted early on a CPU-throttled page', async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(browserName !== 'chromium', 'CDP CPU throttling is Chromium-only');
+
+    const sentMessages: string[] = [];
+    page.on('request', (request) => {
+      if (request.method() === 'POST' && new URL(request.url()).pathname === '/api/chat') {
+        sentMessages.push(request.postData() ?? '');
+      }
+    });
+
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send('Emulation.setCPUThrottlingRate', { rate: 6 });
+
+    await page.goto('/intake/texas/talk', { waitUntil: 'domcontentloaded' });
+
+    // Submit as early as the input allows. Before the fix this lands in the server-rendered
+    // DOM and is discarded on hydration; after it the input is disabled until ready.
+    const textarea = page.getByLabel('Message input');
+    await textarea.fill(NARRATIVE, { timeout: 30_000 });
+    await textarea.press('Enter');
+
+    await expect(page.getByLabel('Eligibility result')).toBeVisible({ timeout: 30_000 });
+    expect(sentMessages).toHaveLength(1);
+  });
+});
